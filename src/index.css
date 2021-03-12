@@ -1,5 +1,5 @@
 /* need all 3 to keep jumbotron in middle of page */
-html, body, div {
+html, body{
   margin: 0;
   height: 100%;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',

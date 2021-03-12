@@ -4,7 +4,9 @@ import React from "react";
 const Nav = (props) => {
 // bootstrap navbar
     return(
-        <div>
+      <div>
+        <div className="d-flex h-100 text-center text-white">
+        <div className="cover-container d-flex w-100 h-100 p-3 mx-auto flex-column">
           <header>
             <h3 className="float-md-start mb-0">MutCompute.com</h3>
             <nav className="nav nav-masthead justify-content-center float-md-end">
@@ -14,6 +16,8 @@ const Nav = (props) => {
             </nav>
           </header>
         </div>
+        </div>
+      </div>
     )
 }
 

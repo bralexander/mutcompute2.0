@@ -1,5 +1,5 @@
 body {
-    background-image: url("./2iskPic6.png");
+    background-image: url("../images/2iskPic6.png");
     background-size: 1523px 954px; 
     background-color: black;
     background-position:top;
@@ -44,6 +44,7 @@ body {
   
   main {
       background-color:rgba(47, 47, 47, 0.7);
+      margin-top: 30%;
       /* background-color:rgba(0, 0, 0, 0.7); 
       box-shadow: 3px 3px 5px rgba(0, 0, 0, .7); */
       box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.6), 0 6px 20px 0 rgba(0, 0, 0, 0.6);
