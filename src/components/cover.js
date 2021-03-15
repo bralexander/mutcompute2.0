@@ -7,11 +7,11 @@ import Jumbotron from "./jumbotron";
 
 const Cover = (props) => {
     return(
-       <div>
-           <body>
-                <Nav />
+       <div className='cover-div'>
+           <body className='cover-body'>
+                
                 <Jumbotron />
-                <Footer />
+                
             </body>
         </div>
     )

@@ -1,11 +1,10 @@
 import React from "react";
 
-
 const Nav = (props) => {
 // bootstrap navbar
     return(
       <div>
-        <div className="d-flex h-100 text-center text-white">
+        <div className="nav-cont d-flex h-100 text-center text-white">
         <div className="cover-container d-flex w-100 h-100 p-3 mx-auto flex-column">
           <header>
             <h3 className="float-md-start mb-0">MutCompute.com</h3>

@@ -1,10 +1,11 @@
-body {
-    background-image: url("../images/2iskPic6.png");
-    background-size: 1523px 954px; 
-    background-color: black;
-    background-position:top;
-    background-repeat: no-repeat;
 
+.cover-body {
+    background-image: url("../images/2iskPic7.png");
+    height: 100vh;
+    background-size:cover; 
+    background-color: black;
+    background-position:top center;
+    background-repeat: no-repeat;
   }
   
   .cover-container {
@@ -13,8 +14,11 @@ body {
   
   
   /*
-   * Header
+   * Header/navbar
    */
+  .nav-cont {
+    background-color: black;
+  }
 
   .nav-masthead .nav-link {
     padding: .25rem 0;
@@ -42,7 +46,7 @@ body {
       color: rgba(4, 248, 208, 0.904);
   }
   
-  main {
+  .jumbotron {
       background-color:rgba(47, 47, 47, 0.7);
       margin-top: 30%;
       /* background-color:rgba(0, 0, 0, 0.7); 
@@ -58,7 +62,7 @@ body {
       text-shadow: 2px 2px rgba(1, 1, 1, .6);
   }
   
-  .btn {
+  .j-btn {
       color: rgba(4, 248, 208, 0.904);
       margin: 5px;
       /* text-shadow: 1px 1px rgba(0, 0, 0, .6); */
@@ -69,4 +73,5 @@ body {
 
   footer {
     text-shadow: 1px 1px rgba(0, 0, 0, .6);
+    background-color:black;
   }

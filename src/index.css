@@ -1,13 +1,23 @@
 /* need all 3 to keep jumbotron in middle of page */
-html, body{
+.index-html .index-body {
   margin: 0;
   height: 100%;
+  overflow:hidden;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
     'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
+
+/* .cover {
+  background-image: url("./assets/images/2iskPic6.png");
+  background-size: 1523px 954px; 
+  background-color: black;
+  background-position:top;
+  background-repeat: no-repeat;
+
+} */
 
 
 
