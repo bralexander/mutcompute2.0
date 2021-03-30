@@ -230,9 +230,10 @@ const Compvis2 = (props) => {
         var heatMap = NGL.ColormakerRegistry.addScheme(function (params) {
           this.atomColor = function (atom) {
             for (var i = 0; i < 1 /*csv.length*/; i++) {
+              if (residueData[atom.resno]){
               const csvRow = residueData[atom.resno][0]
               const csvRowArr = csvRow.split(',')
-              //console.log('cvr', csvRowArr)
+              //console.log('cvr', csvRowArr
              if (atom.isNucleic()) {
                return 0x004e00
              }
@@ -243,6 +244,7 @@ const Compvis2 = (props) => {
 
                 return gradientArray[normWtProb]
               }
+            }
             }
           }
         })
