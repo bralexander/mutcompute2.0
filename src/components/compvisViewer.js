@@ -54,7 +54,7 @@ useEffect (() => {
         return button
       }
       
-      var topPosition = 12
+      var topPosition = 80
       
       function getTopPosition (increment) {
         if (increment) topPosition += increment
@@ -91,8 +91,8 @@ useEffect (() => {
             WT PROB: ${wtProb.toFixed(4)}<br/>
             PRED AA: ${csvRow[csvPrAaCol]}<br/>
             PRED PROB: ${prProb.toFixed(4)}<br/>`
-              tooltip.style.bottom = NGL.Stage.viewer.height - 80 + 'px'
-              tooltip.style.left = NGL.Stage.viewer.width - 170 + 'px'
+              tooltip.style.bottom = stage.viewer.height - 200 + 'px'
+              tooltip.style.left = stage.viewer.width - 170 + 'px'
               tooltip.style.display = 'block'
             } else {
               tooltip.style.display = 'none'
@@ -149,35 +149,35 @@ useEffect (() => {
           stage.loadFile(proteinFile /*, { defaultRepresentation: true }*/),
           NGL.autoLoad(csvFile, {
             ext: 'csv',
-            delimiter: ' ',
+            delimiter: ',',
             comment: '#',
             columnNames: true    
          })
         ]).then(function (ol) {
           struc = ol[0]
           csv = ol[1].data
-          //console.log(csv.length)
+          console.log(csv)
       
           setLigandOptions()
           setChainOptions()
           setResidueOptions()
 
               
-          // residueData = {}
-          // for (var i = 0; i < csv.length; i++) {
-          //   const resNum = parseFloat(csv[i][csvResNumCol])
-          //   residueData[resNum] = csv[i]
-          // }
-          // console.log('rd', residueData)residueData = {}
-        residueData = {}
-        for (var i = 0; i < csv.length; i++) {
-            const row = csv[i][0]
-            const rowArray = row.split(",")
-            const resNum = parseFloat(rowArray[4]) // fixed returning nan/undef
-            // console.log(resNum) only logs 1
+          residueData = {}
+          for (var i = 0; i < csv.length; i++) {
+            const resNum = parseFloat(csv[i][csvResNumCol])
             residueData[resNum] = csv[i]
-        }
-        console.log('rd', residueData)
+          }
+          // console.log('rd', residueData)residueData = {}
+        // residueData = {}
+        // for (var i = 0; i < csv.length; i++) {
+        //     const row = csv[i][0]
+        //     const rowArray = row.split(",")
+        //     const resNum = parseFloat(rowArray[4]) // fixed returning nan/undef
+        //     // console.log(resNum) only logs 1
+        //     residueData[resNum] = csv[i]
+        // }
+        // console.log('rd', residueData)
       
           var heatMap = NGL.ColormakerRegistry.addScheme(function (params) {
             this.parameters = Object.assign(this.parameters, {
@@ -189,13 +189,12 @@ useEffect (() => {
             var scale = this.getScale('rwb')
             console.log('this', this)
             this.atomColor = function (atom) {
-              const csvRow = residueData[atom.resno][0]
-              const csvRowArr = csvRow.split(',')
+              const csvRow = residueData[atom.resno]
               if (atom.isNucleic()) {
                 return 0x004e00
               }
               if (csvRow !== undefined) {
-                const wtProb = parseFloat(csvRowArr[csvWtProbCol])
+                const wtProb = parseFloat(csvRow[csvWtProbCol])
                 return scale(wtProb)
               } else {
                 return 0xcccccc
@@ -461,7 +460,7 @@ useEffect (() => {
       
       function showRegion (sele) {
         var s = struc.structure
-        ligandSele.value = ''
+        ligandSelect.value = ''
       
         var withinSele = s.getAtomSetWithinSelection(new NGL.Selection(sele), 5)
         var withinGroup = s.getAtomSetWithinGroup(withinSele)
