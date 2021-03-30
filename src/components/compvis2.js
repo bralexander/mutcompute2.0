@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import * as NGL from 'ngl';
-import reactDom from 'react-dom';
+
 
 
 const Compvis2 = (props) => {
@@ -58,7 +58,7 @@ const Compvis2 = (props) => {
       return button
     }
 
-    var topPosition = 12
+    var topPosition = 60
 
     function getTopPosition (increment) {
       if (increment) topPosition += increment
@@ -85,17 +85,19 @@ const Compvis2 = (props) => {
       if (cartoonCheckbox.checked === true || customCheckbox.checked === true) {
         if (pickingProxy && (pickingProxy.atom || pickingProxy.bond)) {
           var atom = pickingProxy.atom || pickingProxy.closestBondAtom
-          const csvRow = residueData[atom.resno]
-          if (csvRow !== undefined) {
-            const wtProb = parseFloat(csvRow[csvWtProbCol])
-            const prProb = parseFloat(csvRow[csvPrProbCol])
+          if (residueData[atom.resno]) {
+          //if (csvRow !== undefined) {
+            const csvRow = residueData[atom.resno][0]
+            const csvRowArr = csvRow.split(',')
+            const wtProb = parseFloat(csvRowArr[csvWtProbCol])
+            const prProb = parseFloat(csvRowArr[csvPrProbCol])
             tooltip.innerHTML = `
           RESNO: ${atom.resno}<br/>
           WT AA: ${atom.resname}<br/>
           WT PROB: ${wtProb.toFixed(4)}<br/>
-          PRED AA: ${csvRow[csvPrAaCol]}<br/>
+          PRED AA: ${csvRowArr[csvPrAaCol]}<br/>
           PRED PROB: ${prProb.toFixed(4)}<br/>`
-            tooltip.style.bottom = stage.viewer.height - 80 + 'px'
+            tooltip.style.bottom = stage.viewer.height - 200 + 'px'
             tooltip.style.left = stage.viewer.width - 170 + 'px'
             tooltip.style.display = 'block'
           } else {
@@ -427,7 +429,7 @@ const Compvis2 = (props) => {
           loadStrucFile = ''
         }
       }
-    }, { top: getTopPosition(20), left: '12px' })
+    }, { top: getTopPosition(30), left: '12px' })
     addElement(loadCsvButton)
 
     // More useful for mutcompute
@@ -438,13 +440,13 @@ const Compvis2 = (props) => {
         if (e.keyCode === 13) {
           var inputValue = e.target.value.toLowerCase()
           // str.slice(0, 4)
-          var proteinInput = 'data://mutcompute/' + inputValue + '.pdb'
-          var csvInput = 'data://mutcompute/' + inputValue + '.csv'
+          var proteinInput = '/data/' + inputValue + '.pdb'
+          var csvInput = '/data/' + inputValue + '.csv'
           e.preventDefault()
           loadStructure(proteinInput, csvInput)
         }
       }
-    }, { top: getTopPosition(20), left: '12px', width: '120px' })
+    }, { top: getTopPosition(30), left: '12px', width: '120px' })
     addElement(loadPdbidInput)
 
     function showFull () {
@@ -477,7 +479,7 @@ const Compvis2 = (props) => {
       neighborRepr.setVisibility(true)
       contactRepr.setVisibility(true)
       pocketRepr.setVisibility(true)
-      labelRepr.setVisibility(labelCheckbox.checked)
+      labelRepr.setVisibility(false)
 
       ligandRepr.setSelection(sele)
       neighborRepr.setSelection(
@@ -496,7 +498,7 @@ const Compvis2 = (props) => {
 
     function showRegion (sele) {
       var s = struc.structure
-      ligandSele.value = ''
+      ligandSelect.value = ''
 
       var withinSele = s.getAtomSetWithinSelection(new NGL.Selection(sele), 5)
       var withinGroup = s.getAtomSetWithinGroup(withinSele)
@@ -523,7 +525,7 @@ const Compvis2 = (props) => {
           showLigand(sele)
         }
       }
-    }, { top: getTopPosition(30), left: '12px', width: '130px' })
+    }, { top: getTopPosition(35), left: '12px', width: '130px' })
     addElement(ligandSelect)
 
     var chainSelect = createSelect([], {
@@ -532,7 +534,7 @@ const Compvis2 = (props) => {
         residueSelect.value = ''
         setResidueOptions(e.target.value)
       }
-    }, { top: getTopPosition(20), left: '12px', width: '130px' })
+    }, { top: getTopPosition(25), left: '12px', width: '130px' })
     addElement(chainSelect)
 
     var residueSelect = createSelect([], {
@@ -545,7 +547,7 @@ const Compvis2 = (props) => {
           showLigand(sele)
         }
       }
-    }, { top: getTopPosition(20), left: '12px', width: '130px' })
+    }, { top: getTopPosition(25), left: '12px', width: '130px' })
     addElement(residueSelect)
 
     // remove default clicking
@@ -603,10 +605,10 @@ const Compvis2 = (props) => {
 
     addElement(createElement('span', {
       innerText: 'pocket radius clipping'
-    }, { top: getTopPosition(20), left: '12px', color: 'grey' }))
+    }, { top: getTopPosition(25), left: '12px', color: 'grey' }))
     var clipRadiusRange = createElement('input', {
       type: 'range', value: 100, min: 1, max: 100, step: 1
-    }, { top: getTopPosition(16), left: '12px' })
+    }, { top: getTopPosition(20), left: '12px' })
     clipRadiusRange.oninput = function (e) {
       pocketRadiusClipFactor = parseFloat(e.target.value) / 100
       pocketRepr.setParameters({ clipRadius: pocketRadius * pocketRadiusClipFactor })
@@ -615,10 +617,10 @@ const Compvis2 = (props) => {
 
     addElement(createElement('span', {
       innerText: 'pocket opacity'
-    }, { top: getTopPosition(20), left: '12px', color: 'grey' }))
+    }, { top: getTopPosition(25), left: '12px', color: 'grey' }))
     var pocketOpacityRange = createElement('input', {
       type: 'range', value: 90, min: 0, max: 100, step: 1
-    }, { top: getTopPosition(16), left: '12px' })
+    }, { top: getTopPosition(20), left: '12px' })
     pocketOpacityRange.oninput = function (e) {
       pocketRepr.setParameters({
         opacity: parseFloat(e.target.value) / 100
@@ -667,7 +669,7 @@ const Compvis2 = (props) => {
 
     var labelCheckbox = createElement('input', {
       type: 'checkbox',
-      checked: true,
+      checked: false,
       onchange: function (e) {
         labelRepr.setVisibility(e.target.checked)
       }
