@@ -168,26 +168,14 @@ useEffect (() => {
             const resNum = parseFloat(csv[i][csvResNumCol])
             residueData[resNum] = csv[i]
           }
-          // console.log('rd', residueData)residueData = {}
-        // residueData = {}
-        // for (var i = 0; i < csv.length; i++) {
-        //     const row = csv[i][0]
-        //     const rowArray = row.split(",")
-        //     const resNum = parseFloat(rowArray[4]) // fixed returning nan/undef
-        //     // console.log(resNum) only logs 1
-        //     residueData[resNum] = csv[i]
-        // }
-        // console.log('rd', residueData)
       
           var heatMap = NGL.ColormakerRegistry.addScheme(function (params) {
             this.parameters = Object.assign(this.parameters, {
               domain: [0, 1],
               scale: 'rwb',
               mode: 'rgb'
-            })
-          //   console.log('th', this.parameters)
+            })  
             var scale = this.getScale('rwb')
-            console.log('this', this)
             this.atomColor = function (atom) {
               const csvRow = residueData[atom.resno]
               if (atom.isNucleic()) {
@@ -391,7 +379,7 @@ useEffect (() => {
               return
           }
         }
-      }, { top: getTopPosition(20), left: '12px' })
+      }, { top: getTopPosition(30), left: '12px' })
       addElement(loadCsvButton)
       
       // More useful for mutcompute
@@ -408,7 +396,7 @@ useEffect (() => {
             loadStructure(proteinInput, csvInput)
           }
         }
-      }, { top: getTopPosition(20), left: '12px', width: '120px' })
+      }, { top: getTopPosition(30), left: '12px', width: '120px' })
       addElement(loadPdbidInput)
       
       function showFull () {
@@ -476,42 +464,7 @@ useEffect (() => {
       
         struc.autoView(expandedSele, 2000)
       }
-      
-      var ligandSelect = createSelect([], {
-        onchange: function (e) {
-          residueSelect.value = ''
-          var sele = e.target.value
-          if (!sele) {
-            showFull()
-          } else {
-            showLigand(sele)
-          }
-        }
-      }, { top: getTopPosition(30), left: '12px', width: '130px' })
-      addElement(ligandSelect)
-      
-      var chainSelect = createSelect([], {
-        onchange: function (e) {
-          ligandSelect.value = ''
-          residueSelect.value = ''
-          setResidueOptions(e.target.value)
-        }
-      }, { top: getTopPosition(20), left: '12px', width: '130px' })
-      addElement(chainSelect)
-      
-      var residueSelect = createSelect([], {
-        onchange: function (e) {
-          ligandSelect.value = ''
-          var sele = e.target.value
-          if (!sele) {
-            showFull()
-          } else {
-            showLigand(sele)
-          }
-        }
-      }, { top: getTopPosition(20), left: '12px', width: '130px' })
-      addElement(residueSelect)
-      
+
       // remove default clicking
       stage.mouseControls.remove('clickPick-left')
       
@@ -546,14 +499,49 @@ useEffect (() => {
         }
       })
       
+      var ligandSelect = createSelect([], {
+        onchange: function (e) {
+          residueSelect.value = ''
+          var sele = e.target.value
+          if (!sele) {
+            showFull()
+          } else {
+            showLigand(sele)
+          }
+        }
+      }, { top: getTopPosition(35), left: '12px', width: '130px' })
+      addElement(ligandSelect)
+      
+      var chainSelect = createSelect([], {
+        onchange: function (e) {
+          ligandSelect.value = ''
+          residueSelect.value = ''
+          setResidueOptions(e.target.value)
+        }
+      }, { top: getTopPosition(25), left: '12px', width: '130px' })
+      addElement(chainSelect)
+      
+      var residueSelect = createSelect([], {
+        onchange: function (e) {
+          ligandSelect.value = ''
+          var sele = e.target.value
+          if (!sele) {
+            showFull()
+          } else {
+            showLigand(sele)
+          }
+        }
+      }, { top: getTopPosition(25), left: '12px', width: '130px' })
+      addElement(residueSelect)
+      
       addElement(createElement('span', {
         innerText: 'pocket near clipping'
       }, { top: getTopPosition(30), left: '12px', color: 'grey' }))
       var clipNearRange = createElement('input', {
         type: 'range', value: 0, min: 0, max: 10000, step: 1
-      }, { top: getTopPosition(16), left: '12px' })
+      }, { top: getTopPosition(20), left: '12px' })
       clipNearRange.oninput = function (e) {
-        var sceneRadius = NGL.Stage.viewer.boundingBox.getSize(new NGL.Vector3()).length() / 2
+        var sceneRadius = stage.viewer.boundingBox.getSize(new NGL.Vector3()).length() / 2
       
         var f = pocketRadius / sceneRadius
         var v = parseFloat(e.target.value) / 10000 // must be between 0 and 1
@@ -570,7 +558,7 @@ useEffect (() => {
       }, { top: getTopPosition(20), left: '12px', color: 'grey' }))
       var clipRadiusRange = createElement('input', {
         type: 'range', value: 100, min: 1, max: 100, step: 1
-      }, { top: getTopPosition(16), left: '12px' })
+      }, { top: getTopPosition(20), left: '12px' })
       clipRadiusRange.oninput = function (e) {
         pocketRadiusClipFactor = parseFloat(e.target.value) / 100
         pocketRepr.setParameters({ clipRadius: pocketRadius * pocketRadiusClipFactor })
@@ -582,7 +570,7 @@ useEffect (() => {
       }, { top: getTopPosition(20), left: '12px', color: 'grey' }))
       var pocketOpacityRange = createElement('input', {
         type: 'range', value: 90, min: 0, max: 100, step: 1
-      }, { top: getTopPosition(16), left: '12px' })
+      }, { top: getTopPosition(20), left: '12px' })
       pocketOpacityRange.oninput = function (e) {
         pocketRepr.setParameters({
           opacity: parseFloat(e.target.value) / 100
@@ -611,7 +599,7 @@ useEffect (() => {
       }, { top: getTopPosition(20), left: '12px' })
       addElement(customCheckbox)
       addElement(createElement('span', {
-        innerText: 'Custom'
+        innerText: 'Hot Spots'
       }, { top: getTopPosition(), left: '32px', color: 'grey' }))
       
       var sidechainAttachedCheckbox = createElement('input', {
@@ -768,13 +756,12 @@ useEffect (() => {
       // loadStructure('data://' + pdbFile, 'data://' + csvFile)
       
       // works with rcsb too
-      //moved up to useEffect
       loadStructure('rcsb://6ij6', '/data/6ij6.csv')
     
  }, []);
 
     return (
-        <div id="viewport" style={{width:"100%", height:"100vh"}}>
+        <div className="viewport" id="viewport">
            
         </div>
     )
