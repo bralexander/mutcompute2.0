@@ -23,20 +23,24 @@ from tools import *
 
 from . import app, db, jwt
 
-# CORS(app)
 
+#goes in init.py?
+# app= Flask(__name__, static_folder='../public/index.html', static_url_path='/')
 
-#@app.route('/',  methods=['GET'])
-#def countdown_page():
-#    return render_template('countdown.html')
+@app.route('/',  methods=['GET'])
+def countdown_page():
+   return render_template('countdown.html')
 
+@app.errorhandler(404)
+def not_found(e):
+    return ass.send_static_file('index.html')
 
 
 @app.route('/login/', methods=['GET','POST'])
 @app.route('/login', methods=['GET','POST'])
 @jwt_optional
 def login_page():
-    # form = LoginForm(request.form)
+    form = LoginForm(request.form)
     app.logger.debug("Request Method and form: {}, {}".format(request.method, request.form))
     if request.method == "POST":
         #This checks if the user is in the db and returns the user obj.
@@ -46,9 +50,9 @@ def login_page():
         # app.logger.warning("Form errors: {}".format(form.errors))
         if user:
             # for key, value in user.items():
-            print(user)
-            print('Form validated, user obtained: {}'.format(user.email))
-            app.logger.info('Form validated, logging in user: {}'.format(user.email))
+            print(user['email'])
+            print('Form validated, user obtained: {}'.format(user['email']))
+            app.logger.info('Form validated, logging in user: {}'.format(user['email']))
             return create_JWT_n_redirect(user, redirect_page='home')
             # access_token = create_access_token(identity=user.email, fresh=True)
             # refresh_token = create_refresh_token(identity=user.email)
@@ -63,8 +67,7 @@ def login_page():
             # #return redirect((url_for("NN_page")))
         app.logger.warning('Unsuccessful login attempt by user.')
     app.logger.info('Active Page: Login Page.')
-    return render_template('index.html')
-    # , active_page='Login', form=form)
+    return render_template('login_page.html', active_page='Login', form=form)
     # return send_from_directory()
 
 
@@ -169,8 +172,8 @@ def logout_page():
 @app.route('/')
 @jwt_optional
 def home():
-    return '<h1>home page</h1>'
-    # return render_template("newHomePage.html")
+    # return '<h1>home page</h1>'
+    return render_template("newHomePage.html")
 
 
 # compvis section (NGL) -- dynamic rendering
