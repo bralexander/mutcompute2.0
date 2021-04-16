@@ -27,13 +27,13 @@ from . import app, db, jwt
 #goes in init.py?
 # app= Flask(__name__, static_folder='../public/index.html', static_url_path='/')
 
-@app.route('/',  methods=['GET'])
-def countdown_page():
-   return render_template('countdown.html')
+# @app.route('/',  methods=['GET'])
+# def countdown_page():
+#    return render_template('countdown.html')
 
-@app.errorhandler(404)
-def not_found(e):
-    return ass.send_static_file('index.html')
+# @app.errorhandler(404)
+# def not_found(e):
+#     return ass.send_static_file('index.html')
 
 
 @app.route('/login/', methods=['GET','POST'])
@@ -67,7 +67,7 @@ def login_page():
             # #return redirect((url_for("NN_page")))
         app.logger.warning('Unsuccessful login attempt by user.')
     app.logger.info('Active Page: Login Page.')
-    return render_template('login_page.html', active_page='Login', form=form)
+    # return render_template('login_page.html', active_page='Login', form=form)
     # return send_from_directory()
 
 
