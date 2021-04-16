@@ -1,5 +1,6 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import '../assets/css/login.css'
+import { useHistory } from 'react-router-dom'
 //import axios from 'axios'
 
 
@@ -7,7 +8,7 @@ const Login = (props) => {
   // const [csrf, setCsrf] = useState(null);
   const [user, setUser] = useState(props.user)
 
-
+  let history = useHistory();
 
   const loginSubmit = e => {
     e.preventDefault();
@@ -19,9 +20,18 @@ const Login = (props) => {
         'content-type': 'application/json'
       }
     })
-    .then(res => {return res.json})
-    //.then(json => setUser(json.user))
-    .then(json => setUser(json.user) )
+    .then(res => {
+      if (res.status === 200) {
+        console.log('User Validated, redirecting to home')
+        history.push('/')
+      }
+      console.log(res)
+      return res.json
+    })
+    // .then(json => {
+    //   setUser(json.user) 
+    //   console.log(json)
+    // })
     }
   
   
