@@ -53,7 +53,8 @@ def login_page():
             print(user['email'])
             print('Form validated, user obtained: {}'.format(user['email']))
             app.logger.info('Form validated, logging in user: {}'.format(user['email']))
-            return create_JWT_n_redirect(user, redirect_page='home')
+            #return create_JWT_n_redirect(user, redirect_page='home')
+            return create_JWT(user)
             # access_token = create_access_token(identity=user.email, fresh=True)
             # refresh_token = create_refresh_token(identity=user.email)
             #
@@ -68,6 +69,7 @@ def login_page():
         app.logger.warning('Unsuccessful login attempt by user.')
     app.logger.info('Active Page: Login Page.')
     # return render_template('login_page.html', active_page='Login', form=form)
+    return user
     # return send_from_directory()
 
 
