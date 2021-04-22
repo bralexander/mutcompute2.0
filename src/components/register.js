@@ -1,9 +1,81 @@
 import React, { useState } from 'react'
 
+
 const Register = (props) => {
     const [newUser, setNewUser] = useState()
-    
-    console.log(newUser)
+
+    const [submit, setSubmit] = useState(true)
+    const [containsEight, setContainsEight] = useState(false)
+    const [containsUL, setContainsUL] = useState(false)
+    const [containsLL, setContainsLL] = useState(false)
+    const [containsNum, setContainsNum] = useState(false)
+    const [containsSpec, setContainsSpec] = useState(false)
+    const [passMatch, setPassMatch] = useState(false)
+    const [emailMatch, setEmailMatch] = useState(false)
+
+
+
+    const registerSubmit = e => {
+        e.preventDefault()
+        fetch('/api/register', {
+            method: 'post',
+            url:'/register', 
+            body: JSON.stringify(newUser),
+            headers: {
+                'content-type': 'application/json'
+              }
+        })
+        .then(r => { 
+            if (r.status === 200) {
+                console.log(r)
+                alert('Success ')
+            }
+        })
+    }
+
+    const confirmEmail = e => {
+        if (newUser.email && e === newUser.email) {
+            setEmailMatch(true)
+            console.log('email confirmed')
+        }
+        else {
+            setEmailMatch(false)
+        }
+    }
+
+    const confirmPass = e => {
+        if (newUser.password && e === newUser.password) { 
+            setPassMatch(true)
+            console.log('password confirmed')
+        }
+        else {
+            setPassMatch(false)
+        }
+    }
+
+    const validatePass = () => {
+        if (newUser.password && newUser.password.length >= 8) setContainsEight(true)
+        if (newUser.password && newUser.password.toUpperCase() !== newUser.password) setContainsLL(true)
+        if (newUser.password && newUser.password.toLowerCase() !== newUser.password) setContainsUL(true)
+        if (newUser.password && /\d/.test(newUser.password))  setContainsNum(true)
+        if (newUser.password && /[~`!#$%^&*+=\-[\]\\';,/{}|\\":<>?]/g.test(newUser.password)) setContainsSpec(true)
+        if (emailMatch && passMatch && containsEight && containsLL && containsUL && containsNum && containsSpec) { 
+            setSubmit(false)
+            console.log('validated!')
+        }
+        else{
+            setSubmit(true)
+            console.log("not validated")
+        }
+    }
+
+    // const checkForm = () => {
+    //     if vlaidatePass && confirmEmail === true) {
+    //         document.getElementById('submitBtn').disabled = false
+    //     } else {
+    //         document.getElementById('submitBtn').disabled = true
+    //     }
+    // }
 
     return (
         <div className="container-fluid">
@@ -13,7 +85,7 @@ const Register = (props) => {
             <br />
                 <section className="container">
                     <div className="container-page">
-                        <form method="POST">
+                        <form method="POST" onSubmit={registerSubmit}>
                             
                             {/* <h3 className="pricing-header dark-grey"><strong>Registration</strong></h3> */}
                             
@@ -22,7 +94,7 @@ const Register = (props) => {
                                 <div className="form-group col-md-6">
                                     <input 
                                     type="text" 
-                                    id="inputEmail" 
+                                    id="firstName" 
                                     className="form-control" 
                                     placeholder="First Name" 
                                     onChange={e => setNewUser({ ...newUser, first: e.target.value })}
@@ -46,7 +118,7 @@ const Register = (props) => {
                                     
                                     <input 
                                     type="text" 
-                                    id="inputEmail" 
+                                    id="lastName" 
                                     className="form-control" 
                                     placeholder="Last Name" 
                                     onChange={e => setNewUser({ ...newUser, last: e.target.value })}
@@ -57,10 +129,10 @@ const Register = (props) => {
                                     
                                     <input 
                                     type="email" 
-                                    id="inputEmail" 
+                                    id="emailConfirm" 
                                     className="form-control" 
                                     placeholder="Confirm email" 
-                                    onChange={e => setNewUser({ ...newUser, org: e.target.value })}
+                                    onChange={e => confirmEmail(e.target.value)}
                                     required autoFocus 
                                     />
                                 </div>
@@ -70,7 +142,7 @@ const Register = (props) => {
                                 <div className="form-group col-md-6">
                                     <input 
                                     type="text" 
-                                    id="inputEmail" 
+                                    id="org" 
                                     className="form-control" 
                                     placeholder="Company/Institution" 
                                     onChange={e => setNewUser({ ...newUser, org: e.target.value })}
@@ -80,10 +152,11 @@ const Register = (props) => {
                                 <div className="form-group col-md-6">
                                     <input 
                                     type="text" 
-                                    id="inputEmail" 
+                                    id="password" 
                                     className="form-control" 
                                     placeholder="Password" 
-                                    onChange={e => setNewUser({ ...newUser, email: e.target.value })}
+                                    onChange={e => setNewUser({ ...newUser, password: e.target.value })}
+                                    onKeyUp={validatePass}
                                     required autoFocus 
                                     />
                                 </div>
@@ -98,7 +171,8 @@ const Register = (props) => {
                                     id="inputEmail" 
                                     className="form-control" 
                                     placeholder="Confirm password" 
-                                    onChange={e => setNewUser({ ...newUser, email: e.target.value })}
+                                    onChange={e => confirmPass(e.target.value) }
+                                    onKeyUp={validatePass}
                                     required autoFocus 
                                     />
                                 </div>
@@ -117,7 +191,7 @@ const Register = (props) => {
                                     Please visit the <a href="{{ url_for('FAQ_page') }}">FAQ</a> for additional details.
                                 </p>
                                 
-                                <button className="w-20 btn btn-lg btn-primary" type="submit">Register</button>
+                                <button className="w-20 btn btn-lg btn-primary" id='submitBtn' type="submit" disabled={submit}>Register</button>
                             </div>
                         </form>
                     </div>
