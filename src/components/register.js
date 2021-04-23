@@ -12,11 +12,9 @@ const Register = (props) => {
         email: '',
     })
 
-    const [errors, setErrors] = useState({
-        pMatch: '',
-        pValid: '',
-        eMatch: '',
-    })
+    const [pmerrors, setPMErrors] = useState('')
+    const [pverrors, setPVErrors] = useState('')
+    const [emerrors, setEMErrors] = useState('')
 
     const [submit, setSubmit] = useState(false)
     const [containsEight, setContainsEight] = useState(false)
@@ -50,33 +48,75 @@ const Register = (props) => {
 
 
     const validatePass = () => {
-        if (newUser.password.length >= 8) setContainsEight(true)
-        else {
+        if (newUser.password.length >= 8) {
+            setContainsEight(true)
+            // setPVErrors('')
+        } else {
             setContainsEight(false)
+            setPVErrors('must be 8 characters long')
         }
-        if (newUser.password.toUpperCase() !== newUser.password) setContainsLL(true)
-        else setContainsLL(false)
-        if (newUser.password.toLowerCase() !== newUser.password) setContainsUL(true)
-        else setContainsUL(false)
-        if (/\d/.test(newUser.password))  setContainsNum(true)
-        else setContainsNum(false)
-        if (/[~`!#$%^&*+=\-[\]\\';,/{}|\\":<>?]/g.test(newUser.password)) setContainsSpec(true)
-        else setContainsSpec(false)
-        if (confirm.email.length > 5 && newUser.email === confirm.email) setEmailMatch(true)
-        else setEmailMatch(false)
-        if (newUser.password === confirm.password) setPassMatch(true)
+
+        if (newUser.password.toUpperCase() !== newUser.password) {
+            setContainsLL(true)
+            // setPVErrors('')
+        } else {
+            setContainsLL(false)
+            setPVErrors('must contain a lower case letter')
+        }
+
+        if (newUser.password.toLowerCase() !== newUser.password) {
+            setContainsUL(true)
+            // setPVErrors('')
+        } else {
+            setContainsUL(false)
+            setPVErrors('must contain an Uppercase letter')
+        }
+
+        if (/\d/.test(newUser.password)){
+            setContainsNum(true)
+            // setPVErrors('')
+        } 
         else {
-            setPassMatch(false) 
-            setErrors({...errors, pMatch: 'Passwords do not match'})
+            setContainsNum(false)
+            setPVErrors('must contain a number')
         }
+
+        if (/[~`!#$%^&*+=\-[\]\\';,/{}|\\":<>?]/g.test(newUser.password)){ 
+            setContainsSpec(true)
+            // setPVErrors('')
+        } else {
+            setContainsSpec(false)
+            setPVErrors('must contain a special character')
+        }
+
+        if (newUser.email !== '' && newUser.email === confirm.email){
+            setEmailMatch(true)
+            setEMErrors('')
+            console.log('emailMatch')
+        } else {
+            setEmailMatch(false)
+            setEMErrors('Emails do not match')
+            //console.log(emerrors)
+        }
+
+        if (newUser.password !== '' && newUser.password === confirm.password) {
+            setPassMatch(true)
+            setPMErrors('')
+            //console.log(pmerrors)
+        } else {
+            setPassMatch(false) 
+            setPMErrors('Passwords do not match')
+        }
+        if (containsEight && containsLL && containsUL && containsNum && containsSpec) {
+            setPVErrors('')
+        }
+
         if (emailMatch && passMatch && containsEight && containsLL && containsUL && containsNum && containsSpec) { 
             setSubmit(true)
-            setErrors({...errors, pMatch: '', pValid: '', eMatch: ''})
             console.log('validated!')
-        }
-        else{
+        } else{
             setSubmit(false)
-            console.log("not validated")
+            //console.log("not validated")
         }
     }
 
@@ -119,6 +159,7 @@ const Register = (props) => {
                                     className="form-control" 
                                     placeholder="Email address" 
                                     onChange={e => setNewUser({ ...newUser, email: e.target.value })}
+                                    onKeyUp={validatePass}
                                     required autoFocus 
                                     />
                                 </div>
@@ -144,8 +185,10 @@ const Register = (props) => {
                                     className="form-control" 
                                     placeholder="Confirm email" 
                                     onChange={e => setConfirm({ ...confirm, email: e.target.value})}
+                                    onKeyUp={validatePass}
                                     required autoFocus 
                                     />
+                                    <span style={{color:'red'}}>{emerrors}</span>
                                 </div>
                             </div>
                             <br />
@@ -170,6 +213,7 @@ const Register = (props) => {
                                     onKeyUp={validatePass}
                                     required autoFocus 
                                     />
+                                    <span style={{color:'red'}}>{pverrors}</span>
                                 </div>
                             </div>
                             <br />
@@ -186,7 +230,7 @@ const Register = (props) => {
                                     onKeyUp={validatePass}
                                     required autoFocus 
                                     />
-                                    <span style={{color:'red'}}>{errors.pMatch}</span>
+                                    <span style={{color:'red'}}>{pmerrors}</span>
                                 </div>
                             </div>
 
