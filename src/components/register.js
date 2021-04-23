@@ -2,9 +2,23 @@ import React, { useState } from 'react'
 
 
 const Register = (props) => {
-    const [newUser, setNewUser] = useState()
+    const [newUser, setNewUser] = useState({
+        password: '',
+        email: '',
+    })
 
-    const [submit, setSubmit] = useState(true)
+    const [confirm, setConfirm] = useState({
+        password: '',
+        email: '',
+    })
+
+    const [errors, setErrors] = useState({
+        pMatch: '',
+        pValid: '',
+        eMatch: '',
+    })
+
+    const [submit, setSubmit] = useState(false)
     const [containsEight, setContainsEight] = useState(false)
     const [containsUL, setContainsUL] = useState(false)
     const [containsLL, setContainsLL] = useState(false)
@@ -33,38 +47,35 @@ const Register = (props) => {
         })
     }
 
-    const confirmEmail = e => {
-        if (newUser.email && e === newUser.email) {
-            setEmailMatch(true)
-            console.log('email confirmed')
-        }
-        else {
-            setEmailMatch(false)
-        }
-    }
 
-    const confirmPass = e => {
-        if (newUser.password && e === newUser.password) { 
-            setPassMatch(true)
-            console.log('password confirmed')
-        }
-        else {
-            setPassMatch(false)
-        }
-    }
 
     const validatePass = () => {
-        if (newUser.password && newUser.password.length >= 8) setContainsEight(true)
-        if (newUser.password && newUser.password.toUpperCase() !== newUser.password) setContainsLL(true)
-        if (newUser.password && newUser.password.toLowerCase() !== newUser.password) setContainsUL(true)
-        if (newUser.password && /\d/.test(newUser.password))  setContainsNum(true)
-        if (newUser.password && /[~`!#$%^&*+=\-[\]\\';,/{}|\\":<>?]/g.test(newUser.password)) setContainsSpec(true)
+        if (newUser.password.length >= 8) setContainsEight(true)
+        else {
+            setContainsEight(false)
+        }
+        if (newUser.password.toUpperCase() !== newUser.password) setContainsLL(true)
+        else setContainsLL(false)
+        if (newUser.password.toLowerCase() !== newUser.password) setContainsUL(true)
+        else setContainsUL(false)
+        if (/\d/.test(newUser.password))  setContainsNum(true)
+        else setContainsNum(false)
+        if (/[~`!#$%^&*+=\-[\]\\';,/{}|\\":<>?]/g.test(newUser.password)) setContainsSpec(true)
+        else setContainsSpec(false)
+        if (confirm.email.length > 5 && newUser.email === confirm.email) setEmailMatch(true)
+        else setEmailMatch(false)
+        if (newUser.password === confirm.password) setPassMatch(true)
+        else {
+            setPassMatch(false) 
+            setErrors({...errors, pMatch: 'Passwords do not match'})
+        }
         if (emailMatch && passMatch && containsEight && containsLL && containsUL && containsNum && containsSpec) { 
-            setSubmit(false)
+            setSubmit(true)
+            setErrors({...errors, pMatch: '', pValid: '', eMatch: ''})
             console.log('validated!')
         }
         else{
-            setSubmit(true)
+            setSubmit(false)
             console.log("not validated")
         }
     }
@@ -132,7 +143,7 @@ const Register = (props) => {
                                     id="emailConfirm" 
                                     className="form-control" 
                                     placeholder="Confirm email" 
-                                    onChange={e => confirmEmail(e.target.value)}
+                                    onChange={e => setConfirm({ ...confirm, email: e.target.value})}
                                     required autoFocus 
                                     />
                                 </div>
@@ -151,7 +162,7 @@ const Register = (props) => {
                                 </div>
                                 <div className="form-group col-md-6">
                                     <input 
-                                    type="text" 
+                                    type="password" 
                                     id="password" 
                                     className="form-control" 
                                     placeholder="Password" 
@@ -167,14 +178,15 @@ const Register = (props) => {
                                 </div>
                                 <div className="form-group col-md-6">
                                 <input 
-                                    type="text" 
-                                    id="inputEmail" 
+                                    type="password" 
+                                    id="confirmPassword" 
                                     className="form-control" 
                                     placeholder="Confirm password" 
-                                    onChange={e => confirmPass(e.target.value) }
+                                    onChange={e => setConfirm({ ...confirm, password: e.target.value}) }
                                     onKeyUp={validatePass}
                                     required autoFocus 
                                     />
+                                    <span style={{color:'red'}}>{errors.pMatch}</span>
                                 </div>
                             </div>
 
@@ -191,7 +203,7 @@ const Register = (props) => {
                                     Please visit the <a href="{{ url_for('FAQ_page') }}">FAQ</a> for additional details.
                                 </p>
                                 
-                                <button className="w-20 btn btn-lg btn-primary" id='submitBtn' type="submit" disabled={submit}>Register</button>
+                                <button className="w-20 btn btn-lg btn-primary" id='submitBtn' type="submit" disabled={!submit}>Register</button>
                             </div>
                         </form>
                     </div>
