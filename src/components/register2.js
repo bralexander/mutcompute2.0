@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import {useValidation} from "../hooks/useValidation"
 
 const Register = (props) => {
@@ -12,16 +12,16 @@ const Register = (props) => {
         email1: '',
         email2: '',
     })
-    const[error, setError] = useState()
-    const [validPass, setValidPass] = useState(false)
+    //const[error, setError] = useState()
+    const [validPass, setValidPass] = useState(true)
     const [
         validLength,
         hasNumber,
         uppercase,
         lowercase,
-        specialChar,
-        pmatch,
         ematch,
+        pmatch,
+        specialChar,
     ] = useValidation({
         password1: confirm.password1,
         password2: confirm.password2,
@@ -29,12 +29,9 @@ const Register = (props) => {
         email2: confirm.email2
     })
 
-useEffect (() => {
-    validatePass()
-})
+
 
 const registerSubmit = e => {
-    if (validPass) {
     e.preventDefault()
     fetch('/api/register', {
         method: 'post',
@@ -50,23 +47,36 @@ const registerSubmit = e => {
             alert('Success ')
         }
     })
-  } else {
-      alert('use a stronger password')
-  }
-}
+  } 
+
 
 
 const validatePass = () => {
-    if (validLength && pmatch) {
+    if (validLength && hasNumber && uppercase && lowercase && specialChar ) {
         setValidPass(true)
-        console.log('>8, match')
-        console.log(confirm.password1, confirm.password2)
+        console.log('validated')
+        //console.log(confirm.password1, confirm.password2)
     } else {
         setValidPass(false)
-        console.log('not matching')
+        console.log('not valid')
     }
 }
 
+// const checkPMatch = () => { 
+//     if( validPass && pmatch ) {
+//         setNewUser({ ...newUser, password: confirm.password1})
+//     } else {
+//         console.log('p not matching')
+//     }
+// }
+
+const checkEMatch = () => {
+    if (ematch) {
+        setNewUser({ ...newUser, email: confirm.email1})
+    } else {
+        console.log('e not matching')
+    }
+}
 
 const setPassword1 = (event) => {
     setConfirm({ ...confirm, password1: event.target.value });
@@ -123,6 +133,7 @@ const setEmail2 = (event) => {
                                 className="form-control" 
                                 placeholder="Email address" 
                                 onChange={setEmail1}
+                                onKeyUp={checkEMatch}
                                 required autoFocus 
                                 />
                             </div>
@@ -148,6 +159,7 @@ const setEmail2 = (event) => {
                                 className="form-control" 
                                 placeholder="Confirm email" 
                                 onChange={setEmail2}
+                                onKeyUp={checkEMatch}
                                 required autoFocus 
                                 />
                                 {/* <span style={{color:'red'}}>{emerrors}</span> */}
@@ -172,9 +184,17 @@ const setEmail2 = (event) => {
                                 className="form-control" 
                                 placeholder="Password" 
                                 onChange={setPassword1}
+                                onKeyUp={validatePass}
                                 required autoFocus 
                                 />
-                                {/* <span style={{color:'red'}}>{pverrors}</span> */}
+                                <span>
+                                {validPass ? <span></span> : <span style={{color:'red'}}>Must Contain: </span>}
+                                {validPass || validLength ? <span></span> : <span style={{color:'red'}}>8 Characters, </span>}
+                                {validPass || hasNumber ? <span></span> : <span style={{color:'red'}}>a Number, </span>}
+                                {validPass || uppercase ? <span></span> : <span style={{color:'red'}}>an Uppercase, </span>}
+                                {validPass || lowercase ? <span></span> : <span style={{color:'red'}}>a Lowercase, </span>}
+                                {validPass || specialChar ? <span></span> : <span style={{color:'red'}}>a Special* </span>}
+                                </span>
                             </div>
                         </div>
                         <br />
@@ -188,10 +208,13 @@ const setEmail2 = (event) => {
                                 className="form-control" 
                                 placeholder="Confirm password" 
                                 onChange={setPassword2}
-                                //onInput={validatePass}
+                                onKeyUp={validatePass}
                                 required autoFocus 
                                 />
                                 {/* <span style={{color:'red'}}>{pmerrors}</span> */}
+                                <span>
+                                {validPass || pmatch ? <span></span> : <span style={{color:'red'}}>be matching</span>}
+                            </span>
                             </div>
                         </div>
 
@@ -212,15 +235,16 @@ const setEmail2 = (event) => {
                             className="w-20 btn btn-lg btn-primary" 
                             id='submitBtn' 
                             type="submit" 
-                            disabled={false}
+                            disabled={!validPass}
                             //onClick={validatePass}
                             >Register</button>
+                            
                         </div>
                     </form>
                 </div>
             </section>
 </div>
 )
-}
+  }
 
 export default Register
