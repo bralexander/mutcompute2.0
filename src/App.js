@@ -6,6 +6,11 @@ import Nav from "./components/nav"
 import Footer from "./components/footer"
 import Login from "./components/login"
 import Viewer from "./components/viewer"
+import Compvis2 from "./components/compvis2"
+import CompViewer from "./components/compvisViewer"
+import Structure from "./components/structure"
+import Register from "./components/register2"
+import NNPage from "./components/nnPage"
 
 
 
@@ -16,11 +21,16 @@ function App() {
     <div className="app">
       <Router>
         <Nav />
-        <Switch>
-          <Route path="/" exact component={() => <Cover />} />
-          <Route path="/login" exact component={() => <Login />} />
-          <Route path="/viewer" exact component={() => <Viewer />} />
-        </Switch>
+          <Switch>
+            <Route path="/" exact component={() => <Cover />} />
+            <Route path="/login" exact component={() => <Login />} />
+            <Route path="/viewer2" exact component={() => <Compvis2 />} />
+            <Route path="/viewer" exact component={() => <CompViewer />} />
+            <Route path="/struc" exact component={() => <Structure />} />
+            <Route path="/ngl" exact component={() => <Viewer />} />
+            <Route path="/register" exact component={() => <Register />} />
+            <Route path="/nn" exact component={() => <NNPage />} />
+          </Switch>
         <Footer />
       </Router>
     </div>
