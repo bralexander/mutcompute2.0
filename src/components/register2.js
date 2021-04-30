@@ -55,7 +55,8 @@ const validatePass = () => {
     if (validLength && hasNumber && uppercase && lowercase && specialChar && pmatch && ematch ) {
         setValidPass(true)
         console.log('validated')
-        //console.log(confirm.password1, confirm.password2)
+        setNewUser({...newUser, password: confirm.password1})
+        setNewUser({...newUser, email: confirm.email1})
     } else {
         setValidPass(false)
         //console.log('not valid')
