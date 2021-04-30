@@ -63,7 +63,7 @@ with app.app_context():
     if db.session.query(User).filter_by(username='danny.diaz@utexas.edu').count() < 1:
         db.session.add(User(
           username='danny.diaz@utexas.edu',
-          password=guard.hash_password('smokesmoke'),
+          password=guard.hash_password('smokesmoke!'),
           roles='admin'
             ))
     db.session.commit()
@@ -106,9 +106,9 @@ def register():
     print(req)
     username = req.get('email', None)
     password = req.get('password', None)
-    user = guard.authenticate(username, password)
-    ret = {'access_token': guard.encode_jwt_token(user)}
-    return ret, 200
+    
+    
+    return username, password
   
 @app.route('/api/refresh', methods=['POST'])
 def refresh():
