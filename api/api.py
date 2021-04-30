@@ -92,6 +92,23 @@ def login():
     ret = {'access_token': guard.encode_jwt_token(user)}
     return ret, 200
 
+
+@app.route('/api/register', methods=['POST'])
+def register():
+    """
+    Logs a user in by parsing a POST request containing user credentials and
+    issuing a JWT token.
+    .. example::
+       $ curl http://localhost:5000/api/login -X POST \
+         -d '{"username":"Yasoob","password":"strongpassword"}'
+    """
+    req = flask.request.get_json(force=True)
+    print(req)
+    username = req.get('email', None)
+    password = req.get('password', None)
+    user = guard.authenticate(username, password)
+    ret = {'access_token': guard.encode_jwt_token(user)}
+    return ret, 200
   
 @app.route('/api/refresh', methods=['POST'])
 def refresh():
