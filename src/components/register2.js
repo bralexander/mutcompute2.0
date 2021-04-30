@@ -1,5 +1,7 @@
 import React, { useState } from 'react'
 import {useValidation} from "../hooks/useValidation"
+import {login} from "../auth/index"
+
 
 const Register = (props) => {
 
@@ -47,6 +49,13 @@ const registerSubmit = e => {
             alert('Success ')
         }
     })
+    // .then(r => r.json())
+    // .then(token => {
+    //     if (token.access_token){
+    //       login(token)
+    //       console.log(token)          
+    //     }
+    // })
   } 
 
 
