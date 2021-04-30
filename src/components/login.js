@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import '../assets/css/login.css'
 import { useHistory } from 'react-router-dom'
 //import axios from 'axios'
+import {login, authFetch, useAuth, logout} from "../auth/index"
 
 
 const Login = (props) => {
@@ -12,7 +13,7 @@ const Login = (props) => {
 
   const loginSubmit = e => {
     e.preventDefault();
-    fetch('/login', {
+    fetch('/api/login', {
       method: 'post',
       url: '/login',
       body: JSON.stringify(user),
@@ -20,14 +21,24 @@ const Login = (props) => {
         'content-type': 'application/json'
       }
     })
-    .then(res => {
-      if (res.status === 200) {
-        console.log('User Validated, redirecting to home')
-        history.push('/')
-      }
-      console.log(res)
-      return res.json
-    })
+    .then(r => r.json())
+    .then(token => {
+    if (token.access_token){
+      login(token)
+      console.log(token)          
+    }
+    else {
+      console.log("Please type in correct username/password")
+    }
+  })
+    // .then(res => {
+    //   if (res.status === 200) {
+    //     console.log('User Validated, redirecting to home')
+    //     history.push('/')
+    //   }
+    //   console.log(res)
+    //   return res.json
+    // })
     // .then(json => {
     //   setUser(json.user) 
     //   console.log(json)
