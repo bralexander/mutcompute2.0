@@ -15,6 +15,14 @@
   background-color: #f5f5f5;
 }
 
+.nnContainer {
+padding-top: 10px;
+padding-bottom: 10px;
+}
+.nnInput {
+  padding-bottom: 10px;
+  }
+
 .form-signin {
   width: 100%;
   max-width: 330px;
