@@ -125,7 +125,7 @@ const setEmail2 = (event) => {
                                 className="form-control" 
                                 placeholder="First Name" 
                                 onChange={e => setNewUser({ ...newUser, first: e.target.value })}
-                                required autoFocus 
+                                required autoFocus minLength='2'
                                 />
                             </div>
                             <div className="form-group col-md-6">
@@ -150,7 +150,7 @@ const setEmail2 = (event) => {
                                 className="form-control" 
                                 placeholder="Last Name" 
                                 onChange={e => setNewUser({ ...newUser, last: e.target.value })}
-                                required autoFocus 
+                                required autoFocus minLength='2'
                                 />
                             </div>
                             <div className="form-group col-md-6">
@@ -165,6 +165,9 @@ const setEmail2 = (event) => {
                                 required autoFocus 
                                 />
                                 {/* <span style={{color:'red'}}>{emerrors}</span> */}
+                                <span>
+                                {validPass || ematch ? <span></span> : <span style={{color:'red'}}>Emails must match</span>}
+                                </span>
                             </div>
                         </div>
                         <br />
@@ -176,7 +179,7 @@ const setEmail2 = (event) => {
                                 className="form-control" 
                                 placeholder="Company/Institution" 
                                 onChange={e => setNewUser({ ...newUser, org: e.target.value })}
-                                required autoFocus 
+                                required autoFocus minLength='3'
                                 /> 
                             </div>
                             <div className="form-group col-md-6">
