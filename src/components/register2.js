@@ -46,6 +46,7 @@ const registerSubmit = e => {
             console.log(r)
             alert('Success ')
         }
+        else {alert('error')}
     })
     // .then(r => r.json())
     // .then(token => {
@@ -62,7 +63,7 @@ const validatePass = () => {
     if (validLength && hasNumber && uppercase && lowercase && specialChar && pmatch && ematch ) {
         setValidPass(true)
         setNewUser({...newUser, password: confirm.password1})
-        setNewUser({...newUser, email: confirm.email1})
+        setNewUser({...newUser, email: confirm.email1.toLowerCase()})
     } else {
         setValidPass(false)
     }
