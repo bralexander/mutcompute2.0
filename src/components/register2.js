@@ -52,13 +52,13 @@ const registerSubmit = e => {
 
 
 const validatePass = () => {
-    if (validLength && hasNumber && uppercase && lowercase && specialChar ) {
+    if (validLength && hasNumber && uppercase && lowercase && specialChar && pmatch && ematch ) {
         setValidPass(true)
         console.log('validated')
         //console.log(confirm.password1, confirm.password2)
     } else {
         setValidPass(false)
-        console.log('not valid')
+        //console.log('not valid')
     }
 }
 
@@ -70,13 +70,15 @@ const validatePass = () => {
 //     }
 // }
 
-const checkEMatch = () => {
-    if (ematch) {
-        setNewUser({ ...newUser, email: confirm.email1})
-    } else {
-        console.log('e not matching')
-    }
-}
+// const checkEMatch = () => {
+//     if (ematch) {
+//         setNewUser({ ...newUser, email: confirm.email1})
+//     } else {
+//         console.log('e not matching')
+//     }
+// }
+
+
 
 const setPassword1 = (event) => {
     setConfirm({ ...confirm, password1: event.target.value });
@@ -103,7 +105,7 @@ const setEmail2 = (event) => {
 
 
   return (
-    <div className="container-fluid">
+    <div className=" register container-fluid">
         <div className="container page-header move-right">
             <h1 className="dark-grey">Registration<small></small></h1>
         </div>
@@ -133,7 +135,7 @@ const setEmail2 = (event) => {
                                 className="form-control" 
                                 placeholder="Email address" 
                                 onChange={setEmail1}
-                                onKeyUp={checkEMatch}
+                                onKeyUp={validatePass}
                                 required autoFocus 
                                 />
                             </div>
@@ -159,7 +161,7 @@ const setEmail2 = (event) => {
                                 className="form-control" 
                                 placeholder="Confirm email" 
                                 onChange={setEmail2}
-                                onKeyUp={checkEMatch}
+                                onKeyUp={validatePass}
                                 required autoFocus 
                                 />
                                 {/* <span style={{color:'red'}}>{emerrors}</span> */}
@@ -188,7 +190,7 @@ const setEmail2 = (event) => {
                                 required autoFocus 
                                 />
                                 <span>
-                                {validPass ? <span></span> : <span style={{color:'red'}}>Must Contain: </span>}
+                                {validPass ? <span></span> : <span>Must Contain: </span>}
                                 {validPass || validLength ? <span></span> : <span style={{color:'red'}}>8 Characters, </span>}
                                 {validPass || hasNumber ? <span></span> : <span style={{color:'red'}}>a Number, </span>}
                                 {validPass || uppercase ? <span></span> : <span style={{color:'red'}}>an Uppercase, </span>}
