@@ -1,11 +1,9 @@
 import React, { useState } from 'react'
 import {useValidation} from "../hooks/useValidation"
-import {login} from "../auth/index"
+//import {login} from "../auth/index"
 
 
 const Register = (props) => {
-
-
 
     const [newUser, setNewUser] = useState()
     const [confirm, setConfirm] = useState({
@@ -14,8 +12,9 @@ const Register = (props) => {
         email1: '',
         email2: '',
     })
-    //const[error, setError] = useState()
+    
     const [validPass, setValidPass] = useState(true)
+
     const [
         validLength,
         hasNumber,
@@ -30,7 +29,6 @@ const Register = (props) => {
         email1: confirm.email1,
         email2: confirm.email2
     })
-
 
 
 const registerSubmit = e => {
@@ -63,47 +61,21 @@ const registerSubmit = e => {
 const validatePass = () => {
     if (validLength && hasNumber && uppercase && lowercase && specialChar && pmatch && ematch ) {
         setValidPass(true)
-        console.log('validated')
         setNewUser({...newUser, password: confirm.password1})
         setNewUser({...newUser, email: confirm.email1})
     } else {
         setValidPass(false)
-        //console.log('not valid')
     }
 }
-
-// const checkPMatch = () => { 
-//     if( validPass && pmatch ) {
-//         setNewUser({ ...newUser, password: confirm.password1})
-//     } else {
-//         console.log('p not matching')
-//     }
-// }
-
-// const checkEMatch = () => {
-//     if (ematch) {
-//         setNewUser({ ...newUser, email: confirm.email1})
-//     } else {
-//         console.log('e not matching')
-//     }
-// }
 
 
 
 const setPassword1 = (event) => {
     setConfirm({ ...confirm, password1: event.target.value });
-    // if (confirm.password2) { 
-    //     validatePass()
-    //     console.log(confirm.password1)
-    // }
   };
 
 const setPassword2 = (event) => {
     setConfirm({ ...confirm, password2: event.target.value });
-    // if (confirm.password1) { 
-    //     validatePass()
-    //     console.log(confirm.password2)
-    // }
   };
 
 const setEmail1 = (event) => {
@@ -123,10 +95,6 @@ const setEmail2 = (event) => {
             <section className="container">
                 <div className="container-page">
                     <form method="POST" onSubmit={registerSubmit}>
-                        
-                        {/* <h3 className="pricing-header dark-grey"><strong>Registration</strong></h3> */}
-                        
-                        
                         <div className="row container">
                             <div className="form-group col-md-6">
                                 <input 
@@ -174,7 +142,6 @@ const setEmail2 = (event) => {
                                 onKeyUp={validatePass}
                                 required autoFocus 
                                 />
-                                {/* <span style={{color:'red'}}>{emerrors}</span> */}
                                 <span>
                                 {validPass || ematch ? <span></span> : <span style={{color:'red'}}>Emails must match</span>}
                                 </span>
@@ -226,7 +193,6 @@ const setEmail2 = (event) => {
                                 onKeyUp={validatePass}
                                 required autoFocus 
                                 />
-                                {/* <span style={{color:'red'}}>{pmerrors}</span> */}
                                 <span>
                                 {validPass || pmatch ? <span></span> : <span style={{color:'red'}}>be matching</span>}
                             </span>
@@ -245,15 +211,12 @@ const setEmail2 = (event) => {
                             <p>
                                 Please visit the <a href="{{ url_for('FAQ_page') }}">FAQ</a> for additional details.
                             </p>
-                            
                             <button 
                             className="w-20 btn btn-lg btn-primary" 
                             id='submitBtn' 
                             type="submit" 
                             disabled={!validPass}
-                            //onClick={validatePass}
                             >Register</button>
-                            
                         </div>
                     </form>
                 </div>
