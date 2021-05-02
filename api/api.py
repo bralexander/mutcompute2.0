@@ -125,7 +125,19 @@ def refresh():
     ret = {'access_token': new_token}
     return ret, 200
   
-  
+
+@app.route('/api/nn', methods=['POST'])
+def nn ():
+    req = flask.request.get_data()
+    if isinstance(req, str):
+        message = 'string'
+        print(req)
+    else:
+        message = 'file'
+        print(req)
+    return message
+
+
 @app.route('/api/protected')
 @flask_praetorian.auth_required
 def protected():

@@ -1,25 +1,86 @@
 import React, { useState }  from 'react';
 
 const NNPage = () => {
-    //const [pdbId, setPdbId] = useState('');
+    const [pdbId, setPdbId] = useState(null);
+    const [pdbFile, setPdbFile] = useState(null);
+    //const [data, setData] = useState(null)
+
+    const submitProtein = e => {
+        if (pdbFile) { 
+            e.preventDefault()
+            fetch('/api/nn', {
+                method: 'post',
+                url:'/nn', 
+                body: pdbFile,
+                headers: {
+                    'content-type': 'application/json'
+                  }
+            })
+            .then(r => { 
+                if (r.status === 200) {
+                    console.log(r)
+                    alert('Success ')
+                }
+                else {alert('error')}
+            })
+        }
+        else if (!pdbFile && pdbId) {
+        e.preventDefault()
+        fetch('/api/nn', {
+            method: 'post',
+            url:'/nn', 
+            body: JSON.stringify(pdbId),
+            headers: {
+                'content-type': 'application/json'
+              }
+        })
+        .then(r => { 
+            if (r.status === 200) {
+                console.log(r)
+                alert('Success ')
+            }
+            else {alert('error')}
+        })
+    } else {
+        alert('please fill form')
+    }
+    }
+
+
+const handleFile = e => {
+    const file = e.target.value[0]
+    const formData = new FormData()
+    formData.append('file', file)
+    setPdbFile(formData)
+}
+
 return (
     <div className="container-fluid avoid-navbar">
-        <section className="container container-page">
+        {/* <section className="container container-page"> */}
                 <div className="col-sm-12 page-header">
                     <h1 className="dark-grey">Protein Crystal Structure Submission<small></small></h1>
                 </div>
-            <form method="post">
-                <div className='nnContainer'>
+            <form onSubmit={submitProtein}>
+                <div className='nnContainer container container-page'>
                     <div className="nnInput form-group col-sm-2">
-                        <input className="form-control" placeholder="PDB ID"></input>
+                        <input 
+                        className="form-control" 
+                        placeholder="PDB ID"
+                        onChange={e => setPdbId(e.target.value)}
+                        ></input>
                     </div>
                         <label className="form-label">Upload Custom/In-house PDB:</label>
                     <div className="form-group col-sm-3">
-                        <input className="form-control form-control-sm" type="file" id="formFile"></input>
+                        <input 
+                        className="form-control form-control-sm" 
+                        type="file" 
+                        id="formFile"
+                        onChange={handleFile}>    
+                        </input>
                     </div>
                 </div>
-            </form>
-        </section>
+            {/* </form> */}
+        {/* </section> */}
         <section className="container">
             <hr />
             <div className="container">
@@ -43,10 +104,10 @@ return (
             </div>
             <div className="col-sm-6">
                 <br />
-                <button className="w-20 btn btn-lg btn-primary">Submit</button>
+                <button type="submit" className="w-20 btn btn-lg btn-primary">Submit</button>
             </div> 
         </section>
-        
+        </form>
     </div>
 )
 }
