@@ -11,6 +11,8 @@ import CompViewer from "./components/compvisViewer"
 import Structure from "./components/structure"
 import Register from "./components/register2"
 import NNPage from "./components/nnPage"
+import FAQ from "./components/faq"
+
 
 
 
@@ -30,6 +32,7 @@ function App() {
             <Route path="/ngl" exact component={() => <Viewer />} />
             <Route path="/register" exact component={() => <Register />} />
             <Route path="/nn" exact component={() => <NNPage />} />
+            <Route path="/faq" exact component={() => <FAQ />} />
           </Switch>
         <Footer />
       </Router>
