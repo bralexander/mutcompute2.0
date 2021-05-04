@@ -1,12 +1,13 @@
 import React from 'react'
 
+
 const Accordian = (props) => {
     return (
             <div>
                 <div className="accordion" id="accordionExample">
                     <div className="accordion-item">
                       <h2 className="accordion-header" id="headingOne">
-                        <button className="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
+                        <button className="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
                             {props.question}
                         </button>
                       </h2>
@@ -25,17 +26,13 @@ const Accordian = (props) => {
 const SectionHeader = (props) => {
     return(
     <div>
-        <div class="panel-group" id="accordion"></div>
-        <div class="faqHeader">{props.title}</div>
+        <div className="panel-group" id="accordion"></div>
+        <div className="faqHeader">{props.title}</div>
         <br/>
     </div>
     )
 }
 
-// var collapseElementList = [].slice.call(document.querySelectorAll('.collapse'))
-// var collapseList = collapseElementList.map(function (collapseEl) {
-//   return new bootstrap.Collapse(collapseEl)
-// })
 
 const FAQ = () => {
     return(
