@@ -1,8 +1,10 @@
 import React, { useState }  from 'react';
 
+
 const NNPage = () => {
     const [pdbId, setPdbId] = useState(null);
     const [pdbFile, setPdbFile] = useState(null);
+    const [error, setError] = useState(false)
     //const [data, setData] = useState(null)
 
     const submitProtein = e => {
@@ -48,11 +50,22 @@ const NNPage = () => {
 
 
 const handleFile = e => {
-    const file = e.target.value[0]
+    const file = e.target.value
+    //console.log(file)
     const formData = new FormData()
     formData.append('file', file)
     setPdbFile(formData)
 }
+
+const handleId = e => {
+    console.log(e)
+    if (e.length === 4){
+        setPdbId(e.toUppercase)
+        console.log('4')
+    } else {
+        return
+    }
+} 
 
 return (
     <div className="container-fluid avoid-navbar">
@@ -66,7 +79,9 @@ return (
                         <input 
                         className="form-control" 
                         placeholder="PDB ID"
-                        onChange={e => setPdbId(e.target.value)}
+                        onChange={e => handleId(e.target.value)}
+                        minLength='4'
+                        maxLength='4'
                         ></input>
                     </div>
                         <label className="form-label">Upload Custom/In-house PDB:</label>
