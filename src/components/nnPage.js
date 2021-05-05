@@ -4,8 +4,7 @@ import React, { useState }  from 'react';
 const NNPage = () => {
     const [pdbId, setPdbId] = useState(null);
     const [pdbFile, setPdbFile] = useState(null);
-    const [error, setError] = useState(false)
-    //const [data, setData] = useState(null)
+    
 
     const submitProtein = e => {
         if (pdbFile) { 
@@ -51,7 +50,6 @@ const NNPage = () => {
 
 const handleFile = e => {
     const file = e.target.value
-    //console.log(file)
     const formData = new FormData()
     formData.append('file', file)
     setPdbFile(formData)
@@ -69,7 +67,6 @@ const handleId = e => {
 
 return (
     <div className="container-fluid avoid-navbar">
-        {/* <section className="container container-page"> */}
                 <div className="col-sm-12 page-header">
                     <h1 className="dark-grey">Protein Crystal Structure Submission<small></small></h1>
                 </div>
@@ -94,8 +91,6 @@ return (
                         </input>
                     </div>
                 </div>
-            {/* </form> */}
-        {/* </section> */}
         <section className="container">
             <hr />
             <div className="container">
