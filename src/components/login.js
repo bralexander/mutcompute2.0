@@ -1,15 +1,17 @@
 import React, { useState } from 'react'
 import '../assets/css/login.css'
-import { useHistory } from 'react-router-dom'
+//import { useHistory } from 'react-router-dom'
 //import axios from 'axios'
-import {login, authFetch, useAuth, logout} from "../auth/index"
+import {useAuth, login, logout} from "../auth/index"
 
 
 const Login = (props) => {
   // const [csrf, setCsrf] = useState(null);
   const [user, setUser] = useState(props.user)
 
-  let history = useHistory();
+  const [logged] = useAuth()
+
+  //let history = useHistory();
 
   const loginSubmit = e => {
     e.preventDefault();
@@ -49,7 +51,7 @@ const Login = (props) => {
   return (
         <div className="login text-center">  
           <main className="form-signin">
-            <form onSubmit={loginSubmit}>
+          {!logged? <form >
               {/* <img className="mb-4" src="/docs/5.0/assets/brand/bootstrap-logo.svg" alt="" width="72" height="57" /> */}
               <h1 className="h3 mb-3 fw-normal">Please sign in</h1>
               <label htmlFor="inputEmail" className="visually-hidden">Email address</label>
@@ -58,7 +60,7 @@ const Login = (props) => {
               id="inputEmail" 
               className="form-control" 
               placeholder="Email address" 
-              onChange={e => setUser({ ...user, email: e.target.value })}
+              onChange={e => setUser({ ...user, email: e.target.value.toLowerCase() })}
               required autoFocus 
               />
               <label htmlFor="inputPassword" className="visually-hidden">Password</label>
@@ -70,14 +72,16 @@ const Login = (props) => {
               onChange={e => setUser({ ...user, password: e.target.value })}
               required 
               />
-                  <div className="checkbox mb-3">
+                  {/* <div className="checkbox mb-3">
                     <label>
                       <input type="checkbox" value="remember-me"/> Remember me
                     </label>
-                  </div>
-              <button className="w-100 btn btn-lg btn-primary" type="submit">Sign in</button>
+                  </div> */}
+              <button className="w-100 btn btn-lg btn-primary" type="submit" onClick={loginSubmit}>Sign in</button>
               {/* <p className="mt-5 mb-3 text-muted">&copy; 2017–2021</p> */}
             </form>
+            :<button className="w-100 btn btn-lg btn-primary" onClick={() => logout()}>Logout</button>
+          }
           </main>
         </div>
   )
