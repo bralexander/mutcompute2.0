@@ -1,7 +1,6 @@
 import React, { useState } from 'react'
 import '../assets/css/login.css'
-//import { useHistory } from 'react-router-dom'
-//import axios from 'axios'
+import { useHistory } from 'react-router-dom'
 import {useAuth, login, logout} from "../auth/index"
 
 
@@ -11,7 +10,7 @@ const Login = (props) => {
 
   const [logged] = useAuth()
 
-  //let history = useHistory();
+  const history = useHistory();
 
   const loginSubmit = e => {
     e.preventDefault();
@@ -27,7 +26,8 @@ const Login = (props) => {
     .then(token => {
     if (token.access_token){
       login(token)
-      console.log(token)          
+      console.log(token)  
+      history.push('/')        
     }
     else {
       console.log("Please type in correct username/password")

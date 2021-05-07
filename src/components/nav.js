@@ -18,17 +18,17 @@ const [logged] = useAuth()
             <nav className="nav nav-masthead justify-content-center float-md-end">
               <a className="nav-link text-muted" href="/register">Register</a>
               <a className="nav-link text-muted" href="/login/">Login</a>
-              <a className="nav-link active" aria-current="page" href="/">Home</a>
             </nav>
             :
             <nav className="nav nav-masthead justify-content-center float-md-end">
-            <a className="nav-link text-muted"  href="/NN/">Predict</a>
+            <a className="nav-link text-muted"  href="/nn/">Predict</a>
             <a className="nav-link text-muted" href="/viewer2">View</a>
             <button className="nav-link dropdown-toggle text-muted" id="navbarDarkDropdownMenuLink"
              data-bs-toggle="dropdown" aria-expanded="false">
               Menu
             </button>
             <ul className="dropdown-menu dropdown-menu-dark" aria-labelledby="navbarDarkDropdownMenuLink">
+              <li><a className="dropdown-item" href="/">Home</a></li>
               <li><a className="dropdown-item" href="/login">logout</a></li>
               <li><a className="dropdown-item" href="/FAQ">FAQ</a></li>
             </ul>
