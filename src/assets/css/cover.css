@@ -1,3 +1,7 @@
+.nav-link {
+background: transparent;
+border-color: transparent;
+}
 
 .cover-body {
     background-image: url("../images/2iskPic7.png");
