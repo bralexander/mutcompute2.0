@@ -106,9 +106,19 @@ def register():
     print(req)
     username = req.get('email', None)
     password = req.get('password', None)
+
+    if db.session.query(User).filter_by(username=username).count() >= 1:
+        message={'Username already exists': username}
+    else:
+        message = {'Welcome': username}
+        db.session.add(User(
+          username=username,
+          password=password,
+          roles='n/a'
+            ))
+    db.session.commit()
     
-    
-    return username, password
+    return message
   
 @app.route('/api/refresh', methods=['POST'])
 def refresh():
@@ -120,7 +130,7 @@ def refresh():
          -H "Authorization: Bearer <your_token>"
     """
     print("refresh request")
-    old_token = request.get_data()
+    old_token = flask.request.get_data()
     new_token = guard.refresh_jwt_token(old_token)
     ret = {'access_token': new_token}
     return ret, 200
