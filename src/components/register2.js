@@ -41,13 +41,15 @@ const registerSubmit = e => {
             'content-type': 'application/json'
           }
     })
-    .then(r => { 
-        if (r.status === 200) {
-            console.log(r)
-            alert('Success ')
-        }
-        else {alert('error')}
+    .then(res => res.json())
+    .then(data => { 
+        console.log(data)
     })
+    // if (r.status === 200) {
+    //     console.log(r.body)
+    //     alert('Success ')
+    // }
+    // else {alert('error')}
     // .then(r => r.json())
     // .then(token => {
     //     if (token.access_token){
@@ -195,7 +197,7 @@ const setEmail2 = (event) => {
                                 required autoFocus 
                                 />
                                 <span>
-                                {validPass || pmatch ? <span></span> : <span style={{color:'red'}}>be matching</span>}
+                                {validPass || pmatch ? <span></span> : <span style={{color:'red'}}>Matching characters</span>}
                             </span>
                             </div>
                         </div>
