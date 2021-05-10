@@ -191,7 +191,7 @@ const Compvis3 = (props) => {
                 }
                 if (csvRow !== undefined) {
                   const wtProb = parseFloat(csvRow[csvWtProbCol])
-                  const predProb = parseFloat(csvRow[csvPrProbCol])
+                  //const predProb = parseFloat(csvRow[csvPrProbCol])
                   if (wtProb < 0.01 ) {
                     return 0xF800080// purple
                   } else if (wtProb < 0.03) {
