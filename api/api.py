@@ -63,7 +63,7 @@ with app.app_context():
     if db.session.query(User).filter_by(username='danny.diaz@utexas.edu').count() < 1:
         db.session.add(User(
           username='danny.diaz@utexas.edu',
-          password=guard.hash_password('smokesmoke!'),
+          password=guard.hash_password('smokesmoke'),
           roles='admin'
             ))
     db.session.commit()
@@ -108,10 +108,10 @@ def register():
     password = req.get('password', None)
 
     if db.session.query(User).filter_by(username=username).count() >= 1:
-        message={'Username already exists': username}
+        message={'Username already exists': username}, 418
         #prefer not to return object
     else:
-        message = {'Welcome': username}
+        message = {'Welcome': username}, 200
         db.session.add(User(
           username=username,
           password=password,
@@ -120,7 +120,7 @@ def register():
     db.session.commit()
     #should we log user in automatically?
     
-    return message, 200
+    return message
   
 @app.route('/api/refresh', methods=['POST'])
 def refresh():
