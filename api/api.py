@@ -109,6 +109,7 @@ def register():
 
     if db.session.query(User).filter_by(username=username).count() >= 1:
         message={'Username already exists': username}
+        #prefer not to return object
     else:
         message = {'Welcome': username}
         db.session.add(User(
@@ -117,8 +118,9 @@ def register():
           roles='n/a'
             ))
     db.session.commit()
+    #should we log user in automatically?
     
-    return message
+    return message, 200
   
 @app.route('/api/refresh', methods=['POST'])
 def refresh():
