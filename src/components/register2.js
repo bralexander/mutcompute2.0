@@ -41,9 +41,13 @@ const registerSubmit = e => {
             'content-type': 'application/json'
           }
     })
-    .then(res => res.json())
+    .then(res => 
+        res.json()
+    )
     .then(data => { 
-        console.log(data)
+       console.log(data)
+       alert(Object.keys(data))
+
     })
     // if (r.status === 200) {
     //     console.log(r.body)
