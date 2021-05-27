@@ -5,10 +5,8 @@ import Jumbotron from "./jumbotron";
 
 const Cover = (props) => {
     return(
-       <div className='cover-div'>
-           <body className='cover-body'>
+       <div className='no-scroll cover-div '>
                 <Jumbotron />   
-            </body>
         </div>
     )
 }
