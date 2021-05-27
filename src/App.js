@@ -8,14 +8,11 @@ import Cover from "./components/cover"
 import Nav from "./components/nav"
 import Footer from "./components/footer"
 import Login from "./components/login"
-//import Viewer from "./components/viewer"
-import Compvis2 from "./components/compvis2"
-//import CompViewer from "./components/compvisViewer"
-import Structure from "./components/structure"
+import Compvis3 from "./components/compvis3"
 import Register from "./components/register2"
 import NNPage from "./components/nnPage"
 import FAQ from "./components/faq"
-
+import Forgot from "./components/forgotPass"
 
 
 const  PrivateRoute = ({component: Component, ...rest }) => {
@@ -38,13 +35,11 @@ function App() {
           <Switch>
             <Route path="/" exact component={() => <Cover />} />
             <Route path="/login" exact component={() => <Login />} />
-            <Route path="/viewer2" exact component={() => <Compvis2 />} />
-            {/* <Route path="/viewer" exact component={() => <CompViewer />} /> */}
-            <Route path="/struc" exact component={() => <Structure />} />
-            {/* <Route path="/ngl" exact component={() => <Viewer />} /> */}
+            <Route path="/viewer3" exact component={() => <Compvis3 />} />
             <Route path="/register" exact component={() => <Register />} />
             <PrivateRoute path="/nn" component={NNPage} />
             <Route path="/faq" exact component={() => <FAQ />} />
+            <Route path="/forgot" exact component={() => <Forgot />} />
           </Switch>
         <Footer />
       </Router>
