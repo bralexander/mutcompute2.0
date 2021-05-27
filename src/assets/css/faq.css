@@ -1,5 +1,5 @@
-
-.no-scroll {
-    margin: 0;
-    height: 100%;
+.yes-scroll {
+    min-height: 400px;
+    margin-bottom: 100px;
+    overflow-y: scroll;
   }
