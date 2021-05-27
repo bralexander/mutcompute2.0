@@ -1,11 +1,13 @@
-.nav-link {
-background: transparent;
-border-color: transparent;
+
+.yes-scroll {
+  min-height: 400px;
+  margin-bottom: 100px;
+  overflow-y: scroll;
 }
 
-.cover-body {
+.cover-div {
     background-image: url("../images/2iskPic7.png");
-    height: 100vh;
+    height: 90vh;
     background-size:cover; 
     background-color: black;
     background-position:top center;
@@ -20,6 +22,10 @@ border-color: transparent;
   /*
    * Header/navbar
    */
+   .nav-link {
+    background: transparent;
+    border-color: transparent;
+    }
   .nav-cont {
     background-color: black;
   }
