@@ -79,6 +79,7 @@ const Login = (props) => {
                   </div> */}
               <button className="w-100 btn btn-lg btn-primary" type="submit" onClick={loginSubmit}>Sign in</button>
               {/* <p className="mt-5 mb-3 text-muted">&copy; 2017–2021</p> */}
+              <a href="/forgot">Forgot password</a>
             </form>
             :<button className="w-100 btn btn-lg btn-primary" onClick={() => logout()}>Logout</button>
           }
