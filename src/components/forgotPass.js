@@ -17,12 +17,8 @@ const Forgot = (props) => {
         'content-type': 'application/json'
       }
     })
-    .then(r => {
-      r.json()
-      if (r.status === 200) {
-        alert('email sent')
-      }
-    })
+    .then(r => r.json())
+    
     //.then(data => console.log(data))
     
     // .then(res => {
@@ -61,7 +57,7 @@ const Forgot = (props) => {
                       <input type="checkbox" value="remember-me"/> Remember me
                     </label>
                   </div> */}
-              <button className="w-100 btn btn-lg btn-primary" type="submit" onClick={loginSubmit}>Reset Password</button>
+              <button className="w-100 btn btn-lg btn-primary" type="submit" onClick={loginSubmit}>Send Email</button>
               {/* <p className="mt-5 mb-3 text-muted">&copy; 2017–2021</p> */}
             </form>
           </main>
