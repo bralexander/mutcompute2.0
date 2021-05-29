@@ -1,0 +1,67 @@
+Metadata-Version: 2.1
+Name: py-buzz
+Version: 1.0.3
+Summary: "That's not flying, it's falling with style: Exceptions with extras"
+License: MIT
+Author: Tucker Beck
+Author-email: tucker.beck@gmail.com
+Requires-Python: >=3.5,<4.0
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.5
+Classifier: Programming Language :: Python :: 3.6
+Classifier: Programming Language :: Python :: 3.7
+Requires-Dist: deprecated (>=1.2,<2.0)
+Requires-Dist: inflection (>=0.3.1,<0.4.0)
+Description-Content-Type: text/x-rst
+
+.. image::  https://badge.fury.io/py/py-buzz.svg
+   :target: https://badge.fury.io/py/py-buzz
+   :alt:    Latest Version
+
+.. image::  https://travis-ci.org/dusktreader/py-buzz.svg?branch=integration
+   :target: https://travis-ci.org/dusktreader/py-buzz
+   :alt:    Build Status
+
+.. image::  https://readthedocs.org/projects/py-buzz/badge/?version=latest
+   :target: http://py-buzz.readthedocs.io/en/latest/?badge=latest
+   :alt:    Documentation Status
+
+*********
+ py-buzz
+*********
+
+------------------------------------------------------------------
+That's not flying, it's falling with style: Exceptions with extras
+------------------------------------------------------------------
+
+py-buzz supplies extras to python exceptions in a base Buzz exception class.
+Buzz is fully equipped with exception tools that are written over and over
+again in python projects such as:
+
+* checking conditions and raising errors on failure (``require_conditon``)
+
+* catching exceptions wrapping them in clearer exception types with better error
+  messages (``handle_errors``)
+
+* checking many conditions and reporting which ones failed
+  (``check_expressions``)
+
+Buzz can be used as a stand-alone exception class, but it is best used as a
+bass class for custom exceptions within a project. This allows the user to
+focus on creating a set of Exceptions that provide complete coverage for issues
+within their application without having to re-write convenience functions
+themselves.
+
+Super-quick Start
+-----------------
+ - requirements: `python3`
+ - install through pip: `$ pip install py-buzz`
+ - minimal usage example: `examples/basic.py <https://github.com/dusktreader/py-buzz/tree/master/examples/basic.py>`_
+
+Documentation
+-------------
+
+The complete documentation can be found at the
+`py-buzz home page <http://py-buzz.readthedocs.io>`_
+
