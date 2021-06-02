@@ -1,0 +1,132 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`renders learn react link 1`] = `
+<DocumentFragment>
+  <div
+    class="app"
+  >
+    <div>
+      <div
+        class="nav-cont d-flex h-100 text-center text-white"
+      >
+        <div
+          class="cover-container d-flex w-100 h-100 p-3 mx-auto flex-column"
+        >
+          <header>
+            <a
+              href="/"
+            >
+              <h3
+                class="float-md-start mb-0"
+              >
+                MutCompute.com
+              </h3>
+            </a>
+            <nav
+              class="nav nav-masthead justify-content-center float-md-end"
+            >
+              <a
+                class="nav-link text-muted"
+                href="/register"
+              >
+                Register
+              </a>
+              <a
+                class="nav-link text-muted"
+                href="/login/"
+              >
+                Login
+              </a>
+            </nav>
+          </header>
+        </div>
+      </div>
+    </div>
+    <div
+      class="no-scroll cover-div "
+    >
+      <div>
+        <div
+          class="d-flex h-100 text-center text-white"
+        >
+          <div
+            class="cover-container d-flex w-100 h-100 p-3 mx-auto flex-column"
+          >
+            <main
+              class="jumbotron px-3 mb-0 "
+            >
+              <h1
+                class="middle-title"
+              >
+                Welcome to MutCompute
+              </h1>
+              <p
+                class="lead"
+              >
+                Modern solutions for protein engineering. 
+                <br />
+                 Deep Learning guided predictions for protein mutagenesis,
+                <br />
+                 visualized in 3D. 
+              </p>
+              <p
+                class="lead"
+              >
+                <a
+                  class="j-btn btn btn-lg btn-secondary fw-bold border-dark rounded"
+                  href="/NN/"
+                >
+                  Predict
+                </a>
+                <a
+                  class="j-btn btn btn-lg btn-secondary fw-bold border-dark rounded"
+                  href="/ngl"
+                >
+                  Visualize
+                </a>
+              </p>
+            </main>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div>
+      <footer
+        class="text-white-50 text-center fixed-bottom"
+      >
+        <p>
+          A product of 
+          <a
+            class="text-white"
+            href="https://ellingtonlab.org"
+          >
+            The Ellington Lab
+          </a>
+          , by
+          <a
+            class="text-white"
+            href="https://github.com/danny305"
+          >
+             @danny305
+          </a>
+          , and
+          <a
+            class="text-white"
+            href="https://github.com/bralexander"
+          >
+             @bralexander
+          </a>
+          <br />
+          Based on research published
+          <a
+            class="text-white"
+            href="https://pubs.acs.org/doi/abs/10.1021/acssynbio.0c00345"
+          >
+             here
+          </a>
+        </p>
+      </footer>
+    </div>
+  </div>
+</DocumentFragment>
+`;
