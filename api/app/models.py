@@ -1,4 +1,4 @@
-from api import db
+from app import db
 import flask_praetorian
 from time import time
 

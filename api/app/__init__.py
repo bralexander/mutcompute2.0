@@ -11,7 +11,7 @@ app.config.from_object(Config)
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
 
-from app import models
+from app import routes, models
 
 # to start an emulated server, enter into terminal $ python -m smtpd -n -c DebuggingServer localhost:8025
 # set environment variables:

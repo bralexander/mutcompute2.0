@@ -5,7 +5,8 @@ import flask_praetorian
 import flask_cors
 
 
-from api.email import send_password_reset_email
+from app.email import send_password_reset_email
+from app.models import User
 
 db = flask_sqlalchemy.SQLAlchemy()
 guard = flask_praetorian.Praetorian()
