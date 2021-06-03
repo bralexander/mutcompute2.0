@@ -4,7 +4,7 @@ import flask_sqlalchemy
 import flask_praetorian
 import flask_cors
 
-
+from app import app
 from app.email import send_password_reset_email
 from app.models import User
 
@@ -62,32 +62,32 @@ cors = flask_cors.CORS()
 
 
 # Initialize flask app for the example
-app = flask.Flask(__name__)
-app.debug = True
-app.config['SECRET_KEY'] = 'top secret'
-app.config['JWT_ACCESS_LIFESPAN'] = {'hours': 24}
-app.config['JWT_REFRESH_LIFESPAN'] = {'days': 30}
+# app = flask.Flask(__name__)
+# app.debug = True
+# app.config['SECRET_KEY'] = 'top secret'
+# app.config['JWT_ACCESS_LIFESPAN'] = {'hours': 24}
+# app.config['JWT_REFRESH_LIFESPAN'] = {'days': 30}
 
-# Initialize the flask-praetorian instance for the app
-guard.init_app(app, User)
+# # Initialize the flask-praetorian instance for the app
+# guard.init_app(app, User)
 
-# Initialize a local database for the example
-app.config['SQLALCHEMY_DATABASE_URI'] = f"sqlite:///{os.path.join(os.getcwd(), 'database.db')}"
-db.init_app(app)
+# # Initialize a local database for the example
+# app.config['SQLALCHEMY_DATABASE_URI'] = f"sqlite:///{os.path.join(os.getcwd(), 'database.db')}"
+# db.init_app(app)
 
-# Initializes CORS so that the api_tool can talk to the example app
-cors.init_app(app)
+# # Initializes CORS so that the api_tool can talk to the example app
+# cors.init_app(app)
 
-# Add users for the example
-with app.app_context():
-    db.create_all()
-    if db.session.query(User).filter_by(username='danny.diaz@utexas.edu').count() < 1:
-        db.session.add(User(
-          username='danny.diaz@utexas.edu',
-          password=guard.hash_password('smokesmoke'),
-          roles='admin'
-            ))
-    db.session.commit()
+# # Add users for the example
+# with app.app_context():
+#     db.create_all()
+#     if db.session.query(User).filter_by(username='danny.diaz@utexas.edu').count() < 1:
+#         db.session.add(User(
+#           username='danny.diaz@utexas.edu',
+#           password=guard.hash_password('smokesmoke'),
+#           roles='admin'
+#             ))
+#     db.session.commit()
 
 
 # Set up some routes for the example
@@ -187,13 +187,13 @@ def protected():
 @app.route('/api/forgot', methods=['GET', 'POST'])
 def reset_password_request():
     req = flask.request.get_json(force=True)
-    print(req)
-    username = req.get('username', None)
-    if db.session.query(User).filter_by(username=username).count() >= 1:
-        guard.send_reset_username(username, template=None, reset_sender=None, reset_uri=None, subject=None, override_access_lifespan=None)
-       # send_password_reset_username(username)
-    # flash('Check your username for the instructions to reset your password')
-    return 200
+    #print(req)
+    email = req.get('email', None)
+    if db.session.query(User).filter_by(email=email).count() >= 1:
+        guard.send_reset_email(email, template=None, reset_sender=None, reset_uri=None, subject=None, override_access_lifespan=None)
+       # send_password_reset_email(email)
+    message={'email sent to': email}
+    return message
 
 
 @app.route('/api/reset/<token>', methods=['GET', 'POST'])
@@ -203,9 +203,9 @@ def reset_password(token):
     if user:
         user.set_password(req.password)
         db.session.commit()
-        # flash('Your password has been reset.')
+        message={'password reset for': user}
 
-    return 200
+    return message, 200
     
 
 # Run the example
