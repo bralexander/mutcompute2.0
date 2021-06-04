@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import {useValidation} from "../hooks/useValidation"
 //import {login} from "../auth/index"
+import { useHistory } from 'react-router-dom'
 
 
 const Register = (props) => {
@@ -30,6 +31,8 @@ const Register = (props) => {
         email2: confirm.email2
     })
 
+    const history = useHistory();
+
 
 const registerSubmit = e => {
     e.preventDefault()
@@ -41,9 +44,12 @@ const registerSubmit = e => {
             'content-type': 'application/json'
           }
     })
-    .then(res => 
-        res.json()
-    )
+    .then(res => {
+        if (res.status === 200){
+            history.push('/login')
+        }
+        return res.json()
+    })
     .then(data => { 
        console.log(data)
        alert(Object.keys(data))
