@@ -7,7 +7,7 @@ const Forgot = (props) => {
 
   
 
-  const loginSubmit = e => {
+  const submitHandler = e => {
     e.preventDefault();
     fetch('/api/forgot', {
       method: 'post',
@@ -64,7 +64,7 @@ const Forgot = (props) => {
                       <input type="checkbox" value="remember-me"/> Remember me
                     </label>
                   </div> */}
-              <button className="w-100 btn btn-lg btn-primary" type="submit" onClick={loginSubmit}>Send Email</button>
+              <button className="w-100 btn btn-lg btn-primary" type="submit" onClick={submitHandler}>Send Email</button>
               {/* <p className="mt-5 mb-3 text-muted">&copy; 2017–2021</p> */}
             </form>
           </main>
