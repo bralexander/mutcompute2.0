@@ -13,6 +13,7 @@ import Register from "./components/register2"
 import NNPage from "./components/nnPage"
 import FAQ from "./components/faq"
 import Forgot from "./components/forgotPass"
+import Reset from "./components/resetPass"
 
 
 const  PrivateRoute = ({component: Component, ...rest }) => {
@@ -40,6 +41,7 @@ function App() {
             <PrivateRoute path="/nn" component={NNPage} />
             <Route path="/faq" exact component={() => <FAQ />} />
             <Route path="/forgot" exact component={() => <Forgot />} />
+            <Route path="/reset" exact component={() => <Reset />} />
           </Switch>
         <Footer />
       </Router>
