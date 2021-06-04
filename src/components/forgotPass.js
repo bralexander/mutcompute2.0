@@ -5,7 +5,7 @@ const Forgot = (props) => {
   // const [csrf, setCsrf] = useState(null);
   const [user, setUser] = useState(props.user)
 
-
+  
 
   const loginSubmit = e => {
     e.preventDefault();
@@ -17,7 +17,14 @@ const Forgot = (props) => {
         'content-type': 'application/json'
       }
     })
-    .then(r => r.json())
+    .then(res => res.json()
+    //no redirect, email will be sent link
+    )
+  .then(data => { 
+     console.log(data)
+     alert(Object.keys(data))
+
+  })
     
     //.then(data => console.log(data))
     
