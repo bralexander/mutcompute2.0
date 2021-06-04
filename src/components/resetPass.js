@@ -4,7 +4,7 @@ import { useHistory } from 'react-router-dom'
 //import {useAuth, login, logout} from "../auth/index"
 
 
-const Login = (props) => {
+const Reset = (props) => {
   // const [csrf, setCsrf] = useState(null);
   const [user, setUser] = useState(props.user)
 
@@ -81,4 +81,4 @@ const Login = (props) => {
   )
 }
 
-export default Login
+export default Reset
