@@ -7,16 +7,17 @@ import flask_cors
 from app import app
 from app.email import send_password_reset_email
 from app.models import User
+from flask_login import current_user, login_user
 
 db = flask_sqlalchemy.SQLAlchemy()
-guard = flask_praetorian.Praetorian()
+# guard = flask_praetorian.Praetorian()
 cors = flask_cors.CORS()
 
 
 # A generic user model that might be used by an app powered by flask-praetorian
 # class User(db.Model):
 #     id = db.Column(db.Integer, primary_key=True)
-#     username = db.Column(db.Text, unique=True)
+#     email = db.Column(db.Text, unique=True)
 #     #email = db.Column(db.Text, unique=True)
 #     password = db.Column(db.Text)
 #     roles = db.Column(db.Text)
@@ -30,8 +31,8 @@ cors = flask_cors.CORS()
 #             return []
 
 #     @classmethod
-#     def lookup(cls, username):
-#         return cls.query.filter_by(username=username).one_or_none()
+#     def lookup(cls, email):
+#         return cls.query.filter_by(email=email).one_or_none()
 
 #     @classmethod
 #     def identify(cls, id):
@@ -69,7 +70,7 @@ cors = flask_cors.CORS()
 # app.config['JWT_REFRESH_LIFESPAN'] = {'days': 30}
 
 # # Initialize the flask-praetorian instance for the app
-# guard.init_app(app, User)
+#guard.init_app(app, User)
 
 # # Initialize a local database for the example
 # app.config['SQLALCHEMY_DATABASE_URI'] = f"sqlite:///{os.path.join(os.getcwd(), 'database.db')}"
@@ -78,12 +79,13 @@ cors = flask_cors.CORS()
 # # Initializes CORS so that the api_tool can talk to the example app
 # cors.init_app(app)
 
-# # Add users for the example
+# Add users for the example
+## if this isn't here, db doesn't recognize login
 # with app.app_context():
 #     db.create_all()
-#     if db.session.query(User).filter_by(username='danny.diaz@utexas.edu').count() < 1:
+#     if db.session.query(User).filter_by(email='danny.diaz@utexas.edu').count() < 1:
 #         db.session.add(User(
-#           username='danny.diaz@utexas.edu',
+#           email='danny.diaz@utexas.edu',
 #           password=guard.hash_password('smokesmoke'),
 #           roles='admin'
 #             ))
@@ -107,11 +109,14 @@ def login():
     """
     req = flask.request.get_json(force=True)
     print(req)
-    username = req.get('username', None)
+    email = req.get('email', None)
     password = req.get('password', None)
-    user = guard.authenticate(username, password)
-    ret = {'access_token': guard.encode_jwt_token(user)}
-    return ret, 200
+    user = User.query.filter_by(email=email).first()
+    if user is None or not user.check_password(password):
+    #if user is None or not guard.authenticate(email, password):
+        ret = {'Invalid username or password'}, 418
+    # ret = {'access_token': guard.encode_jwt_token(user)}, 200
+    return ret
 
 
 @app.route('/api/register', methods=['POST'])
@@ -121,25 +126,27 @@ def register():
     issuing a JWT token.
     .. example::
        $ curl http://localhost:5000/api/login -X POST \
-         -d '{"username":"Yasoob","password":"strongpassword"}'
+         -d '{"email":"Yasoob","password":"strongpassword"}'
     """
     req = flask.request.get_json(force=True)
     print(req)
-    username = req.get('username', None)
+    email = req.get('email', None)
+    first_name = req.get('first', None)
+    last_name = req.get('last', None)
+    organization = req.get('org', None)
     password = req.get('password', None)
+    print(req)
 
-    if db.session.query(User).filter_by(username=username).count() >= 1:
-        message={'Username already exists': username}, 418
+    if db.session.query(User).filter_by(email=email).count() >= 1:
+        message={'There is already an account associated with that email': email}, 418
         #prefer not to return object
     else:
-        message = {'Welcome': username}, 200
-        guard.send_registration_username(username, user=None, template=None, confirmation_sender=None, confirmation_uri=None, subject=None, override_access_lifespan=None)
-        db.session.add(User(
-          username=username,
-          password=password,
-          roles='n/a'
-            ))
-    db.session.commit()
+        message = {'Welcome': first_name}, 200
+        user = User(email=email, first_name=first_name, last_name=last_name, organization=organization)
+        user.set_password(password)
+        db.session.add(user)
+        db.session.commit()
+    # guard.send_registration_email(email, user=User, template=None, confirmation_sender=None, confirmation_uri=None, subject=None, override_access_lifespan=None)
     #should we log user in automatically?
     
     return message
@@ -155,7 +162,7 @@ def refresh():
     """
     print("refresh request")
     old_token = flask.request.get_data()
-    new_token = guard.refresh_jwt_token(old_token)
+    # new_token = guard.refresh_jwt_token(old_token)
     ret = {'access_token': new_token}
     return ret, 200
   
@@ -182,7 +189,7 @@ def protected():
        $ curl http://localhost:5000/api/protected -X GET \
          -H "Authorization: Bearer <your_token>"
     """
-    return {'message': f'protected endpoint (allowed user {flask_praetorian.current_user().username})'}
+    return {'message': f'protected endpoint (allowed user {flask_praetorian.current_user().email})'}
 
 @app.route('/api/forgot', methods=['GET', 'POST'])
 def reset_password_request():
@@ -190,9 +197,11 @@ def reset_password_request():
     #print(req)
     email = req.get('email', None)
     if db.session.query(User).filter_by(email=email).count() >= 1:
-        guard.send_reset_email(email, template=None, reset_sender=None, reset_uri=None, subject=None, override_access_lifespan=None)
+        # guard.send_reset_email(email, template=None, reset_sender=None, reset_uri=None, subject=None, override_access_lifespan=None)
        # send_password_reset_email(email)
-    message={'email sent to': email}
+        message={'email sent to': email}
+    else:
+        message={'something went wrong'}
     return message
 
 
