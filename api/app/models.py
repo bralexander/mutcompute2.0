@@ -1,5 +1,7 @@
-from app import db, login
 import flask_praetorian
+import jwt
+
+from app import db, login, app
 from time import time
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import UserMixin
@@ -42,6 +44,7 @@ class User(UserMixin, db.Model):
     @property
     def identity(self):
         return self.id
+
     
     def set_password(self, password):
         self.password_hash = generate_password_hash(password)
@@ -49,24 +52,27 @@ class User(UserMixin, db.Model):
     def check_password(self, password):
         return check_password_hash(self.password_hash, password)
 
-    # def get_reset_password_token(self, expires_in=600):
-    #     return guard.encode_jwt_token(self.id, override_access_lifespan=None, override_refresh_lifespan=None, bypass_user_check=False, is_registration_token=False, is_reset_token=False)
-    #     # (
-    #     #     {'reset_password': self.id, 'exp': time() + expires_in},
-    #     #     app.config['SECRET_KEY'], algorithm='HS256')
 
-    # @staticmethod
-    # def verify_reset_password_token(token):
-    #     try:
-    #         id = guard.read_token(token)
-    #         # , app.config['SECRET_KEY'],
-    #         #                 algorithms=['HS256'])['reset_password']
-    #     except:
-    #         return
-    #     return User.query.get(id)
+    def get_reset_password_token(self, expires_in=600):
+        return jwt.encode(
+            {'reset_password': self.id, 'exp': time() + expires_in},
+            app.config['SECRET_KEY'], algorithm='HS256')
+
+    @staticmethod
+    def verify_reset_password_token(token):
+        try:
+            id = jwt.decode(token, app.config['SECRET_KEY'],
+                            algorithms=['HS256'])['reset_password']
+        except:
+            return
+        return User.query.get(id)
 
     # def is_valid(self):
     #     return self.is_active
 
     def __repr__(self):
         return '<User {}>'.format(self.email)
+
+@login.user_loader
+def load_user(id):
+    return User.query.get(int(id))

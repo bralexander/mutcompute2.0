@@ -12,14 +12,14 @@ from app.models import User
 from flask_login import current_user, login_user
 
 from time import time
-
+from flask_mail import Mail
 
 db = flask_sqlalchemy.SQLAlchemy()
 cors = flask_cors.CORS()
 # guard = flask_praetorian.Praetorian()
 
 # # Initialize the flask-praetorian instance for the app
-#guard.init_app(app, User)
+# guard.init_app(app, User)
 
 
 # Set up some routes for the example
@@ -46,6 +46,7 @@ def login():
     #if user is None or not guard.authenticate(email, password):
         ret = {'Invalid username or password'}, 418
     # ret = {'access_token': guard.encode_jwt_token(user)}, 200
+    ret = {'access_token': jwt.encode(user)}, 200
     return ret
 
 
@@ -109,29 +110,31 @@ def nn ():
     return message
 
 
-@app.route('/api/protected')
-@flask_praetorian.auth_required
-def protected():
-    """
-    A protected endpoint. The auth_required decorator will require a header
-    containing a valid JWT
-    .. example::
-       $ curl http://localhost:5000/api/protected -X GET \
-         -H "Authorization: Bearer <your_token>"
-    """
-    return {'message': f'protected endpoint (allowed user {flask_praetorian.current_user().email})'}
+# @app.route('/api/protected')
+# @flask_praetorian.auth_required
+# def protected():
+#     """
+#     A protected endpoint. The auth_required decorator will require a header
+#     containing a valid JWT
+#     .. example::
+#        $ curl http://localhost:5000/api/protected -X GET \
+#          -H "Authorization: Bearer <your_token>"
+#     """
+#     return {'message': f'protected endpoint (allowed user {flask_praetorian.current_user().email})'}
 
 @app.route('/api/forgot', methods=['GET', 'POST'])
-def reset_password_request():
+def forgot():
     req = flask.request.get_json(force=True)
-    #print(req)
+    print(req)
     email = req.get('email', None)
-    if db.session.query(User).filter_by(email=email).count() >= 1:
-        # guard.send_reset_email(email, template=None, reset_sender=None, reset_uri=None, subject=None, override_access_lifespan=None)
-       # send_password_reset_email(email)
-        message={'email sent to': email}
+    user = User.query.filter_by(email=email).first()
+    print('****USER:', user)
+    if user:
+        #guard.send_reset_email(email, template=None, reset_sender=None, reset_uri=None, subject=None, override_access_lifespan=None)
+        send_password_reset_email(user)
+        message={'email sent to': email}, 200
     else:
-        message={'something went wrong'}
+        message={'something went wrong'}, 418
     return message
 
 
@@ -142,7 +145,7 @@ def reset_password(token):
     if user:
         user.set_password(req.password)
         db.session.commit()
-        message={'password reset for': user}
+        message={'password reset for': user.email}
 
     return message, 200
     
