@@ -74,8 +74,10 @@ const registerSubmit = e => {
 const validatePass = () => {
     if (validLength && hasNumber && uppercase && lowercase && specialChar && pmatch && ematch ) {
         setValidPass(true)
-        setNewUser({...newUser, password: confirm.password1})
-        setNewUser({...newUser, email: confirm.email1.toLowerCase()})
+        //dont have 2 setNewUser calls in the same function
+        //setNewUser({...newUser, password: confirm.password1})
+        setNewUser({...newUser, email: confirm.email1.toLowerCase(), password: confirm.password1})
+        console.log(newUser.password)
     } else {
         setValidPass(false)
     }
@@ -85,6 +87,7 @@ const validatePass = () => {
 
 const setPassword1 = (event) => {
     setConfirm({ ...confirm, password1: event.target.value });
+    //console.log(confirm.password1)
   };
 
 const setPassword2 = (event) => {
@@ -94,6 +97,7 @@ const setPassword2 = (event) => {
 const setEmail1 = (event) => {
     setConfirm({ ...confirm, email1: event.target.value });
   };
+
 const setEmail2 = (event) => {
     setConfirm({ ...confirm, email2: event.target.value });
   };
