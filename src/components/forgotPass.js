@@ -1,11 +1,11 @@
 import React, { useState } from 'react'
-
+import { useAuth } from '../auth'
 
 const Forgot = (props) => {
   // const [csrf, setCsrf] = useState(null);
   const [user, setUser] = useState(props.user)
 
-  
+  const [logged] = useAuth()
 
   const submitHandler = e => {
     e.preventDefault();
@@ -22,7 +22,7 @@ const Forgot = (props) => {
     )
   .then(data => { 
      console.log(data)
-     alert(Object.keys(data))
+     alert(`Email sent to: ${Object.values(data)}`)
 
   })
     
@@ -44,8 +44,10 @@ const Forgot = (props) => {
   
   
   return (
+    
         <div className="login text-center">  
           <main className="form-signin">
+           { !logged?
            <form >
               {/* <img className="mb-4" src="/docs/5.0/assets/brand/bootstrap-logo.svg" alt="" width="72" height="57" /> */}
               <h1 className="h3 mb-3 fw-normal">Enter your email</h1>
@@ -67,6 +69,8 @@ const Forgot = (props) => {
               <button className="w-100 btn btn-lg btn-primary" type="submit" onClick={submitHandler}>Send Email</button>
               {/* <p className="mt-5 mb-3 text-muted">&copy; 2017–2021</p> */}
             </form>
+            :<h5>You are logged in</h5>
+            } 
           </main>
         </div>
   )
