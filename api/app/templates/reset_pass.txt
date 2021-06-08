@@ -1,0 +1,11 @@
+Dear {{ user.username }},
+
+To reset your password click on the following link:
+
+"localhost:3000/reset/{{token}}"
+
+If you have not requested a password reset simply ignore this message.
+
+Sincerely,
+
+The Mutcompute Team
