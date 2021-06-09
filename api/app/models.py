@@ -33,6 +33,9 @@ class User(UserMixin, db.Model):
     #     except Exception:
     #         return []
 
+    def __repr__(self):
+        return '<User {}>'.format(self.email)
+
     @classmethod
     def lookup(cls, email):
         return cls.query.filter_by(email=email).one_or_none()
@@ -70,8 +73,8 @@ class User(UserMixin, db.Model):
     # def is_valid(self):
     #     return self.is_active
 
-    def __repr__(self):
-        return '<User {}>'.format(self.email)
+    # def __repr__(self):
+    #     return '<User {}>'.format(self.email)
 
 @login.user_loader
 def load_user(id):

@@ -12,6 +12,7 @@ from app.models import User
 from flask_login import current_user, login_user
 
 from time import time
+from datetime import datetime
 from flask_mail import Mail
 
 db = flask_sqlalchemy.SQLAlchemy()
@@ -23,6 +24,12 @@ cors = flask_cors.CORS()
 
 
 # Set up some routes for the example
+@app.before_request
+def before_request():
+    current_user.last_seen = datetime.utcnow()
+    db.session.commit()
+
+
 @app.route('/api/')
 def home():
     return {"Hello": "World"}, 200
@@ -126,13 +133,14 @@ def nn ():
 def forgot():
     req = flask.request.get_json(force=True)
     print(req)
-    email = req.get('email', None)
-    user = User.query.filter_by(email=email).first()
+    user_email = req.get('email', None)
+    user = User.query.filter_by(email=user_email).first()
+    #user = req.get('email', None)
     print('****USER:', user)
     if user:
         #guard.send_reset_email(email, template=None, reset_sender=None, reset_uri=None, subject=None, override_access_lifespan=None)
         send_password_reset_email(user)
-        message={'email sent to': email}, 200
+        message={'email sent to': user_email}, 200
     else:
         message={'something went wrong'}, 418
     return message
