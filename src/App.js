@@ -41,7 +41,7 @@ function App() {
             <PrivateRoute path="/nn" component={NNPage} />
             <Route path="/faq" exact component={() => <FAQ />} />
             <Route path="/forgot" exact component={() => <Forgot />} />
-            <Route path="/reset" exact component={() => <Reset />} />
+            <Route path="/reset/:hash" component={() => <Reset />} />
           </Switch>
         <Footer />
       </Router>
