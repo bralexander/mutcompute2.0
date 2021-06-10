@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import '../assets/css/login.css'
 import { useHistory } from 'react-router-dom'
+import { withRouter } from 'react-router'
 //import {useAuth, login, logout} from "../auth/index"
 
 
@@ -9,6 +10,9 @@ const Reset = (props) => {
   const [user, setUser] = useState(props.user)
 
   const history = useHistory();
+
+  const hash  = props.match.params.hash
+  console.log(hash)
 
   const resetSubmit = e => {
     e.preventDefault();
@@ -47,6 +51,7 @@ const Reset = (props) => {
   
   
   return (
+    
         <div className="login text-center">  
           <main className="form-signin">
             <form >
@@ -56,7 +61,7 @@ const Reset = (props) => {
               type="password" 
               id="password" 
               className="form-control" 
-              placeholder="password" 
+              placeholder="New Password" 
               onChange={e => setUser({ ...user, email: e.target.value.toLowerCase() })}
               required autoFocus 
               />
@@ -64,7 +69,7 @@ const Reset = (props) => {
               type="password" 
               id="confirm password" 
               className="form-control" 
-              placeholder="Confirm Password" 
+              placeholder="Confirm New Password" 
               onChange={e => setUser({ ...user, password: e.target.value })}
               required 
               />
@@ -81,4 +86,4 @@ const Reset = (props) => {
   )
 }
 
-export default Reset
+export default withRouter(Reset)
