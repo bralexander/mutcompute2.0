@@ -11,12 +11,13 @@ const Reset = (props) => {
 
   const history = useHistory();
 
+
   const hash  = props.match.params.hash
   console.log(hash)
 
   const resetSubmit = e => {
     e.preventDefault();
-    fetch('/api/reset', {
+    fetch(`/api/reset/${hash}`, {
       method: 'post',
       url: '/reset',
       body: JSON.stringify(user),
@@ -26,15 +27,11 @@ const Reset = (props) => {
       }
     })
     .then(r => r.json())
-    .then(res => {
-          if (res.status === 200) {
-            console.log('Password updated, redirecting to login')
-            history.push('/login')     
-    }
-    else {
-      console.log("Please type in correct username/password")
-    }
-  })
+    .then(data => {
+      console.log(data)
+      alert(`Password reset for: ${Object.values(data)}`)
+      history.push('/login')
+    })
     // .then(res => {
     //   if (res.status === 200) {
     //     console.log('User Validated, redirecting to home')
@@ -62,7 +59,7 @@ const Reset = (props) => {
               id="password" 
               className="form-control" 
               placeholder="New Password" 
-              onChange={e => setUser({ ...user, email: e.target.value.toLowerCase() })}
+              onChange={e => setUser({ ...user, password: e.target.value.toLowerCase() })}
               required autoFocus 
               />
               <input 
@@ -70,7 +67,7 @@ const Reset = (props) => {
               id="confirm password" 
               className="form-control" 
               placeholder="Confirm New Password" 
-              onChange={e => setUser({ ...user, password: e.target.value })}
+              onChange={e => setUser({ ...user, passwordConfirm: e.target.value })}
               required 
               />
                   {/* <div className="checkbox mb-3">
