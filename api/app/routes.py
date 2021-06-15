@@ -1,12 +1,11 @@
 import os
 import flask
-import flask_sqlalchemy
-import flask_praetorian
-import flask_cors
+# import flask_praetorian
+# import flask_cors
 import json
-import jwt
+# import jwt
 
-from app import app
+from app import app, db
 from app.email import send_password_reset_email
 from app.models import User
 from flask_login import current_user, login_user
@@ -15,9 +14,8 @@ from time import time
 from datetime import datetime, timedelta
 from flask_mail import Mail
 
-db = flask_sqlalchemy.SQLAlchemy()
-cors = flask_cors.CORS()
-guard = flask_praetorian.Praetorian()
+# cors = flask_cors.CORS()
+# guard = flask_praetorian.Praetorian()
 
 # # Initialize the flask-praetorian instance for the app
 #guard.init_app(app, User)
@@ -58,7 +56,9 @@ def login():
         #token = jwt.encode({'exp': datetime.utcnow()+timedelta(days=0,minutes=30,seconds=0) }, app.config['SECRET_KEY'], algorithm='HS256' )
         # not json serializable 
         #token = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJhIjoiYiJ9.dvOo58OBDHiuSHD4uW88nfJikhYAXc_sfUHq1mDi4G0'
-        ret = user.get_login_token(), 200
+        token = user.get_login_token().decode('utf-8')
+        print(token)
+        ret = {'access_token': token}, 200
     return ret
 
 
@@ -106,8 +106,8 @@ def refresh():
     print("refresh request")
     old_token = flask.request.get_data()
     new_token = guard.refresh_jwt_token(old_token)
-    ret = {'access_token': new_token}
-    return ret, 200
+    ret = {'access_token': new_token}, 200
+    return ret
   
 
 @app.route('/api/nn', methods=['POST'])
@@ -147,23 +147,27 @@ def forgot():
         send_password_reset_email(user)
         message={'email sent to': user_email}, 200
     else:
-        message={'something went wrong'}, 418
+        #should send an error emailsaying that the email does not exist in db
+        message={'something went wrong': None}, 418
     return message
 
 
 @app.route('/api/reset/<token>', methods=['GET', 'POST'])
 def reset_password(token):
+    
     user = User.verify_reset_password_token(token)
+    print(user, token)
     req = flask.request.get_json(force=True)
     new_password = req.get('password', None)
+    print(new_password)
     if user:
         #should also make sure password is not the same
         user.set_password(new_password)
+        db.session.add(user)
         db.session.commit()
         message={'password reset for': user.email}, 200
     else:
-        message= {'invalid token': user.email}, 418
-
+        message= {'invalid token': None }, 418
     return message
     
 
