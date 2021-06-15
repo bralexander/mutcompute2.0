@@ -1,4 +1,3 @@
-import flask_praetorian
 import jwt
 
 from app import db, login, app
