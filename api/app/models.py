@@ -21,40 +21,22 @@ class User(UserMixin, db.Model):
     last_name = db.Column(db.String(length=255))
     organization = db.Column(db.Text)
     password_hash = db.Column(db.String(128))
-    
-    #username = db.Column(db.Text, unique=True)
-    # password = db.Column(db.Text)
-    #is_active = db.Column(db.Boolean, default=True, server_default='true')
-
-    # @property
-    # def rolenames(self):
-    #     try:
-    #         return self.roles.split(',')
-    #     except Exception:
-    #         return []
 
     def __repr__(self):
         return '<User {}>'.format(self.email)
-
-    @classmethod
-    def lookup(cls, email):
-        return cls.query.filter_by(email=email).one_or_none()
-
-    @classmethod
-    def identify(cls, id):
-        return cls.query.get(id)
-
-    @property
-    def identity(self):
-        return self.id
-
     
     def set_password(self, password):
         self.password_hash = generate_password_hash(password)
+        
 
     def check_password(self, password):
         return check_password_hash(self.password_hash, password)
+        
 
+
+    def get_login_token(self, expires_in=1800):
+        return jwt.encode({'access_token': self.id, 'exp': time() + expires_in},
+            app.config['SECRET_KEY'], algorithm='HS256')
 
     def get_reset_password_token(self, expires_in=600):
         return jwt.encode(
@@ -69,6 +51,34 @@ class User(UserMixin, db.Model):
         except:
             return
         return User.query.get(id)
+        
+
+@login.user_loader
+def load_user(id):
+    return User.query.get(int(id))
+
+    #username = db.Column(db.Text, unique=True)
+    # password = db.Column(db.Text)
+    #is_active = db.Column(db.Boolean, default=True, server_default='true')
+
+    # @property
+    # def rolenames(self):
+    #     try:
+    #         return self.roles.split(',')
+    #     except Exception:
+    #         return []
+
+    # @classmethod
+    # def lookup(cls, email):
+    #     return cls.query.filter_by(email=email).one_or_none()
+
+    # @classmethod
+    # def identify(cls, id):
+    #     return cls.query.get(id)
+
+    # @property
+    # def identity(self):
+    #     return self.id
 
     # def is_valid(self):
     #     return self.is_active
@@ -76,6 +86,3 @@ class User(UserMixin, db.Model):
     # def __repr__(self):
     #     return '<User {}>'.format(self.email)
 
-@login.user_loader
-def load_user(id):
-    return User.query.get(int(id))
