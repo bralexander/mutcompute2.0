@@ -4,7 +4,6 @@ import flask_sqlalchemy
 import flask_praetorian
 import flask_cors
 import json
-
 import jwt
 
 from app import app
@@ -46,20 +45,20 @@ def login():
          -d '{"username":"Yasoob","password":"strongpassword"}'
     """
     req = flask.request.get_json(force=True)
-    print(req)
     email = req.get('email', None)
     password = req.get('password', None)
-    user = User.query.filter_by(email=email)
-    #print(User.password_hash)
-    if user is None or not User.check_password(user.first(), password):
+    print(password)
+    user = User.query.filter_by(email=email).first()
+    if user is None or not user.check_password(password):
     #if user is None or not guard.authenticate(email, password):
-        ret = {'Invalid username or password'}, 418
+        ret = {'Invalid username or password for': user.email}, 418
     else:
+       #token = user.get_login_token()
         # ret = {'access_token': guard.encode_jwt_token(user)}, 200
         #token = jwt.encode({'exp': datetime.utcnow()+timedelta(days=0,minutes=30,seconds=0) }, app.config['SECRET_KEY'], algorithm='HS256' )
         # not json serializable 
-        token = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJhIjoiYiJ9.dvOo58OBDHiuSHD4uW88nfJikhYAXc_sfUHq1mDi4G0'
-        ret = {'access_token': token}
+        #token = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJhIjoiYiJ9.dvOo58OBDHiuSHD4uW88nfJikhYAXc_sfUHq1mDi4G0'
+        ret = user.get_login_token(), 200
     return ret
 
 
@@ -106,8 +105,8 @@ def refresh():
     """
     print("refresh request")
     old_token = flask.request.get_data()
-    # new_token = guard.refresh_jwt_token(old_token)
-   #ret = {'access_token': new_token}
+    new_token = guard.refresh_jwt_token(old_token)
+    ret = {'access_token': new_token}
     return ret, 200
   
 
