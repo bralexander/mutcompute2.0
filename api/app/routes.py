@@ -107,7 +107,7 @@ def refresh():
     print("refresh request")
     old_token = flask.request.get_data()
     # new_token = guard.refresh_jwt_token(old_token)
-    ret = {'access_token': new_token}
+   #ret = {'access_token': new_token}
     return ret, 200
   
 
@@ -142,7 +142,7 @@ def forgot():
     user_email = req.get('email', None)
     user = User.query.filter_by(email=user_email).first()
     #user = req.get('email', None)
-    print('****USER:', user)
+    print('****ID:', id)
     if user:
         #guard.send_reset_email(email, template=None, reset_sender=None, reset_uri=None, subject=None, override_access_lifespan=None)
         send_password_reset_email(user)
@@ -154,14 +154,22 @@ def forgot():
 
 @app.route('/api/reset/<token>', methods=['GET', 'POST'])
 def reset_password(token):
+    #print('T:', token)
     user = User.verify_reset_password_token(token)
+    #print(user)
     req = flask.request.get_json(force=True)
+    new_password = req.get('password', None)
+    #not json serializable
+    print(new_password)
     if user:
-        user.set_password(req.password)
+        #problem is here
+        user.set_password(new_password)
         db.session.commit()
-        message={'password reset for': user.email}
+        message={'password reset for': user.email}, 200
+    else:
+        message= {'invalid token': user.email}, 418
 
-    return message, 200
+    return message
     
 
 # Run the example
