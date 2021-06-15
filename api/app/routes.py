@@ -154,15 +154,11 @@ def forgot():
 
 @app.route('/api/reset/<token>', methods=['GET', 'POST'])
 def reset_password(token):
-    #print('T:', token)
     user = User.verify_reset_password_token(token)
-    #print(user)
     req = flask.request.get_json(force=True)
     new_password = req.get('password', None)
-    #not json serializable
-    print(new_password)
     if user:
-        #problem is here
+        #should also make sure password is not the same
         user.set_password(new_password)
         db.session.commit()
         message={'password reset for': user.email}, 200
