@@ -19,7 +19,7 @@ def send_email(subject, sender, recipients, text_body, html_body):
     #Thread(target=send_async_email, args=(app, msg)).start()
 
 def send_password_reset_email(user):
-    token = user.get_reset_password_token()
+    token = user.get_reset_password_token().decode('utf-8')
     send_email('[Mutcompute] Reset Your Password',
                sender=app.config['ADMINS'][0],
                recipients=[user.email],
