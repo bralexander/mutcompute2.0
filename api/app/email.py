@@ -28,3 +28,11 @@ def send_password_reset_email(user):
                html_body=render_template('reset_pass.html',
                                          user=user, token=token)
             )
+
+def send_failure_email(email):
+    send_email('[Mutcompute] Reset Your Password',
+               sender=app.config['ADMINS'][0],
+               recipients=[email],
+               text_body=render_template('user_not_exist.txt'),
+               html_body=render_template('user_not_exist.html')
+    )

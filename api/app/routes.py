@@ -6,7 +6,7 @@ import json
 # import jwt
 
 from app import app, db
-from app.email import send_password_reset_email
+from app.email import send_password_reset_email, send_failure_email
 from app.models import User
 from flask_login import current_user, login_user
 
@@ -138,18 +138,20 @@ def nn ():
 @app.route('/api/forgot', methods=['GET', 'POST'])
 def forgot():
     req = flask.request.get_json(force=True)
-    print(req)
-    user_email = req.get('email', None)
-    user = User.query.filter_by(email=user_email).first()
-    #user = req.get('email', None)
-    print('****ID:', id)
-    if user:
-        #guard.send_reset_email(email, template=None, reset_sender=None, reset_uri=None, subject=None, override_access_lifespan=None)
+    #print(req)
+    email = req.get('email', None)
+    user = User.query.filter_by(email=email).first()
+    print('****User:', user)
+    if user is not None:
+        print('user is not none')
         send_password_reset_email(user)
-        message={'email sent to': user_email}, 200
+        message={'email sent to': email}, 200
     else:
-        #should send an error emailsaying that the email does not exist in db
-        message={'something went wrong': None}, 418
+        #should send an error email saying that the email does not exist in db
+        send_failure_email(email)
+        message={'email sent to': email}, 418
+        
+        
     return message
 
 
