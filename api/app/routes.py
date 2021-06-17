@@ -78,9 +78,10 @@ def register():
     last_name = req.get('last', None)
     organization = req.get('org', None)
     password = req.get('password', None)
-    print(req)
+    user = User.query.filter_by(email=email).count()
+    print(user)
 
-    if db.session.query(User).filter_by(email=email).count() >= 1:
+    if user >= 1:
         message={'There is already an account associated with that email': email}, 418
         #prefer not to return object
     else:
