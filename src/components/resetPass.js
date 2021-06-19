@@ -59,7 +59,7 @@ const Reset = (props) => {
               id="password" 
               className="form-control" 
               placeholder="New Password" 
-              onChange={e => setUser({ ...user, password: e.target.value.toLowerCase() })}
+              onChange={e => setUser({ ...user, password: e.target.value })}
               required autoFocus 
               />
               <input 
