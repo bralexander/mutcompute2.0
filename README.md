@@ -16,6 +16,12 @@ You will also see any lint errors in the console.
 
 ### `yarn start-api`
 
+Runs the emulated python email server.\
+
+You will see all emails in the console.
+
+### `yarn start-email`
+
 Runs the back end api in the development mode.\
 Open [http://localhost:5000](http://localhost:5000) to view it in the browser.
 
