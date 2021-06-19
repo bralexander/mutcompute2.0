@@ -22,7 +22,8 @@
   },
   "scripts": {
     "start": "BROWSER=none react-scripts start",
-    "start-api": "cd api && flask run --no-debugger",
+    "start-api": "cd api && venv/bin/flask run --no-debugger",
+    "start-email": "cd api && ./email.sh",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "test-api": "cd api && flask test",
