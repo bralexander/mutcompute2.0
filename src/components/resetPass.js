@@ -2,31 +2,39 @@ import '../assets/css/login.css'
 import { useHistory } from 'react-router-dom'
 import { withRouter } from 'react-router'
 import useInput from '../hooks/useInput'
-//import {useValidation} from '../hooks/useValidation'
-//import {useAuth, login, logout} from "../auth/index"
 
-let validLength = (value) => value.length >= 8
-let hasNumber = (value) => /\d/.test(value)
-let upperCase = (value) => value.toLowerCase() !== value
-let lowerCase = (value) => value.toUpperCase() !== value
-let specialChar = (value) => /[ `!@#$%^&*()_+\-=\]{};':"\\|,.<>?~]/.test(value)
-let match = (value1, value2) => value1 === value2
+
+const passwordValidator = (value) => {
+        let validLength  = value.trim().length >= 8
+        let hasNumber =  /\d/.test(value)
+        let upperCase =  value.toLowerCase() !== value
+        let lowerCase =  value.toUpperCase() !== value
+        let specialChar =  /[ `!@#$%^&*()_+\-=\]{};':"\\|,.<>?~]/.test(value)
+        if (validLength && hasNumber && upperCase && lowerCase && specialChar) {
+            return true
+        } else { 
+            return false
+        }
+    }
+const match = (value1, value2) => {
+  if (value1 === value2) {
+    return true
+  } else {
+    return false
+  }
+}
 
 const Reset = (props) => {
   const history = useHistory();
-
   const hash  = props.match.params.hash
-  //console.log(hash)
-
-
+  
   const {
     value: password1,
     valid: password1Valid,
     hasError: password1Error,
     valueChangeHandler: password1Change,
     inputBlurHandler: password1Blur
-  } = useInput((value) => validLength(value) && hasNumber(value) && upperCase(value) && lowerCase(value) && specialChar(value)
-  )
+  } = useInput((value) => passwordValidator(value))
 
   const {
     value: password2,
@@ -37,14 +45,12 @@ const Reset = (props) => {
   } = useInput((value) => match(password1, value))
 
 
-
   let validForm = false
+    if (password1Valid && password2Valid) {
+      validForm = true
+    }
 
-  if (password1Valid && password2Valid) {
-    validForm = true
-  }
-
-  const resetSubmit = e => {
+  const submitHandler = e => {
     e.preventDefault();
     fetch(`/api/reset/${hash}`, {
       method: 'post',
@@ -52,7 +58,6 @@ const Reset = (props) => {
       body: JSON.stringify(password1),
       headers: {
         'content-type': 'application/json'
-        //send jwt in header?
       }
     })
     .then(r => r.json())
@@ -61,18 +66,6 @@ const Reset = (props) => {
       alert(`Password reset for: ${Object.values(data)}`)
       history.push('/login')
     })
-    // .then(res => {
-    //   if (res.status === 200) {
-    //     console.log('User Validated, redirecting to home')
-    //     history.push('/')
-    //   }
-    //   console.log(res)
-    //   return res.json
-    // })
-    // .then(json => {
-    //   setUser(json.user) 
-    //   console.log(json)
-    // })
     }
   
   
@@ -93,7 +86,7 @@ const Reset = (props) => {
               value= {password1}              
               required autoFocus 
               />
-              {password1Error && (<p>Error1</p>)}
+              {password1Error && (<p>Please use a strong password</p>)}
               <input 
               type="password" 
               id="password 2" 
@@ -104,11 +97,11 @@ const Reset = (props) => {
               value= {password2}
               required 
               />
-              {password2Error && (<p>Error-2</p>)}
+              {password2Error && (<p>Passwords do not match</p>)}
               <button 
               className="w-100 btn btn-lg btn-primary" 
               type="submit" 
-              onClick={resetSubmit}
+              onClick={submitHandler}
               disabled = {!validForm}
               >Reset</button>
             </form>
