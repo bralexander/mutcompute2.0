@@ -482,37 +482,27 @@ const Compvis3 = (props) => {
 
       // remove default clicking
       stage.mouseControls.remove('clickPick-left')  
-
       // onclick residue select and show ligandrepr
-      var prevSele = ''
+      let prevSele = ''
       stage.signals.clicked.add(function (pickingProxy) {
-        if (pickingProxy === undefined) {
+        let sele = ''
+        if (pickingProxy && pickingProxy.atom && !pickingProxy.bond) {
+          sele += pickingProxy.closestBondAtom || pickingProxy.atom.resno
+        } 
+        if (sele && sele !== prevSele) {
+          showLigand(sele)
+          prevSele = sele
+        } else if (prevSele === sele) {
+          showRegion(sele)
+          prevSele = ''
+        } else {
+          sele = ''
+          prevSele = ''
           showFull()
         }
-        if (pickingProxy !== undefined) {
-          var sele = ''
-          if (pickingProxy.closestBondAtom) {
-            sele = ''
-            return
-          }
-          if (pickingProxy.atom.resno !== undefined) {
-            sele += (pickingProxy.closestBondAtom || pickingProxy.atom.resno)
-          }
-          if (pickingProxy.atom.chainname) {
-            sele += ':' + (pickingProxy.closestBondAtom || pickingProxy.atom.chainname)
-          }
-          if (!sele) {
-            showFull()
-          }
-          if (sele !== prevSele) {
-            showLigand(sele)
-            prevSele = sele
-          } else if (sele === prevSele) {
-            showRegion(sele)
-            prevSele = ''
-          }
-        }
-      })    
+        
+      })      
+
 
       addElement(createElement('span', {
         innerText: 'pocket near clipping'
