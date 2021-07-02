@@ -128,11 +128,12 @@ const Compvis3 = (props) => {
         pocketOpacityRange.value = 0
         cartoonCheckbox.checked = true
         customCheckbox.checked = false
+        sidechainAttachedCheckbox.checked = true
         hydrophobicCheckbox.checked = false
-        hydrogenBondCheckbox.checked = true
+        hydrogenBondCheckbox.checked = false
         weakHydrogenBondCheckbox.checked = false
-        waterHydrogenBondCheckbox.checked = true
-        backboneHydrogenBondCheckbox.checked = true
+        waterHydrogenBondCheckbox.checked = false
+        backboneHydrogenBondCheckbox.checked = false
         halogenBondCheckbox.checked = true
         metalInteractionCheckbox.checked = true
         saltBridgeCheckbox.checked = true
@@ -574,17 +575,17 @@ const Compvis3 = (props) => {
 
       var sidechainAttachedCheckbox = createElement('input', {
         type: 'checkbox',
-        checked: false,
+        checked: true,
         onchange: function (e) {
           sidechainAttached = e.target.checked
           neighborRepr.setSelection(
-            sidechainAttached ? '(' + neighborSele + ') and (sidechainAttached or not polymer)' : neighborSele
+            !sidechainAttached ? '(' + neighborSele + ') and (sidechainAttached or not polymer)' : neighborSele
           )
         }
       }, { top: getTopPosition(20), left: '12px' })
       addElement(sidechainAttachedCheckbox)
       addElement(createElement('span', {
-        innerText: 'sidechainAttached'
+        innerText: 'sidechain'
       }, { top: getTopPosition(), left: '32px', color: 'grey' }))   
 
       var labelCheckbox = createElement('input', {
