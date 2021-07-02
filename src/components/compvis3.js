@@ -238,7 +238,8 @@ const Compvis3 = (props) => {
             radiusSize: 0.07,
             weakHydrogenBond: false,
             waterHydrogenBond: false,
-            backboneHydrogenBond: true
+            backboneHydrogenBond: false,
+            hydrogenBond: false
           })
           pocketRepr = struc.addRepresentation('surface', {
             sele: 'none',
@@ -614,7 +615,7 @@ const Compvis3 = (props) => {
 
       var hydrogenBondCheckbox = createElement('input', {
         type: 'checkbox',
-        checked: false,
+        checked: true,
         onchange: function (e) {
           contactRepr.setParameters({ hydrogenBond: e.target.checked })
         }
