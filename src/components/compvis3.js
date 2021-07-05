@@ -200,9 +200,7 @@ const Compvis3 = (props) => {
                   } else if (wtProb < 0.05) {
                     return 0xFFA500 // orange
                   } else if (wtProb < 0.10) {
-                    return 0xFFFF00 // yellow
-                  // } else if (wtProb < 0.25) {
-                  //   return 
+                    return 0xFFFF00 // yellow 
                   } else {
                     return 0xFFFFFF // white
                   }
@@ -268,16 +266,16 @@ const Compvis3 = (props) => {
             labelGrouping: 'residue'
           })
         })
-        // .catch(failure)
+        .catch(failure)
       }
 
       // ERROR HANDLING -- specifically for mutcompute version (including above catch)
-      // function failure (error) {
-      //   console.error(error)
-      //   if (window.confirm('Sorry, this data does not exist. Please run your desired protein on mutcompute.com first. Would you like to be redirected to mutcompute.com?')) {
-      //     window.location.href = 'https://mutcompute.com';
-      //   }
-      // }
+      function failure (error) {
+        console.error(error)
+        if (window.confirm('Sorry, this data does not exist. Please run your desired protein through the neural net first.')) {
+          //window.location.href = 'https://mutcompute.com';
+        }
+      }
 
       function setLigandOptions () {
         ligandSelect.innerHTML = ''
