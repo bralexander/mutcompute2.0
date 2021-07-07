@@ -69,43 +69,44 @@ def register():
     print(user)
 
     if user >= 1:
-        message={'There is already an account associated with that email': email}, 418
+        message={'There is already an account associated with that email: ': email}, 418
         #prefer not to return object
     else:
-        message = {'Welcome': first_name}, 200
+        message = {'Welcome: ': first_name}, 200
         user = User(email=email, first_name=first_name, last_name=last_name, organization=organization)
         user.set_password(password)
         db.session.add(user)
         db.session.commit()
     #should we log user in automatically?
-    
+    print(message)
     return message
   
-@app.route('/api/refresh', methods=['POST'])
-def refresh():
-    """
-    Refreshes an existing JWT by creating a new one that is a copy of the old
-    except that it has a refrehsed access expiration.
-    .. example::
-       $ curl http://localhost:5000/api/refresh -X GET \
-         -H "Authorization: Bearer <your_token>"
-    """
-    print("refresh request")
-    old_token = flask.request.get_data()
-    new_token = guard.refresh_jwt_token(old_token)
-    ret = {'access_token': new_token}, 200
-    return ret
+# @app.route('/api/refresh', methods=['POST'])
+# def refresh():
+#     """
+#     Refreshes an existing JWT by creating a new one that is a copy of the old
+#     except that it has a refrehsed access expiration.
+#     .. example::
+#        $ curl http://localhost:5000/api/refresh -X GET \
+#          -H "Authorization: Bearer <your_token>"
+#     """
+#     print("refresh request")
+#     old_token = flask.request.get_data()
+#     new_token = guard.refresh_jwt_token(old_token)
+#     ret = {'access_token': new_token}, 200
+#     return ret
   
 
 @app.route('/api/nn', methods=['POST'])
 def nn ():
-    req = flask.request.get_data()
+    req = flask.request.get_data().decode('utf-8')
+    print(req)
     if isinstance(req, str):
-        message = 'string'
-        print(req)
-    else:
-        message = 'file'
-        print(req)
+        message = {'Running net on': req}, 200
+    elif req.isfile():
+        message = {'Running net on': req}, 200
+    else: 
+        message=418
     return message
 
 
