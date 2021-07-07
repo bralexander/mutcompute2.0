@@ -38,13 +38,11 @@ def login():
     req = flask.request.get_json(force=True)
     email = req.get('email', None)
     password = req.get('password', None)
-    print(password)
     user = User.query.filter_by(email=email).first()
     if user is None or not user.check_password(password):
         ret = {'Invalid username or password for': user.email}, 418
     else:
         token = user.get_login_token()
-        print(token)
         ret = {'access_token': token}, 200
     return ret
 
@@ -59,14 +57,12 @@ def register():
          -d '{"email":"Yasoob","password":"strongpassword"}'
     """
     req = flask.request.get_json(force=True)
-    print(req)
     email = req.get('email', None)
     first_name = req.get('first', None)
     last_name = req.get('last', None)
     organization = req.get('org', None)
     password = req.get('password', None)
     user = User.query.filter_by(email=email).count()
-    print(user)
 
     if user >= 1:
         message={'There is already an account associated with that email: ': email}, 418
@@ -78,7 +74,6 @@ def register():
         db.session.add(user)
         db.session.commit()
     #should we log user in automatically?
-    print(message)
     return message
   
 # @app.route('/api/refresh', methods=['POST'])
