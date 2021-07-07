@@ -26,7 +26,10 @@ const matchValidator = (value1, value2) => {
 
 const Register = (props) => {
     const history = useHistory();
-    const [newUser, setNewUser] = useState()
+    //const [newUser, setNewUser] = useState('')
+    const [first, setFirst] = useState('')
+    const [last, setLast] = useState('')
+    const [org, setOrg] = useState('')
 
     const {
         value: password1,
@@ -42,7 +45,7 @@ const Register = (props) => {
         hasError: password2Error,
         valueChangeHandler: password2Change,
         inputBlurHandler: password2Blur
-      } = useInput((value) => password1? matchValidator(password1, value): false)
+      } = useInput((value) => matchValidator(password1, value))
 
       const {
         value: email1,
@@ -62,35 +65,9 @@ const Register = (props) => {
 
       let validForm = false
       if (password1Valid && password2Valid && email1Valid && email2Valid) {
-          setNewUser({...newUser, email: email2, password: password2})
+          //setNewUser({...newUser, email: email2, password: password2})
         validForm = true
       }
-      
-    // const [confirm, setConfirm] = useState({
-    //     password1: '',
-    //     password2: '',
-    //     email1: '',
-    //     email2: '',
-    // })
-    
-    // const [validPass, setValidPass] = useState(true)
-
-    // const [
-    //     validLength,
-    //     hasNumber,
-    //     uppercase,
-    //     lowercase,
-    //     ematch,
-    //     pmatch,
-    //     specialChar,
-    // ] = useValidation({
-    //     password1: confirm.password1,
-    //     password2: confirm.password2,
-    //     email1: confirm.email1,
-    //     email2: confirm.email2
-    // })
-
-    
 
 
 const registerSubmit = e => {
@@ -98,69 +75,31 @@ const registerSubmit = e => {
     fetch('/api/register', {
         method: 'post',
         url:'/register', 
-        body: JSON.stringify(newUser),
+        body: JSON.stringify({
+            first: first,
+            last: last,
+            org: org,
+            email: email2,
+            password: password2
+        }),
         headers: {
             'content-type': 'application/json'
           }
     })
-    .then(res => {
-        if (res.status === 200){
-            history.push('/login')
-        }
-        return res.json()
-    })
+    .then(res => res.json())
     .then(data => { 
        console.log(data)
-       alert(Object.keys(data))
-
+       alert(Object.entries(data))
+       if (data.status === 200) {
+       history.push('/login')
+       }
     })
-    // if (r.status === 200) {
-    //     console.log(r.body)
-    //     alert('Success ')
-    // }
-    // else {alert('error')}
-    // .then(r => r.json())
-    // .then(token => {
-    //     if (token.access_token){
-    //       login(token)
-    //       console.log(token)          
-    //     }
-    // })
   } 
 
-
-
-// const validatePass = () => {
-//     if (validLength && hasNumber && uppercase && lowercase && specialChar && pmatch && ematch ) {
-//         setValidPass(true)
-//         //dont have 2 setNewUser calls in the same function
-//         //setNewUser({...newUser, password: confirm.password1})
-//         setNewUser({...newUser, email: confirm.email1.toLowerCase(), password: confirm.password1})
-//         console.log(newUser.password)
-//     } else {
-//         setValidPass(false)
-//     }
-// }
-
-
-
-// const setPassword1 = (event) => {
-//     setConfirm({ ...confirm, password1: event.target.value });
-//     //console.log(confirm.password1)
-//   };
-
-// const setPassword2 = (event) => {
-//     setConfirm({ ...confirm, password2: event.target.value });
-//   };
-
-// const setEmail1 = (event) => {
-//     setConfirm({ ...confirm, email1: event.target.value });
-//   };
-
-// const setEmail2 = (event) => {
-//     setConfirm({ ...confirm, email2: event.target.value });
-//   };
-
+//   if (res.status === 200){
+//     history.push('/login')
+//     res.json()
+//   }
 
   return (
     <div className=" register container-fluid">
@@ -178,7 +117,8 @@ const registerSubmit = e => {
                                 id="firstName" 
                                 className="form-control" 
                                 placeholder="First Name" 
-                                onChange={e => setNewUser({ ...newUser, first: e.target.value })}
+                                //onChange={e => setNewUser({ ...newUser, first: e.target.value })}
+                                onChange={e => setFirst( e.target.value )}
                                 required autoFocus minLength='2'
                                 />
                             </div>
@@ -205,7 +145,8 @@ const registerSubmit = e => {
                                 id="lastName" 
                                 className="form-control" 
                                 placeholder="Last Name" 
-                                onChange={e => setNewUser({ ...newUser, last: e.target.value })}
+                                // onChange={e => setNewUser({ ...newUser, last: e.target.value })}
+                                onChange={e => setLast( e.target.value )}
                                 required minLength='2'
                                 />
                             </div>
@@ -234,7 +175,8 @@ const registerSubmit = e => {
                                 id="org" 
                                 className="form-control" 
                                 placeholder="Company/Institution" 
-                                onChange={e => setNewUser({ ...newUser, org: e.target.value })}
+                                //onChange={e => setNewUser({ ...newUser, org: e.target.value })}
+                                onChange={e => setOrg( e.target.value )}
                                 required  minLength='3'
                                 /> 
                             </div>
