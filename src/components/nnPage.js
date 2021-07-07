@@ -14,13 +14,13 @@ const NNPage = () => {
                 url:'/nn', 
                 body: pdbFile,
                 headers: {
-                    'content-type': 'application/json'
+                    'content-type': 'text/csv'
                   }
             })
             .then(r => { 
                 if (r.status === 200) {
                     console.log(r)
-                    alert('Success ')
+                    alert('Running the net on your pdb file. This could take up to 15 minutes. Please check your email, and spam folder for the results. ')
                 }
                 else {alert('error')}
             })
@@ -38,7 +38,7 @@ const NNPage = () => {
         .then(r => { 
             if (r.status === 200) {
                 console.log(r)
-                alert('Success ')
+                alert('Fetching pdb from RCSB, and running the net on it. This could take up to 15 minutes. Please check your email, and spam folder for the results. ')
             }
             else {alert('error')}
         })
@@ -58,7 +58,7 @@ const handleFile = e => {
 const handleId = e => {
     console.log(e)
     if (e.length === 4){
-        setPdbId(e.toUppercase)
+        setPdbId(e.toUpperCase())
         console.log('4')
     } else {
         return

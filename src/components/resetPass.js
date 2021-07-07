@@ -1,29 +1,63 @@
-import React, { useState } from 'react'
 import '../assets/css/login.css'
 import { useHistory } from 'react-router-dom'
 import { withRouter } from 'react-router'
-//import {useAuth, login, logout} from "../auth/index"
+import useInput from '../hooks/useInput'
 
+
+const passwordValidator = (value) => {
+        let validLength  = value.trim().length >= 8
+        let hasNumber =  /\d/.test(value)
+        let upperCase =  value.toLowerCase() !== value
+        let lowerCase =  value.toUpperCase() !== value
+        let specialChar =  /[ `!@#$%^&*()_+\-=\]{};':"\\|,.<>?~]/.test(value)
+        if (validLength && hasNumber && upperCase && lowerCase && specialChar) {
+            return true
+        } else { 
+            return false
+        }
+    }
+const match = (value1, value2) => {
+  if (value1 === value2) {
+    return true
+  } else {
+    return false
+  }
+}
 
 const Reset = (props) => {
-  // const [csrf, setCsrf] = useState(null);
-  const [user, setUser] = useState(props.user)
-
   const history = useHistory();
-
-
   const hash  = props.match.params.hash
-  console.log(hash)
+  
+  const {
+    value: password1,
+    valid: password1Valid,
+    hasError: password1Error,
+    valueChangeHandler: password1Change,
+    inputBlurHandler: password1Blur
+  } = useInput((value) => passwordValidator(value))
 
-  const resetSubmit = e => {
+  const {
+    value: password2,
+    valid: password2Valid,
+    hasError: password2Error,
+    valueChangeHandler: password2Change,
+    inputBlurHandler: password2Blur
+  } = useInput((value) => match(password1, value))
+
+
+  let validForm = false
+    if (password1Valid && password2Valid) {
+      validForm = true
+    }
+
+  const submitHandler = e => {
     e.preventDefault();
     fetch(`/api/reset/${hash}`, {
       method: 'post',
       url: '/reset',
-      body: JSON.stringify(user),
+      body: JSON.stringify(password1),
       headers: {
         'content-type': 'application/json'
-        //send jwt in header?
       }
     })
     .then(r => r.json())
@@ -32,18 +66,6 @@ const Reset = (props) => {
       alert(`Password reset for: ${Object.values(data)}`)
       history.push('/login')
     })
-    // .then(res => {
-    //   if (res.status === 200) {
-    //     console.log('User Validated, redirecting to home')
-    //     history.push('/')
-    //   }
-    //   console.log(res)
-    //   return res.json
-    // })
-    // .then(json => {
-    //   setUser(json.user) 
-    //   console.log(json)
-    // })
     }
   
   
@@ -56,27 +78,32 @@ const Reset = (props) => {
               <h1 className="h3 mb-3 fw-normal">Reset Password</h1>
               <input 
               type="password" 
-              id="password" 
+              id="password1" 
               className="form-control" 
               placeholder="New Password" 
-              onChange={e => setUser({ ...user, password: e.target.value })}
+              onChange = {password1Change}
+              onBlur = {password1Blur}
+              value= {password1}              
               required autoFocus 
               />
+              {password1Error && (<p>Please use a strong password</p>)}
               <input 
               type="password" 
-              id="confirm password" 
+              id="password 2" 
               className="form-control" 
-              placeholder="Confirm New Password" 
-              onChange={e => setUser({ ...user, passwordConfirm: e.target.value })}
+              placeholder="Confirm New Password"
+              onChange = {password2Change}
+              onBlur = {password2Blur}
+              value= {password2}
               required 
               />
-                  {/* <div className="checkbox mb-3">
-                    <label>
-                      <input type="checkbox" value="remember-me"/> Remember me
-                    </label>
-                  </div> */}
-              <button className="w-100 btn btn-lg btn-primary" type="submit" onClick={resetSubmit}>Reset</button>
-              {/* <p className="mt-5 mb-3 text-muted">&copy; 2017–2021</p> */}
+              {password2Error && (<p>Passwords do not match</p>)}
+              <button 
+              className="w-100 btn btn-lg btn-primary" 
+              type="submit" 
+              onClick={submitHandler}
+              disabled = {!validForm}
+              >Reset</button>
             </form>
           </main>
         </div>

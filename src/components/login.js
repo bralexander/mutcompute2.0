@@ -30,7 +30,7 @@ const Login = (props) => {
       history.push('/')        
     }
     else {
-      console.log("Please type in correct username/password")
+      alert("Please type in correct username/password")
     }
   })
     // .then(res => {
@@ -60,7 +60,7 @@ const Login = (props) => {
               id="inputEmail" 
               className="form-control" 
               placeholder="Email address" 
-              onChange={e => setUser({ ...user, email: e.target.value.toLowerCase() })}
+              onChange={e => setUser({ ...user, email: e.target.value.toLowerCase().trim()})}
               required autoFocus 
               />
               <label htmlFor="inputPassword" className="visually-hidden">Password</label>
