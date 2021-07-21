@@ -4,13 +4,13 @@ LABEL maintainer="Brad Alexander"
 
 RUN useradd mutcompute
 
-WORKDIR /home/mutcompute
+WORKDIR /app
 
-COPY . /home/mutcompute
+COPY . /app
 
 ENV FLASK_APP api.py
 
-RUN chown -R mutcompute:mutcompute /home/mutcompute && \
+RUN chown -R mutcompute:mutcompute /app && \
     chmod +x ./entry.sh && \
     pip install -r requirements.txt
 
