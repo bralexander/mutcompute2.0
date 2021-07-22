@@ -51,7 +51,7 @@ const Login = (props) => {
   return (
         <div className="login text-center">  
           <main className="form-signin">
-          {!logged? <form >
+          {!logged? <form autoComplete="on">
               {/* <img className="mb-4" src="/docs/5.0/assets/brand/bootstrap-logo.svg" alt="" width="72" height="57" /> */}
               <h1 className="h3 mb-3 fw-normal">Please sign in</h1>
               <label htmlFor="inputEmail" className="visually-hidden">Email address</label>
@@ -61,7 +61,7 @@ const Login = (props) => {
               className="form-control" 
               placeholder="Email address" 
               onChange={e => setUser({ ...user, email: e.target.value.toLowerCase().trim()})}
-              required autoFocus 
+              required autoFocus
               />
               <label htmlFor="inputPassword" className="visually-hidden">Password</label>
               <input 
@@ -70,7 +70,7 @@ const Login = (props) => {
               className="form-control" 
               placeholder="Password" 
               onChange={e => setUser({ ...user, password: e.target.value })}
-              required 
+              required
               />
                   {/* <div className="checkbox mb-3">
                     <label>

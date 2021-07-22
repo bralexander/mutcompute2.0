@@ -48,7 +48,7 @@ const Forgot = (props) => {
         <div className="login text-center">  
           <main className="form-signin">
            { !logged?
-           <form >
+           <form autoComplete="on">
               {/* <img className="mb-4" src="/docs/5.0/assets/brand/bootstrap-logo.svg" alt="" width="72" height="57" /> */}
               <h1 className="h3 mb-3 fw-normal">Enter your email</h1>
               <label htmlFor="inputEmail" className="visually-hidden">Email address</label>

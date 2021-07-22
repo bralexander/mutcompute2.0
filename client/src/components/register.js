@@ -109,7 +109,7 @@ const registerSubmit = e => {
         <br />
             <section className="container">
                 <div className="container-page">
-                    <form method="POST" onSubmit={registerSubmit}>
+                    <form method="POST" onSubmit={registerSubmit} autoComplete="on">
                         <div className="row container">
                             <div className="form-group col-md-6">
                                 <input 
@@ -147,7 +147,7 @@ const registerSubmit = e => {
                                 placeholder="Last Name" 
                                 // onChange={e => setNewUser({ ...newUser, last: e.target.value })}
                                 onChange={e => setLast( e.target.value )}
-                                required minLength='2'
+                                required  minLength='2' 
                                 />
                             </div>
                             <div className="form-group col-md-6">
@@ -177,7 +177,7 @@ const registerSubmit = e => {
                                 placeholder="Company/Institution" 
                                 //onChange={e => setNewUser({ ...newUser, org: e.target.value })}
                                 onChange={e => setOrg( e.target.value )}
-                                required  minLength='3'
+                                required  minLength='3' 
                                 /> 
                             </div>
                             <div className="form-group col-md-6">
