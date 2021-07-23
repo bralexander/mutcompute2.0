@@ -6,6 +6,9 @@ services:
       image: mutcompute-api
       ports:
         - "5000:5000"
+      volumes:
+        - ./api:/app/
+      command: gunicorn -b 0.0.0.0:5000 api:app
     client:
       build:
         context: .
@@ -13,4 +16,7 @@ services:
       image: mutcompute-client
       ports:
         - "3000:3000"
+      volumes:
+        - ./client:/app/
+
       
