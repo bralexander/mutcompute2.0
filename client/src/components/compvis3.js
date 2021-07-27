@@ -128,7 +128,7 @@ const Compvis3 = (props) => {
         pocketOpacityRange.value = 0
         cartoonCheckbox.checked = true
         customCheckbox.checked = false
-        sidechainAttachedCheckbox.checked = true
+        sidechainAttachedCheckbox.checked = false
         hydrophobicCheckbox.checked = false
         hydrogenBondCheckbox.checked = false
         weakHydrogenBondCheckbox.checked = false
@@ -222,7 +222,9 @@ const Compvis3 = (props) => {
             sele: 'none',
             aspectRatio: 1.1,
             colorValue: 'lightgrey',
-            multipleBond: 'symmetric'
+            multipleBond: 'symmetric',
+            //changed opacity for hong
+            opacity: 0.7
           })
           ligandRepr = struc.addRepresentation('ball+stick', {
             multipleBond: 'symmetric',
@@ -394,6 +396,7 @@ const Compvis3 = (props) => {
       function showLigand (sele) {
         var s = struc.structure 
 
+        // Hong -- changes b+s radius , 9 => 30+
         var withinSele = s.getAtomSetWithinSelection(new NGL.Selection(sele), 9)
         var withinGroup = s.getAtomSetWithinGroup(withinSele)
         var expandedSele = withinGroup.toSeleString()
@@ -401,7 +404,8 @@ const Compvis3 = (props) => {
         neighborSele = expandedSele 
 
         var sview = s.getView(new NGL.Selection(sele))
-        pocketRadius = Math.max(sview.boundingBox.getSize(new NGL.Vector3()).length() / 2, 2) + 10
+        // Hong -- changes surface repr radius, change +10 ^
+        pocketRadius = Math.max(sview.boundingBox.getSize(new NGL.Vector3()).length(), 2) + 10
         var withinSele2 = s.getAtomSetWithinSelection(new NGL.Selection(sele), pocketRadius + 2)
         var neighborSele2 = '(' + withinSele2.toSeleString() + ') and not (' + sele + ') and polymer'   
 
@@ -413,7 +417,7 @@ const Compvis3 = (props) => {
 
         ligandRepr.setSelection(sele)
         neighborRepr.setSelection(
-          sidechainAttached ? '(' + neighborSele + ') and (sidechainAttached or not polymer)' : neighborSele
+          !sidechainAttached ? '(' + neighborSele + ') and (sidechainAttached or not polymer)' : neighborSele
         )
         contactRepr.setSelection(expandedSele)
         pocketRepr.setSelection(neighborSele2)
@@ -574,7 +578,7 @@ const Compvis3 = (props) => {
 
       var sidechainAttachedCheckbox = createElement('input', {
         type: 'checkbox',
-        checked: true,
+        checked: false,
         onchange: function (e) {
           sidechainAttached = e.target.checked
           neighborRepr.setSelection(
