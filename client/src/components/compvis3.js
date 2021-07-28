@@ -410,14 +410,15 @@ const Compvis3 = (props) => {
         var withinSele = s.getAtomSetWithinSelection(new NGL.Selection(sele), 9)
         var withinGroup = s.getAtomSetWithinGroup(withinSele)
         var expandedSele = withinGroup.toSeleString()
-        neighborSele = '(' + expandedSele + ') and not (polymer or water or ion)' //(' + sele + ')'
+        neighborSele = '(' + expandedSele + ') and not (' + sele + ')'
         neighborSele = expandedSele 
 
         var sview = s.getView(new NGL.Selection(sele))
         // Hong -- changes surface repr radius, change +10 ^
         pocketRadius = Math.max(sview.boundingBox.getSize(new NGL.Vector3()).length(), 2) + 10
+        //100
         var withinSele2 = s.getAtomSetWithinSelection(new NGL.Selection(sele), pocketRadius + 2)
-        var neighborSele2 = '(' + withinSele2.toSeleString() + ') and not ( water )'//(' + sele + ') and polymer'   
+        var neighborSele2 = '(' + withinSele2.toSeleString() + ') and not (' + sele + ') or polymer'   
 
         ligandRepr.setVisibility(true)
         neighborRepr.setVisibility(true)
@@ -447,7 +448,7 @@ const Compvis3 = (props) => {
         var withinSele = s.getAtomSetWithinSelection(new NGL.Selection(sele), 5)
         var withinGroup = s.getAtomSetWithinGroup(withinSele)
         var expandedSele = withinGroup.toSeleString()
-        neighborSele = '(' + expandedSele + ') and not ( water or ion )'//(' + sele + ')'
+        neighborSele = '(' + expandedSele + ') and not (' + sele + ')'
         neighborSele = expandedSele 
 
         ligandRepr.setVisibility(false)
@@ -501,8 +502,11 @@ const Compvis3 = (props) => {
       stage.signals.clicked.add(function (pickingProxy) {
         let sele = ''
         if (pickingProxy && pickingProxy.atom && !pickingProxy.bond) {
-          sele += pickingProxy.closestBondAtom || pickingProxy.atom.resno
+          sele += (pickingProxy.closestBondAtom || pickingProxy.atom.resno)
         } 
+        if (pickingProxy.atom.chainname) {
+          sele += ':' + (pickingProxy.closestBondAtom || pickingProxy.atom.chainname)
+        }
         if (sele && sele !== prevSele) {
           showLigand(sele)
           prevSele = sele
