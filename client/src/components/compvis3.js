@@ -132,7 +132,7 @@ const Compvis3 = (props) => {
         cartoonCheckbox.checked = true
         customCheckbox.checked = false
         sidechainAttachedCheckbox.checked = false
-        //waterIonCheckbox.checked = true
+        waterIonCheckbox.checked = false
         hydrophobicCheckbox.checked = false
         hydrogenBondCheckbox.checked = false
         weakHydrogenBondCheckbox.checked = false
@@ -237,12 +237,12 @@ const Compvis3 = (props) => {
             aspectRatio: 1.2,
             radiusScale: 2.5
           })
-          // waterRepr = struc.addRepresentation('ball+stick', {
-          //   name: 'waterIon',
-          //   visible: waterIonCheckbox.checked,
-          //   sele: 'water or ion',
-          //   scale: 0.25
-          // })
+          waterRepr = struc.addRepresentation('ball+stick', {
+            name: 'waterIon',
+            visible: waterIonCheckbox.checked,
+            sele: 'water or ion',
+            aspectRatio: 1.1,
+          })
           contactRepr = struc.addRepresentation('contact', {
             sele: 'none',
             radiusSize: 0.07,
@@ -426,9 +426,11 @@ const Compvis3 = (props) => {
         labelRepr.setVisibility(false)  
 
         ligandRepr.setSelection(sele)
+        //and not (water or ion) removes water/ions 
         neighborRepr.setSelection(
           !sidechainAttached ? '(' + neighborSele + ') and (sidechainAttached or not polymer) and not (water or ion)' : neighborSele
         )
+        waterRepr.setSelection(expandedSele)
         contactRepr.setSelection(expandedSele)
         pocketRepr.setSelection(neighborSele2)
         pocketRepr.setParameters({
@@ -608,18 +610,18 @@ const Compvis3 = (props) => {
         innerText: 'sidechain'
       }, { top: getTopPosition(), left: '32px', color: 'grey' }))   
 
-      // var waterIonCheckbox = createElement('input', {
-      //   type: 'checkbox',
-      //   checked: true,
-      //   onchange: function (e) {
-      //     stage.getRepresentationsByName('waterIon')
-      //     .setVisibility(e.target.checked)
-      //   }
-      // }, { top: getTopPosition(20), left: '12px' })
-      // addElement(waterIonCheckbox)
-      // addElement(createElement('span', {
-      //   innerText: 'Water Ion'
-      // }, { top: getTopPosition(), left: '32px', color: 'grey' }))
+      var waterIonCheckbox = createElement('input', {
+        type: 'checkbox',
+        checked: true,
+        onchange: function (e) {
+          stage.getRepresentationsByName('waterIon')
+          .setVisibility(e.target.checked)
+        }
+      }, { top: getTopPosition(20), left: '12px' })
+      addElement(waterIonCheckbox)
+      addElement(createElement('span', {
+        innerText: 'Water Ion'
+      }, { top: getTopPosition(), left: '32px', color: 'grey' }))
 
       var labelCheckbox = createElement('input', {
         type: 'checkbox',
