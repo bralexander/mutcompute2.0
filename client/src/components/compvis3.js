@@ -414,11 +414,10 @@ const Compvis3 = (props) => {
         neighborSele = expandedSele 
 
         var sview = s.getView(new NGL.Selection(sele))
-        // Hong -- changes surface repr radius, change +10 ^
+        // Hong -- changes surface repr 100 for full struc
         pocketRadius = Math.max(sview.boundingBox.getSize(new NGL.Vector3()).length(), 2) + 10
-        //100
         var withinSele2 = s.getAtomSetWithinSelection(new NGL.Selection(sele), pocketRadius + 2)
-        var neighborSele2 = '(' + withinSele2.toSeleString() + ') and not (' + sele + ') or polymer'   
+        var neighborSele2 = '(' + withinSele2.toSeleString() + ') and not (' + sele + ') and polymer'   
 
         ligandRepr.setVisibility(true)
         neighborRepr.setVisibility(true)
@@ -436,7 +435,8 @@ const Compvis3 = (props) => {
           clipRadius: pocketRadius * pocketRadiusClipFactor,
           clipCenter: sview.center
         })
-        labelRepr.setSelection('(' + neighborSele + ') and not (polymer or water or ion)') 
+        //ignores water or ion for pocket coloring
+        labelRepr.setSelection('(' + neighborSele + ') and not (water or ion)') 
 
         struc.autoView(expandedSele, 2000)
       } 
@@ -504,15 +504,17 @@ const Compvis3 = (props) => {
         if (pickingProxy && pickingProxy.atom && !pickingProxy.bond) {
           sele += (pickingProxy.closestBondAtom || pickingProxy.atom.resno)
         } 
-        if (pickingProxy.atom.chainname) {
+        if (pickingProxy && pickingProxy.atom.chainname && !pickingProxy.bond) {
           sele += ':' + (pickingProxy.closestBondAtom || pickingProxy.atom.chainname)
         }
         if (sele && sele !== prevSele) {
           showLigand(sele)
           prevSele = sele
+          residueSelect.value = ''
         } else if (prevSele === sele) {
           showRegion(sele)
           prevSele = ''
+          residueSelect.value = ''
         } else {
           sele = ''
           prevSele = ''
