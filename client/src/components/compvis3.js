@@ -128,7 +128,7 @@ const Compvis3 = (props) => {
         ligandSelect.innerHTML = ''
         clipNearRange.value = 0
         clipRadiusRange.value = 100
-        pocketOpacityRange.value = 0
+        pocketOpacityRange.value = 30
         cartoonCheckbox.checked = true
         customCheckbox.checked = false
         sidechainAttachedCheckbox.checked = false
@@ -257,7 +257,7 @@ const Compvis3 = (props) => {
             visibility: true,
             clipNear: 0,
             opaqueBack: false,
-            opacity: 0.0,
+            opacity: 0.3,
             color: heatMap,
             roughness: 1.0,
             surfaceType: 'av'
@@ -561,7 +561,7 @@ const Compvis3 = (props) => {
         innerText: 'pocket opacity'
       }, { top: getTopPosition(25), left: '12px', color: 'grey' }))
       var pocketOpacityRange = createElement('input', {
-        type: 'range', value: 90, min: 0, max: 100, step: 1
+        type: 'range', value: 30, min: 0, max: 100, step: 1
       }, { top: getTopPosition(20), left: '12px' })
       pocketOpacityRange.oninput = function (e) {
         pocketRepr.setParameters({
