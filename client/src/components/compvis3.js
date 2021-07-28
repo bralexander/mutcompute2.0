@@ -102,11 +102,14 @@ const Compvis3 = (props) => {
       var pocketRadius = 0
       var pocketRadiusClipFactor = 1
 
-      var cartoonRepr, neighborRepr, ligandRepr, contactRepr, pocketRepr, labelRepr, customRepr
+      var cartoonRepr, neighborRepr, ligandRepr, waterRepr, contactRepr, pocketRepr, labelRepr, customRepr
 
       var struc
       var csv
       var residueData
+
+      var heatMap
+      var customPercent
 
       var neighborSele
       var sidechainAttached = false
@@ -129,6 +132,7 @@ const Compvis3 = (props) => {
         cartoonCheckbox.checked = true
         customCheckbox.checked = false
         sidechainAttachedCheckbox.checked = false
+        //waterIonCheckbox.checked = true
         hydrophobicCheckbox.checked = false
         hydrogenBondCheckbox.checked = false
         weakHydrogenBondCheckbox.checked = false
@@ -161,9 +165,9 @@ const Compvis3 = (props) => {
             residueData[resNum] = csv[i]
           }
       
-          var heatMap = NGL.ColormakerRegistry.addScheme(function (params) {
+          heatMap = NGL.ColormakerRegistry.addScheme(function (params) {
             this.parameters = Object.assign(this.parameters, {
-              domain: [0, 1],
+              domain: [0, 0.40],
               scale: 'rwb',
               mode: 'rgb'
             })
@@ -182,7 +186,7 @@ const Compvis3 = (props) => {
             }
           })
       
-          var customPercent = NGL.ColormakerRegistry.addScheme(function (params) {
+          customPercent = NGL.ColormakerRegistry.addScheme(function (params) {
             this.atomColor = function (atom) {
               for (var i = 0; i < csv.length; i++) {
                 const csvRow = residueData[atom.resno]
@@ -233,6 +237,12 @@ const Compvis3 = (props) => {
             aspectRatio: 1.2,
             radiusScale: 2.5
           })
+          // waterRepr = struc.addRepresentation('ball+stick', {
+          //   name: 'waterIon',
+          //   visible: waterIonCheckbox.checked,
+          //   sele: 'water or ion',
+          //   scale: 0.25
+          // })
           contactRepr = struc.addRepresentation('contact', {
             sele: 'none',
             radiusSize: 0.07,
@@ -400,14 +410,14 @@ const Compvis3 = (props) => {
         var withinSele = s.getAtomSetWithinSelection(new NGL.Selection(sele), 9)
         var withinGroup = s.getAtomSetWithinGroup(withinSele)
         var expandedSele = withinGroup.toSeleString()
-        neighborSele = '(' + expandedSele + ') and not (' + sele + ')'
+        neighborSele = '(' + expandedSele + ') and not (polymer or water or ion)' //(' + sele + ')'
         neighborSele = expandedSele 
 
         var sview = s.getView(new NGL.Selection(sele))
         // Hong -- changes surface repr radius, change +10 ^
         pocketRadius = Math.max(sview.boundingBox.getSize(new NGL.Vector3()).length(), 2) + 10
         var withinSele2 = s.getAtomSetWithinSelection(new NGL.Selection(sele), pocketRadius + 2)
-        var neighborSele2 = '(' + withinSele2.toSeleString() + ') and not (' + sele + ') and polymer'   
+        var neighborSele2 = '(' + withinSele2.toSeleString() + ') and not ( water )'//(' + sele + ') and polymer'   
 
         ligandRepr.setVisibility(true)
         neighborRepr.setVisibility(true)
@@ -425,7 +435,7 @@ const Compvis3 = (props) => {
           clipRadius: pocketRadius * pocketRadiusClipFactor,
           clipCenter: sview.center
         })
-        labelRepr.setSelection('(' + neighborSele + ') and not (water or ion)') 
+        labelRepr.setSelection('(' + neighborSele + ') and not (polymer or water or ion)') 
 
         struc.autoView(expandedSele, 2000)
       } 
@@ -437,7 +447,7 @@ const Compvis3 = (props) => {
         var withinSele = s.getAtomSetWithinSelection(new NGL.Selection(sele), 5)
         var withinGroup = s.getAtomSetWithinGroup(withinSele)
         var expandedSele = withinGroup.toSeleString()
-        neighborSele = '(' + expandedSele + ') and not (' + sele + ')'
+        neighborSele = '(' + expandedSele + ') and not ( water or ion )'//(' + sele + ')'
         neighborSele = expandedSele 
 
         ligandRepr.setVisibility(false)
@@ -569,6 +579,7 @@ const Compvis3 = (props) => {
         checked: false,
         onchange: function (e) {
           customRepr.setVisibility(e.target.checked)
+          e.target.checked? pocketRepr.setParameters({color: customPercent}) : pocketRepr.setParameters({color: heatMap})
         }
       }, { top: getTopPosition(20), left: '12px' })
       addElement(customCheckbox)
@@ -590,6 +601,19 @@ const Compvis3 = (props) => {
       addElement(createElement('span', {
         innerText: 'sidechain'
       }, { top: getTopPosition(), left: '32px', color: 'grey' }))   
+
+      // var waterIonCheckbox = createElement('input', {
+      //   type: 'checkbox',
+      //   checked: true,
+      //   onchange: function (e) {
+      //     stage.getRepresentationsByName('waterIon')
+      //     .setVisibility(e.target.checked)
+      //   }
+      // }, { top: getTopPosition(20), left: '12px' })
+      // addElement(waterIonCheckbox)
+      // addElement(createElement('span', {
+      //   innerText: 'Water Ion'
+      // }, { top: getTopPosition(), left: '32px', color: 'grey' }))
 
       var labelCheckbox = createElement('input', {
         type: 'checkbox',
