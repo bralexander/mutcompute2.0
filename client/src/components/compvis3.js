@@ -427,7 +427,7 @@ const Compvis3 = (props) => {
 
         ligandRepr.setSelection(sele)
         neighborRepr.setSelection(
-          !sidechainAttached ? '(' + neighborSele + ') and (sidechainAttached or not polymer)' : neighborSele
+          !sidechainAttached ? '(' + neighborSele + ') and (sidechainAttached or not polymer) and not (water or ion)' : neighborSele
         )
         contactRepr.setSelection(expandedSele)
         pocketRepr.setSelection(neighborSele2)
