@@ -85,7 +85,8 @@ const Compvis3 = (props) => {
             WT AA: ${atom.resname}<br/>
             WT PROB: ${wtProb.toFixed(4)}<br/>
             PRED AA: ${csvRow[csvPrAaCol]}<br/>
-            PRED PROB: ${prProb.toFixed(4)}<br/>`
+            PRED PROB: ${prProb.toFixed(4)}<br/>
+            LOG2 P/W: ${Math.log2(prProb/wtProb).toFixed(4)}`
               tooltip.style.bottom = stage.viewer.height - 80 + 'px'
               tooltip.style.left = stage.viewer.width - 170 + 'px'
               tooltip.style.display = 'block'
@@ -127,7 +128,7 @@ const Compvis3 = (props) => {
         stage.removeAllComponents()
         ligandSelect.innerHTML = ''
         clipNearRange.value = 0
-        clipRadiusRange.value = 100
+        clipRadiusRange.value = 10
         pocketOpacityRange.value = 30
         cartoonCheckbox.checked = true
         customCheckbox.checked = false
@@ -227,7 +228,7 @@ const Compvis3 = (props) => {
             aspectRatio: 1.1,
             colorValue: 'lightgrey',
             multipleBond: 'symmetric',
-            //changed opacity for hong
+            //changed opacity for Hong
             opacity: 0.7
           })
           ligandRepr = struc.addRepresentation('ball+stick', {
@@ -258,6 +259,7 @@ const Compvis3 = (props) => {
             clipNear: 0,
             opaqueBack: false,
             opacity: 0.3,
+            // clipRadius: 0.1,
             color: heatMap,
             roughness: 1.0,
             surfaceType: 'av'
@@ -407,7 +409,7 @@ const Compvis3 = (props) => {
         var s = struc.structure 
 
         // Hong -- changes b+s radius , 9 => 30+
-        var withinSele = s.getAtomSetWithinSelection(new NGL.Selection(sele), 9)
+        var withinSele = s.getAtomSetWithinSelection(new NGL.Selection(sele), 12)
         var withinGroup = s.getAtomSetWithinGroup(withinSele)
         var expandedSele = withinGroup.toSeleString()
         neighborSele = '(' + expandedSele + ') and not (' + sele + ')'
@@ -503,12 +505,19 @@ const Compvis3 = (props) => {
       let prevSele = ''
       stage.signals.clicked.add(function (pickingProxy) {
         let sele = ''
-        if (pickingProxy && pickingProxy.atom && !pickingProxy.bond) {
-          sele += (pickingProxy.closestBondAtom || pickingProxy.atom.resno)
+        if (pickingProxy && !pickingProxy.bond) {
+          if (pickingProxy.atom) {
+            sele += (pickingProxy.closestBondAtom || pickingProxy.atom.resno) + ':' + ((pickingProxy.closestBondAtom || pickingProxy.atom.chainname))
+          }
         } 
-        if (pickingProxy && pickingProxy.atom.chainname && !pickingProxy.bond) {
-          sele += ':' + (pickingProxy.closestBondAtom || pickingProxy.atom.chainname)
-        }
+        
+        // if (pickingProxy && pickingProxy.atom && !pickingProxy.bond) {
+        //   sele += (pickingProxy.closestBondAtom || pickingProxy.atom.resno)
+        // } 
+        // if (pickingProxy && !pickingProxy.bond && pickingProxy.atom.chainname) {
+        //   sele += ':' + (pickingProxy.closestBondAtom || pickingProxy.atom.chainname)
+        //   console.log(sele)
+        // }
         if (sele && sele !== prevSele) {
           showLigand(sele)
           prevSele = sele
