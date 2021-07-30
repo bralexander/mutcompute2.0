@@ -102,6 +102,13 @@ def nn ():
         message = {'Running net on': req}, 200
     else: 
         message=418
+    #NEED TO IMPLEMENT DATABASE FOR PROTEINS
+    # prot = Prot.query.filter_by(id=id).count()
+    # if prot >= 1:
+    #     csv = prot.get_csv()
+    #     #prefer not to return object
+    # else:
+    #   run engine on protein (task)
     return message
 
 
