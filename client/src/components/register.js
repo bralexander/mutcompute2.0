@@ -109,29 +109,34 @@ const registerSubmit = e => {
         <br />
             <section className="container">
                 <div className="container-page">
-                    <form method="POST" onSubmit={registerSubmit} autoComplete="on">
+                    <form method="POST" onSubmit={registerSubmit} >
                         <div className="row container">
                             <div className="form-group col-md-6">
                                 <input 
                                 type="text" 
                                 id="firstName" 
+                                name="given-name"
                                 className="form-control" 
                                 placeholder="First Name" 
-                                //onChange={e => setNewUser({ ...newUser, first: e.target.value })}
+                                tabIndex="1"
                                 onChange={e => setFirst( e.target.value )}
                                 required autoFocus minLength='2'
+                                autoComplete="on"
                                 />
                             </div>
                             <div className="form-group col-md-6">
                                 <input 
                                 type="email" 
-                                id="inputEmail" 
+                                id="inputEmail"
+                                name="email" 
                                 className="form-control" 
                                 placeholder="Email address" 
+                                tabIndex="4"
                                 onChange={email1Change}
                                 onBlur={email1Blur}
                                 value={email1}
                                 required 
+                                autoComplete="on"
                                 />
                                 {email1Error && <span>Please enter an email</span>}
                             </div>
@@ -142,12 +147,14 @@ const registerSubmit = e => {
                                 
                                 <input 
                                 type="text" 
-                                id="lastName" 
+                                id="lastName"
+                                name="family-name" 
                                 className="form-control" 
                                 placeholder="Last Name" 
-                                // onChange={e => setNewUser({ ...newUser, last: e.target.value })}
+                                tabIndex="2"
                                 onChange={e => setLast( e.target.value )}
                                 required  minLength='2' 
+                                autoComplete="on"
                                 />
                             </div>
                             <div className="form-group col-md-6">
@@ -155,12 +162,15 @@ const registerSubmit = e => {
                                 <input 
                                 type="email" 
                                 id="emailConfirm" 
+                                name='email'
                                 className="form-control" 
-                                placeholder="Confirm email" 
+                                placeholder="Confirm email"
+                                tabIndex="5" 
                                 onChange={email2Change}
                                 onBlur={email2Blur}
                                 value={email2}
                                 required 
+                                autoComplete="on"
                                 />
                                 <span>
                                 {email2Error && <span style={{color:'red'}}>Emails must match</span>}
@@ -173,23 +183,28 @@ const registerSubmit = e => {
                                 <input 
                                 type="text" 
                                 id="org" 
+                                name="organization"
                                 className="form-control" 
                                 placeholder="Company/Institution" 
-                                //onChange={e => setNewUser({ ...newUser, org: e.target.value })}
+                                tabIndex="3"
                                 onChange={e => setOrg( e.target.value )}
                                 required  minLength='3' 
+                                autoComplete="on"
                                 /> 
                             </div>
                             <div className="form-group col-md-6">
                                 <input 
                                 type="password" 
                                 id="password" 
+                                name="password"
                                 className="form-control" 
-                                placeholder="Password" 
+                                placeholder="Password"
+                                tabIndex="6" 
                                 onChange={password1Change}
                                 onBlur={password1Blur}
                                 value={password1}
                                 required  
+                                autoComplete="on"
                                 />
                                 <span>
                                 {password1Error && <span style={{color:'red'}}>Please Enter a Strong Password</span>}
@@ -204,12 +219,15 @@ const registerSubmit = e => {
                             <input 
                                 type="password" 
                                 id="confirmPassword" 
+                                name="password"
                                 className="form-control" 
-                                placeholder="Confirm password" 
+                                placeholder="Confirm password"
+                                tabIndex="7" 
                                 onChange={password2Change}
                                 onBlur={password2Blur}
                                 value={password2}
                                 required  
+                                autoComplete="on"
                                 />
                                 <span>
                                 {password2Error && <span style={{color:'red'}}>Passwords must match</span>}
