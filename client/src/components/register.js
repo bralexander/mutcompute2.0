@@ -61,7 +61,7 @@ const Register = (props) => {
         hasError: email2Error,
         valueChangeHandler: email2Change,
         inputBlurHandler: email2Blur
-      } = useInput((value) => matchValidator(email1, value))
+      } = useInput((value) => matchValidator(email1.toLowerCase(), value.toLowerCase()))
 
       let validForm = false
       if (password1Valid && password2Valid && email1Valid && email2Valid) {
