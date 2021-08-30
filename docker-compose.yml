@@ -31,6 +31,21 @@ services:
       image: mutcompute-api
       ports:
         - "8025:8025"
-      command: python -m smtpd -n -c DebuggingServer 0.0.0.0:8025 
+      command: python -m smtpd -n -c DebuggingServer 0.0.0.0:8025
+    db:
+      image: postgres:13-alpine
+      volumes:
+        - postgres_data:/var/lib/postgresql/data
+      environment:
+        POSTGRES_USER: mutcompute
+        POSTGRES_PASSWORD: mutcompute
+        POSTGRES_DB: mutcompute_dev
+      networks:
+        - default
+      ports:
+        - 5405:5432
+      restart: always
+      volumes:
+        - ./postgres-data:/var/lib/postgresql/data 
 
       
