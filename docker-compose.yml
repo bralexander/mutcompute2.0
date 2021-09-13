@@ -26,8 +26,8 @@ services:
     email:
       container_name: email
       build:
-        context: .
-        dockerfile: api/Dockerfile.api
+        context: ./api
+        dockerfile: Dockerfile.api
       image: mutcompute-api
       ports:
         - "8025:8025"
