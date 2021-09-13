@@ -21,8 +21,9 @@ services:
       image: mutcompute-client
       ports:
         - "3000:3000"
-      volumes:
-        - ./client:/app/
+      # volumes:
+      #   - ./client:/app/
+      command: yarn start
     email:
       container_name: email
       build:
