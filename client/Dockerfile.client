@@ -5,7 +5,7 @@ ENV PATH /app/node_modules/.bin:$PATH
 COPY package.json /app/
 COPY yarn.lock /app/
 RUN apk add --no-cache git
-RUN yarn install 
+RUN yarn && yarn install 
 COPY . /app
 
 CMD ["yarn", "start"]
