@@ -2,8 +2,8 @@ services:
     api:
       container_name: api
       build:
-        context: .
-        dockerfile: api/Dockerfile.api
+        context: ./api
+        dockerfile: Dockerfile.api
       image: mutcompute-api
       ports:
         - "5000:5000"
@@ -16,8 +16,8 @@ services:
     client:
       container_name: client
       build:
-        context: .
-        dockerfile: client/Dockerfile.client
+        context: ./client
+        dockerfile: Dockerfile.client
       image: mutcompute-client
       ports:
         - "3000:3000"
