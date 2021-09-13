@@ -2,17 +2,14 @@ FROM python:slim
 
 LABEL maintainer="Brad Alexander"
 
-RUN useradd mutcompute
+COPY . /app/
 
 WORKDIR /app
-
-COPY . /app/
 
 ENV FLASK_APP api.py
 
 RUN pip install -r requirements.txt
 
-USER mutcompute
 
 EXPOSE 5000
 
