@@ -66,3 +66,4 @@ nosetests.xml
 venv
 app.db
 api.log*
+postgres-data
