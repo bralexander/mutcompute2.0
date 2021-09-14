@@ -2,21 +2,22 @@ FROM python:slim
 
 LABEL maintainer="Brad Alexander"
 
-RUN useradd mutcompute
-
-WORKDIR /app
+SHELL ["/bin/bash", "-c"]
 
 COPY . /app/
 
+WORKDIR /app
+
 ENV FLASK_APP api.py
 
-RUN chown -R mutcompute:mutcompute /app && \
-    chmod +x ./entry.sh && \
-    pip install -r requirements.txt
+RUN pip install -r requirements.txt
 
-USER mutcompute
+# RUN useradd mutcompute
+
+# USER mutcompute
 
 EXPOSE 5000
+
 
 # cannot use with mounted containers?
 # ENTRYPOINT [ "./entry.sh" ]
