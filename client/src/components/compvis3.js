@@ -128,7 +128,7 @@ const Compvis3 = (props) => {
         stage.removeAllComponents()
         ligandSelect.innerHTML = ''
         clipNearRange.value = 0
-        clipRadiusRange.value = 10
+        clipRadiusRange.value = 100
         pocketOpacityRange.value = 30
         cartoonCheckbox.checked = true
         customCheckbox.checked = false
@@ -510,14 +510,6 @@ const Compvis3 = (props) => {
             sele += (pickingProxy.closestBondAtom || pickingProxy.atom.resno) + ':' + ((pickingProxy.closestBondAtom || pickingProxy.atom.chainname))
           }
         } 
-        
-        // if (pickingProxy && pickingProxy.atom && !pickingProxy.bond) {
-        //   sele += (pickingProxy.closestBondAtom || pickingProxy.atom.resno)
-        // } 
-        // if (pickingProxy && !pickingProxy.bond && pickingProxy.atom.chainname) {
-        //   sele += ':' + (pickingProxy.closestBondAtom || pickingProxy.atom.chainname)
-        //   console.log(sele)
-        // }
         if (sele && sele !== prevSele) {
           showLigand(sele)
           prevSele = sele
