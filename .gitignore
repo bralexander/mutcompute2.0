@@ -24,7 +24,7 @@ yarn-error.log*
 
 ./credentials-4.csv
 
-node_modules
+node_modules/
 
 *.py[cod]
 
