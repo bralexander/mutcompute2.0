@@ -1,5 +1,6 @@
 alembic==1.6.5
 blinker==1.4
+celery==5.1.2
 click==7.1.2
 Flask==1.1.4
 Flask-Alembic==2.0.1
