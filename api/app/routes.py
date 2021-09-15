@@ -1,10 +1,10 @@
-import os
 import flask
 import json
 
 
 from app import app, db
-from app.email import send_password_reset_email, send_failure_email
+from app.email import send_password_reset_email, send_failure_email, SES_email_confirmation
+import os
 from app.models import User
 from flask_login import current_user, login_user
 
@@ -133,7 +133,8 @@ def forgot():
     print('****User:', user)
     if user is not None:
         print('user is not none')
-        send_password_reset_email(user)
+        #send_password_reset_email(user)
+        SES_email_confirmation()
         message={'email sent to': email}, 200
     else:
         #should send an error email saying that the email does not exist in db
