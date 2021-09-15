@@ -9,9 +9,6 @@ services:
         - "5000:5000"
       volumes:
         - ./api:/app/
-      environment: 
-        - MAIL_SERVER=email
-        - MAIL_PORT=8025
       command: gunicorn -b 0.0.0.0:5000 api:app
     client:
       container_name: client
@@ -24,14 +21,14 @@ services:
       # volumes:
       #   - ./client:/app/
       command: yarn start
-    email:
-      container_name: email
-      build:
-        context: ./api
-        dockerfile: Dockerfile.api
-      image: mutcompute-api
-      ports:
-        - "8025:8025"
-      command: python -m smtpd -n -c DebuggingServer 0.0.0.0:8025 
+    # email:
+    #   container_name: email
+    #   build:
+    #     context: ./api
+    #     dockerfile: Dockerfile.api
+    #   image: mutcompute-api
+    #   ports:
+    #     - "8025:8025"
+    #   command: python -m smtpd -n -c DebuggingServer 0.0.0.0:8025 
 
       
