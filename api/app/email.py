@@ -72,15 +72,17 @@ def SES_email_confirmation(user_email='bralexander@live.com',
     #html_mime = MIMEText(html, 'html')
     #msg.attach(html_mime)
 
-    server = smtplib.SMTP("paste SES_EMAIL_HOST", "paste SES_EMAIL_PORT")
+    #server = smtplib.SMTP("paste SES_EMAIL_HOST", "paste SES_EMAIL_PORT")
+    server = smtplib.SMTP(app.config['SES_EMAIL_HOST'])
     #server = smtplib.SMTP(app.config['SES_EMAIL_HOST'], app.config['SES_EMAIL_PORT'])
-    #server.connect(app.config['SES_EMAIL_HOST'], app.config['SES_EMAIL_PORT'])
+    print(app.config['SES_EMAIL_HOST'])
+    server.connect(app.config['SES_EMAIL_HOST'], app.config['SES_EMAIL_PORT'])
     #server.connect()
     server.ehlo()
     server.starttls()
     server.ehlo()
-    server.login("paste SES_SMTP_USERNAME", "paste SES_SMTP_PASSWORD")
-    #server.login(app.config["SES_SMTP_USERNAME"], app.config["SES_SMTP_PASSWORD"])
+    #server.login("paste SES_SMTP_USERNAME", "paste SES_SMTP_PASSWORD")
+    server.login(app.config["SES_SMTP_USERNAME"], app.config["SES_SMTP_PASSWORD"])
 
     try:
         server.sendmail(sender_email, user_email, 'hi')
