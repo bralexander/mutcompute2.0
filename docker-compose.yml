@@ -5,6 +5,11 @@ services:
         context: ./api
         dockerfile: Dockerfile.api
       image: mutcompute-api
+      environment: 
+        SES_EMAIL_HOST: "${SES_EMAIL_HOST}"
+        SES_EMAIL_PORT: "${SES_EMAIL_PORT}"
+        SES_SMTP_USERNAME: "${SES_SMTP_USERNAME}"
+        SES_SMTP_PASSWORD: "${SES_SMTP_PASSWORD}"
       ports:
         - "5000:5000"
       volumes:
