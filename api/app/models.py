@@ -17,21 +17,22 @@ bcrypt = Bcrypt()
 # helps Flask-Login load a user
 @login.user_loader
 def load_user(id):
-    return User.query.get(int(id))
+    return Users.query.get(int(id))
 
-class User(UserMixin, db.Model):
+class Users(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.Text, unique=True)
     first_name = db.Column(db.String(length=255))
     last_name = db.Column(db.String(length=255))
     organization = db.Column(db.Text)
-    password_hash = db.Column(db.String(128))
+    password = db.Column(db.String(128))
     registered_on = db.Column(db.DateTime, nullable=False, default=datetime.now())
     confirmation_link_sent_on = db.Column(db.DateTime, nullable=True)
     email_confirmed = db.Column(db.Boolean, nullable=True, default=False)
     email_confirmed_on = db.Column(db.DateTime, nullable=True)
     #queries = db.relationship("NN_Query",backref="user", lazy='dynamic')
 
+# init function not working/ not needed?
     # def __init__(self, first_name, last_name,email,password,organization, confirmation_link_sent_on=None):
     #     self.first_name = first_name
     #     self.last_name = last_name
@@ -45,13 +46,14 @@ class User(UserMixin, db.Model):
 
     def __repr__(self):
         return '<User {}>'.format(self.email)
-    
+
+    #hashed password
     def set_password(self, password):
-        self.password_hash = generate_password_hash(password)
+        self.password = generate_password_hash(password)
         
 
     def check_password(self, password):
-        return check_password_hash(self.password_hash, password)
+        return check_password_hash(self.password, password)
         
 
 
@@ -71,12 +73,12 @@ class User(UserMixin, db.Model):
                             algorithms=['HS256'])['reset_password']
         except:
             return
-        return User.query.get(id)
+        return Usersquery.get(id)
 
     # Mutcompute model
-    def __repr__(self):
-        return '<User %s %s <%s> from %s>' % \
-               (self.first_name, self.last_name, self.email, self.organization)
+    # def __repr__(self):
+    #     return '<User %s %s <%s> from %s>' % \
+    #            (self.first_name, self.last_name, self.email, self.organization)
 
 
     def encode_auth_token(self, user_id):
@@ -148,24 +150,24 @@ class User(UserMixin, db.Model):
 
 @login.user_loader
 def load_user(id):
-    return User.query.get(int(id))
+    return Users.query.get(int(id))
 
 
-# class NN_Query(db.Model):
+class NN_Query(db.Model):
 
-#     __tablename__ = "NN_Query"
+    __tablename__ = "NN_Query"
 
-#     id= db.Column(db.Integer,primary_key=True)
-#     #ToDo I need to assign the time stamp in the init not as class variable.
-#     user_email = db.Column(db.Integer, db.ForeignKey('User.email'))
-#     pdb_query = db.Column(db.String(length=8),nullable=True)
-#     query_time = db.Column(db.DateTime, index=True, nullable=False)
-#     query_inf = db.Column(db.Text(4294000000), nullable=True)
-#     query_email_sent = db.Column(db.Boolean, default=False)
+    id= db.Column(db.Integer,primary_key=True)
+    #ToDo I need to assign the time stamp in the init not as class variable.
+    user_email = db.Column(db.Integer, db.ForeignKey(Users.email))
+    pdb_query = db.Column(db.String(length=8),nullable=True)
+    query_time = db.Column(db.DateTime, index=True, nullable=False)
+    query_inf = db.Column(db.Text(4294000000), nullable=True)
+    query_email_sent = db.Column(db.Boolean, default=False)
 
 
 
-#     __table_args__ = CheckConstraint('NOT(pdb_query IS NULL AND query_inf IS NULL)'),
+    __table_args__ = CheckConstraint('NOT(pdb_query IS NULL AND query_inf IS NULL)'),
 
 
 #     def __init__(self,user_email,query=None, inference=None):
@@ -182,13 +184,13 @@ def load_user(id):
 #             self.query_inf = inference.to_json(orient='index')
 
 
-#     def __repr__(self):
-#         return "<NN_Query {}>".format(self.pdb_query)
+    def __repr__(self):
+        return "<NN_Query {}>".format(self.pdb_query)
 
 
 
-#     def save_to_db(self):
-#         db.session.add(self)
-#         db.session.commit()
-#         app.logger.info('Successfully saved query: {0} from user: {1} to DB'.format(self.pdb_query, self.user_email))
+    def save_to_db(self):
+        db.session.add(self)
+        db.session.commit()
+        app.logger.info('Successfully saved query: {0} from user: {1} to DB'.format(self.pdb_query, self.user_email))
 

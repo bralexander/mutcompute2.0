@@ -2,7 +2,7 @@ from flask_mail import Message
 from flask import render_template
 from app import mail, app
 from threading import Thread
-from app.models import User
+from app.models import Users
 
 ## Working with python emulated mail server
     # (venv) $ python -m smtpd -n -c DebuggingServer localhost:8025

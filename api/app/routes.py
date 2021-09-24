@@ -5,7 +5,7 @@ import json
 
 from app import app, db
 from app.email import send_password_reset_email, send_failure_email
-from app.models import User
+from app.models import Users
 from flask_login import current_user, login_user
 
 from time import time
@@ -36,11 +36,12 @@ def login():
          -d '{"username":"Yasoob","password":"strongpassword"}'
     """
     req = flask.request.get_json(force=True)
+    # print('REQ: ', req)
     email = req.get('email', None)
     password = req.get('password', None)
-    user = User.query.filter_by(email=email).first()
+    user = Users.query.filter_by(email=email).first()
     if user is None or not user.check_password(password):
-        ret = {'Invalid username or password for': user.email}, 418
+        ret = {'Invalid username or password for': email}, 418
     else:
         token = user.get_login_token()
         ret = {'access_token': token}, 200
@@ -62,14 +63,14 @@ def register():
     last_name = req.get('last', None)
     organization = req.get('org', None)
     password = req.get('password', None)
-    user = User.query.filter_by(email=email).count()
+    user = Users.query.filter_by(email=email).count()
 
     if user >= 1:
         message={'There is already an account associated with that email: ': email}, 418
         #prefer not to return object
     else:
         message = {'Welcome: ': first_name}, 200
-        user = User(email=email, first_name=first_name, last_name=last_name, organization=organization)
+        user = Users(email=email, first_name=first_name, last_name=last_name, organization=organization)
         user.set_password(password)
         db.session.add(user)
         db.session.commit()
@@ -129,8 +130,8 @@ def forgot():
     req = flask.request.get_json(force=True)
     #print(req)
     email = req.get('email', None)
-    user = User.query.filter_by(email=email).first()
-    print('****User:', user)
+    user = Users.query.filter_by(email=email).first()
+    print('****Users:', user)
     if user is not None:
         print('user is not none')
         send_password_reset_email(user)
@@ -147,7 +148,7 @@ def forgot():
 @app.route('/api/reset/<token>', methods=['GET', 'POST'])
 def reset_password(token):
     
-    user = User.verify_reset_password_token(token)
+    user = Users.verify_reset_password_token(token)
     print(user, token)
     req = flask.request.get_json(force=True)
     new_password = req.get('password', None)
