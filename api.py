@@ -1,5 +1,6 @@
 from flask import Flask, jsonify, make_response
 from flask_restful import Api, Resource, reqparse
+from scripts.run import fetch_pdb_file
 
 import subprocess
 import sys
@@ -26,14 +27,27 @@ class QueryAPI(Resource):
         print("PDB Code:", pdb_code)
         if len(pdb_code) == 4:
 
-            out_csv = run_mutcompute(pdb_code, dir='/mutcompute/data/pdb_files', out_dir='/mutcompute/data/inference_CSVs', fs_pdb=False)
+            try:
+                pdb_file = fetch_pdb_file(pdb_code, dir='/mutcompute/data/pdb_files')
 
-            print(out_csv)
+                print(f'Created PDB file: ', pdb_file)
 
-            return make_response(jsonify(Result='User requested pdb code: {}'.format(pdb_code)), 201)
+            except FileNotFoundError:
+                return make_response(
+                    jsonify(
+                        Result=f'Unabled to retrieve PDB file from the PDB-REDO or the RCSB servers: {pdb_code.upper()}'
+                    ), 
+                    400
+                )
 
-        return make_response(jsonify(Result='User requested invalid pdb code: {}'.format(pdb_code.upper())), 400)
-
+            else:
+                # TODO make this a celery function
+                out_csv = run_mutcompute(pdb_file.name, dir='/mutcompute/data/pdb_files', out_dir='/mutcompute/data/inference_CSVs', fs_pdb=True)
+                
+                return make_response(
+                    jsonify(Result=f'Successfully started inference on PDB: {pdb_code}'), 
+                    201
+                ) 
 
 
 nn_api.add_resource(QueryAPI, '/inference', endpoint='nn_query')
