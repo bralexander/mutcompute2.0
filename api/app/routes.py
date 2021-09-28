@@ -40,7 +40,8 @@ def login():
     email = req.get('email', None)
     password = req.get('password', None)
     user = Users.query.filter_by(email=email).first()
-    if user is None or not user.check_password(password):
+    # if user is None or not user.check_password(password):
+    if user is None or not user.check_pw(password):
         ret = {'Invalid username or password for': email}, 418
     else:
         token = user.get_login_token()
