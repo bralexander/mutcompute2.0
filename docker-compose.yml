@@ -24,14 +24,14 @@ services:
       # volumes:
       #   - ./client:/app/
       command: yarn start
-    email:
-      container_name: email
-      build:
-        context: ./api
-        dockerfile: Dockerfile.api
-      image: mutcompute-api
-      ports:
-        - "8025:8025"
-      command: python -m smtpd -n -c DebuggingServer 0.0.0.0:8025 
+    # email:
+    #   container_name: email
+    #   build:
+    #     context: ./api
+    #     dockerfile: Dockerfile.api
+    #   image: mutcompute-api
+    #   ports:
+    #     - "8025:8025"
+    #   command: python -m smtpd -n -c DebuggingServer 0.0.0.0:8025 
 
       
