@@ -1,45 +1,72 @@
 services:
   # Backend
-  api:
-    container_name: api
-    build:
-      context: ./api
-      dockerfile: Dockerfile.api
-    image: mutcompute-api
-    ports:
-      - "5000:5000"
-    volumes:
-      - ./api:/app/
-    environment: 
-      - MAIL_SERVER=email
-      - MAIL_PORT=8025
-    command: gunicorn -b 0.0.0.0:5000 api:app
+  # backend:
+  #   container_name: backend
+  #   build:
+  #     context: ./backend
+  #     dockerfile: Dockerfile
+  #   image: mutcompute:backend
+  #   ports:
+  #     - "5000:5000"
+  #   volumes:
+  #     - ./api:/app/
+  #   environment: 
+  #     - MAIL_SERVER=email
+  #     - MAIL_PORT=8025
+  #   command: gunicorn -b 0.0.0.0:5000 api:app
 
-  email:
-    container_name: email
-    build:
-      context: ./api
-      dockerfile: Dockerfile.api
-    image: mutcompute-api
-    ports:
-      - "8025:8025"
-    command: python -m smtpd -n -c DebuggingServer 0.0.0.0:8025 
+  # email:
+  #   container_name: email
+  #   build:
+  #     context: ./backend
+  #     dockerfile: Dockerfile
+  #   image: mutcompute:backend
+  #   ports:
+  #     - "8025:8025"
+  #   command: python -m smtpd -n -c DebuggingServer 0.0.0.0:8025 
 
-  # Queue/Worker Processes
-  # celery:
-  #   container_name: CELERY
-  #   image: nn_api:celery
-  #   volumes: 
-  #     - ./nn_api/:/celery/src/
-  #     - ./data/:/app/data/
-  #   working_dir: /celery/src/
-  #   environment:
-  #     - CONFIG=DockerComposeDevelopment
-  #     - PYTHONUNBUFFERED=1
-  #   command: celery worker -A nn_api.veggies -l info -b redis://redis:6379/0
-  #   depends_on:
-  #     - redis 
-  #     - api
+  nn_api:
+    container_name: nn_api
+    build:
+      context: ./nets/MutCompute1.0
+      dockerfile: docker/Dockerfile
+    image: mutcompute:api
+    volumes: 
+      - ./nets/MutCompute1.0:/mutcompute
+    environment:
+      - PYTHONUNBUFFERED=1
+    depends_on:
+      - redis 
+      - celery
+    ports:
+      - 3000:3000
+    entrypoint: python ./api/api.py
+
+
+  #Queue/Worker Processes
+  celery:
+    container_name: celery
+    build:
+      context: ./nets/MutCompute1.0
+      dockerfile: docker/Dockerfile
+    image: mutcompute:api
+    volumes: 
+      - ./nets/MutCompute1.0:/mutcompute
+    environment:
+      PYTHONUNBUFFERED: 1
+      CELERY_BROKER_URL: redis://redis:6379/0
+      CELERY_RESULT_BACKEND: redis://redis:6379/0
+    entrypoint: celery -A api.worker.celery worker -l debug
+    depends_on:
+      - redis 
+
+
+  redis:
+    container_name: redis
+    image: redis:latest
+    hostname: redis
+    ports:
+      - 6379:6379  
 
   # flower:
   #     container_name: FLOWER
@@ -50,37 +77,32 @@ services:
   #     depends_on: 
   #       - celery
 
-  # redis:
-  #   container_name: REDIS
-  #   image: redis:latest
-  #   hostname: redis
-  #   ports:
-  #     - 6379  # Container only port
+
 
 
   # Frontend
-  client:
-    container_name: client
-    build:
-      context: ./client
-      dockerfile: Dockerfile.client
-    image: mutcompute-client
-    ports:
-      - 3000:3000
-    # volumes:
-    #   - ./client:/app/
-    command: yarn start
+  # client:
+  #   container_name: client
+  #   build:
+  #     context: ./client
+  #     dockerfile: Dockerfile
+  #   image: mutcompute:client
+  #   ports:
+  #     - 3000:3000
+  #   # volumes:
+  #   #   - ./client:/app/
+  #   command: yarn start
 
   # Reverse Proxy
-  nginx:
-    container_name: nginx
-    image: nginx:latest
-    restart: unless-stopped
-    ports:
-      - 80:80
-      - 443:443
-    volumes:
-      - ./nginx/nginx_local.conf:/etc/nginx/conf.d/default.conf 
+  # nginx:
+  #   container_name: nginx
+  #   image: nginx:latest
+  #   restart: unless-stopped
+  #   ports:
+  #     - 80:80
+  #     - 443:443
+  #   volumes:
+  #     - ./nginx/nginx_local.conf:/etc/nginx/conf.d/default.conf 
 
     #   - ./nginx/certbot/conf:/etc/letsencrypt
     #   - ./nginx/certbot/www:/var/www/certbot
