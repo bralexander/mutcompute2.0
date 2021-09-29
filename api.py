@@ -1,8 +1,6 @@
 from flask import Flask, jsonify, make_response
 from flask_restful import Api, Resource, reqparse
 
-from os import environ
-
 from scripts.run import fetch_pdb_file
 from task import run_mutcompute
 
@@ -42,7 +40,6 @@ class InferenceAPI(Resource):
                 )
 
             else:
-                # TODO make this a celery function
                 out_csv = run_mutcompute.delay(pdb_file.name, dir='/mutcompute/data/pdb_files', out_dir='/mutcompute/data/inference_CSVs', fs_pdb=True)
                 
                 return make_response(
