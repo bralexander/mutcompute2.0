@@ -1,15 +1,16 @@
 from flask import Flask, jsonify, make_response
 from flask_restful import Api, Resource, reqparse
+
+from os import environ
+
 from scripts.run import fetch_pdb_file
-
-import subprocess
-import sys
-
 from task import run_mutcompute
+
 nn_app = Flask(__name__)
 nn_api = Api(nn_app)
 
-class QueryAPI(Resource):
+
+class InferenceAPI(Resource):
 
     def __init__(self):
         self.reqparse = reqparse.RequestParser()
@@ -42,7 +43,7 @@ class QueryAPI(Resource):
 
             else:
                 # TODO make this a celery function
-                out_csv = run_mutcompute(pdb_file.name, dir='/mutcompute/data/pdb_files', out_dir='/mutcompute/data/inference_CSVs', fs_pdb=True)
+                out_csv = run_mutcompute.delay(pdb_file.name, dir='/mutcompute/data/pdb_files', out_dir='/mutcompute/data/inference_CSVs', fs_pdb=True)
                 
                 return make_response(
                     jsonify(Result=f'Successfully started inference on PDB: {pdb_code}'), 
@@ -50,7 +51,7 @@ class QueryAPI(Resource):
                 ) 
 
 
-nn_api.add_resource(QueryAPI, '/inference', endpoint='nn_query')
+nn_api.add_resource(InferenceAPI, '/inference', endpoint='nn_query')
 
 
 if __name__=='__main__':
