@@ -10,6 +10,13 @@ from sqlalchemy.schema import CheckConstraint
 from datetime import datetime, timedelta
 from flask_bcrypt import Bcrypt
 
+# pdb db
+from flask_wtf import FlaskForm
+from wtforms import StringField, SubmitField, PasswordField, FileField
+from wtforms.fields.html5 import EmailField
+from wtforms.validators import DataRequired, Email, EqualTo, length, Regexp, Optional
+
+
 bcrypt = Bcrypt()
 
 # guard = flask_praetorian.Praetorian()
@@ -30,7 +37,7 @@ class Users(UserMixin, db.Model):
     confirmation_link_sent_on = db.Column(db.DateTime, nullable=True)
     email_confirmed = db.Column(db.Boolean, nullable=True, default=False)
     email_confirmed_on = db.Column(db.DateTime, nullable=True)
-    #queries = db.relationship("NN_Query",backref="user", lazy='dynamic')
+    queries = db.relationship("NN_Query",backref="user", lazy='dynamic')
 
 # init function not working/ not needed?
     # def __init__(self, first_name, last_name,email,password,organization, confirmation_link_sent_on=None):
@@ -52,8 +59,8 @@ class Users(UserMixin, db.Model):
         self.password = generate_password_hash(password)
         
 
-    def check_password(self, password):
-        return check_password_hash(self.password, password)
+    # def check_password(self, password):
+    #     return check_password_hash(self.password, password)
         
 
 
@@ -194,3 +201,36 @@ class NN_Query(db.Model):
         db.session.commit()
         app.logger.info('Successfully saved query: {0} from user: {1} to DB'.format(self.pdb_query, self.user_email))
 
+
+# PDB DB
+class NNForm(FlaskForm):
+    #Todo The validator for email must be pulled from a sql database/JWT from the user.
+
+    #ToDo need to figure out the validators to use for the protein submission.
+    pdb_struct = StringField('PDB Structure', validators=[
+                                        Optional("Please provide a PDB structure."),
+                                        ])
+
+    cryst_struct_file = FileField("Crystal Structure File" )
+
+    submit = SubmitField('Submit')
+
+    # This allows us to only accept PDB file codes.
+    def validate(self):
+        if self.pdb_struct.data and self.cryst_struct_file.data:
+            self.cryst_struct_file.errors ="Form only accepts a PDB structure or a " \
+                                          "crystal structure file but not both.",
+            return False
+        elif self.pdb_struct.data:
+                if len(self.pdb_struct.data) == 4:
+                    self.query = self.pdb_struct.data.upper()
+                    return True
+                else:
+                    self.pdb_struct.errors = 'Invalid PDB ID: longer or shorter than 4 characters.',
+                    return False
+        elif self.cryst_struct_file.data:
+            self.cryst_struct_file.errors = "This feature is still in development. Sorry for the " \
+                                            "inconvenience. Please provide a PDB 4 letter code.",
+            return False
+        else:
+            return False
