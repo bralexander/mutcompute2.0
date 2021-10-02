@@ -27,7 +27,7 @@ class InferenceAPI(Resource):
         if len(pdb_code) == 4:
 
             try:
-                pdb_file = fetch_pdb_file(pdb_code, dir='/mutcompute/data/pdb_files')
+                pdb_file = fetch_pdb_file(pdb_code, dir='/mutcompute_2020/mutcompute/data/pdb_files')
 
                 print(f'Created PDB file: ', pdb_file)
 
@@ -40,7 +40,7 @@ class InferenceAPI(Resource):
                 )
 
             else:
-                out_csv = run_mutcompute.delay(pdb_file.name, dir='/mutcompute/data/pdb_files', out_dir='/mutcompute/data/inference_CSVs', fs_pdb=True)
+                out_csv = run_mutcompute.delay(pdb_file.name, dir='/mutcompute_2020/mutcompute/data/pdb_files', out_dir='/mutcompute_2020/mutcompute/data/inference_CSVs', fs_pdb=True)
                 
                 return make_response(
                     jsonify(Result=f'Successfully started inference on PDB: {pdb_code}'), 
@@ -52,4 +52,4 @@ nn_api.add_resource(InferenceAPI, '/inference', endpoint='nn_query')
 
 
 if __name__=='__main__':
-    nn_app.run(host='0.0.0.0', port=3000, debug=True)
+    nn_app.run(host='0.0.0.0', port=8000, debug=True)

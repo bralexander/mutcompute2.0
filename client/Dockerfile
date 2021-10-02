@@ -8,6 +8,6 @@ ENV PATH /app/node_modules/.bin:$PATH
 
 RUN apk add --no-cache git
 
-RUN npm install -g yarn react-scripts && npm install
+RUN npm install -g --force yarn react-scripts && npm install
 
 EXPOSE 3000 

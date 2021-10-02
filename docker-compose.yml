@@ -9,10 +9,12 @@ services:
   #   ports:
   #     - "5000:5000"
   #   volumes:
-  #     - ./api:/app/
+  #     - ./backend/:/api/
   #   environment: 
   #     - MAIL_SERVER=email
   #     - MAIL_PORT=8025
+  #   depends_on:
+  #     - nn_api
   #   command: gunicorn -b 0.0.0.0:5000 api:app
 
   # email:
@@ -28,35 +30,39 @@ services:
   nn_api:
     container_name: nn_api
     build:
-      context: ./nets/MutCompute1.0
+      context: ./nets/mutcompute
       dockerfile: docker/Dockerfile
     image: mutcompute:api
     volumes: 
-      - ./nets/MutCompute1.0:/mutcompute
+      - ./nets:/mutcompute_2020
     environment:
-      - PYTHONUNBUFFERED=1
+      PYTHONUNBUFFERED: 1
+      PYTHONPATH: /mutcompute_2020:/mutcompute_2020/mutcompute
     depends_on:
       - redis 
       - celery
     ports:
-      - 3000:3000
-    entrypoint: python ./api/api.py
+      - 8000:8000
+    working_dir: /mutcompute_2020/api
+    entrypoint: python api.py
 
 
   #Queue/Worker Processes
   celery:
     container_name: celery
     build:
-      context: ./nets/MutCompute1.0
+      context: ./nets/mutcompute
       dockerfile: docker/Dockerfile
     image: mutcompute:api
     volumes: 
-      - ./nets/MutCompute1.0:/mutcompute
+      - ./nets:/mutcompute_2020
     environment:
       PYTHONUNBUFFERED: 1
+      PYTHONPATH: /mutcompute_2020:/mutcompute_2020/mutcompute
       CELERY_BROKER_URL: redis://redis:6379/0
       CELERY_RESULT_BACKEND: redis://redis:6379/0
-    entrypoint: celery -A api.worker.celery worker -l debug
+    working_dir: /mutcompute_2020/api
+    entrypoint: celery -A task.celery worker -l debug
     depends_on:
       - redis 
 
@@ -77,10 +83,7 @@ services:
   #     depends_on: 
   #       - celery
 
-
-
-
-  # Frontend
+  # # Frontend
   # client:
   #   container_name: client
   #   build:
@@ -93,7 +96,7 @@ services:
   #   #   - ./client:/app/
   #   command: yarn start
 
-  # Reverse Proxy
+  # # Reverse Proxy
   # nginx:
   #   container_name: nginx
   #   image: nginx:latest

@@ -11,7 +11,7 @@ CELERY_RESULT_BACKEND = environ.get("CELERY_RESULT_BACKEND", "redis://redis:6379
 celery = Celery('task', broker=CELERY_BROKER_URL, backend=CELERY_RESULT_BACKEND)
 
 @celery.task(name='task.run_mutcompute')
-def run_mutcompute(pdb_code, dir='/mutcompute/data/pdb_files', out_dir='/mutcompute/data/inference_CSVs', fs_pdb=False):
+def run_mutcompute(pdb_code, dir='/mutcompute_2020/mutcompute/data/pdb_files', out_dir='/mutcompute_2020/mutcompute/data/inference_CSVs', fs_pdb=False):
 
     df = gen_ensemble_inference(pdb_code, dir=dir, out_dir=out_dir, fs_pdb=fs_pdb)
 
