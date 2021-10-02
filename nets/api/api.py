@@ -1,7 +1,7 @@
 from flask import Flask, jsonify, make_response
 from flask_restful import Api, Resource, reqparse
 
-from scripts.run import fetch_pdb_file
+from mutcompute.scripts.run import fetch_pdb_file
 from task import run_mutcompute
 
 nn_app = Flask(__name__)

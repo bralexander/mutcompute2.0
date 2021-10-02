@@ -1,7 +1,7 @@
 from celery import Celery
 from os import environ
 
-from scripts.run import gen_ensemble_inference
+from mutcompute.scripts.run import gen_ensemble_inference
 
 
 CELERY_BROKER_URL= environ.get("CELERY_BROKER_URL", "redis://redis:6379/0")
