@@ -10,6 +10,10 @@ const Compvis3 = (props) => {
             stage.handleResize();
         }, false );
 
+      // Change background color for Hong
+        stage.setParameters({
+          backgroundColor: 'white'
+        })
 
     function addElement (el) {
         Object.assign(el.style, {
@@ -168,7 +172,7 @@ const Compvis3 = (props) => {
       
           heatMap = NGL.ColormakerRegistry.addScheme(function (params) {
             this.parameters = Object.assign(this.parameters, {
-              domain: [0, 0.40],
+              domain: [0, 0.30],
               scale: 'rwb',
               mode: 'rgb'
             })
@@ -409,7 +413,7 @@ const Compvis3 = (props) => {
         var s = struc.structure 
 
         // Hong -- changes b+s radius , 9 => 30+
-        var withinSele = s.getAtomSetWithinSelection(new NGL.Selection(sele), 12)
+        var withinSele = s.getAtomSetWithinSelection(new NGL.Selection(sele), 17)
         var withinGroup = s.getAtomSetWithinGroup(withinSele)
         var expandedSele = withinGroup.toSeleString()
         neighborSele = '(' + expandedSele + ') and not (' + sele + ')'
@@ -417,7 +421,7 @@ const Compvis3 = (props) => {
 
         var sview = s.getView(new NGL.Selection(sele))
         // Hong -- changes surface repr 100 for full struc
-        pocketRadius = Math.max(sview.boundingBox.getSize(new NGL.Vector3()).length(), 2) + 10
+        pocketRadius = Math.max(sview.boundingBox.getSize(new NGL.Vector3()).length(), 2) + 15
         var withinSele2 = s.getAtomSetWithinSelection(new NGL.Selection(sele), pocketRadius + 2)
         var neighborSele2 = '(' + withinSele2.toSeleString() + ') and not (' + sele + ') and polymer'   
 
