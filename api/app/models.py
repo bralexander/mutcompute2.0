@@ -1,5 +1,6 @@
 from sqlalchemy.sql.schema import DefaultClause
 import jwt
+#import pandas as pd
 
 from app import db, login, app
 from time import time
@@ -40,16 +41,16 @@ class Users(UserMixin, db.Model):
     queries = db.relationship("NN_Query",backref="user", lazy='dynamic')
 
 # init function not working/ not needed?
-    # def __init__(self, first_name, last_name,email,password,organization, confirmation_link_sent_on=None):
-    #     self.first_name = first_name
-    #     self.last_name = last_name
-    #     self.email = email
-    #     self.password = bcrypt.generate_password_hash(password).decode()
-    #     self.registered_on = datetime.now()
-    #     self.organization = organization
-    #     self.confirmation_link_sent_on = confirmation_link_sent_on
-    #     self.email_confirmed = False
-    #     self.email_confirmed_on = None
+    def __init__(self, first_name, last_name,email,password,organization, confirmation_link_sent_on=None):
+        self.first_name = first_name
+        self.last_name = last_name
+        self.email = email
+        self.password = bcrypt.generate_password_hash(password).decode()
+        self.registered_on = datetime.now()
+        self.organization = organization
+        self.confirmation_link_sent_on = confirmation_link_sent_on
+        self.email_confirmed = False
+        self.email_confirmed_on = None
 
     def __repr__(self):
         return '<User {}>'.format(self.email)
@@ -80,7 +81,7 @@ class Users(UserMixin, db.Model):
                             algorithms=['HS256'])['reset_password']
         except:
             return
-        return Usersquery.get(id)
+        return Users.query.get(id)
 
     # Mutcompute model
     # def __repr__(self):
@@ -159,7 +160,7 @@ class Users(UserMixin, db.Model):
 def load_user(id):
     return Users.query.get(int(id))
 
-
+# PDB DB
 class NN_Query(db.Model):
 
     __tablename__ = "NN_Query"
@@ -177,24 +178,28 @@ class NN_Query(db.Model):
     __table_args__ = CheckConstraint('NOT(pdb_query IS NULL AND query_inf IS NULL)'),
 
 
-#     def __init__(self,user_email,query=None, inference=None):
-#         self.user_email = user_email
-#         self.pdb_query = query
-#         self.query_time = datetime.now()
-#         # try:
-#         #     self.query_inf = inference.to_json(orient='index')
-#         # except Exception:
-#         #     app.logger.warning('Unable to generate inference json for {}'.format(self.pdb_query))
+    def __init__(self,user_email,pdb_query,query_inf,query=None, inference=None):
+        self.user_email = user_email
+        #self.pdb_query = pdb_query
+        self.pdb_query = query
+        self.query_time = datetime.now()
+        self.query_inf = query_inf
+        # try:
+        #     self.query_inf = inference.to_json(orient='index')
+        # except Exception:
+        #     app.logger.warning('Unable to generate inference json for {}'.format(self.pdb_query))
 
-#         if isinstance(inference,pd.DataFrame):
-#             app.logger.info('Inference Data frame was passed in as parameter for PDB {}'.format(self.pdb_query))
-#             self.query_inf = inference.to_json(orient='index')
+        # if isinstance(inference,pd.DataFrame):
+        #     app.logger.info('Inference Data frame was passed in as parameter for PDB {}'.format(self.pdb_query))
+        #     self.query_inf = inference.to_json(orient='index')
 
 
     def __repr__(self):
         return "<NN_Query {}>".format(self.pdb_query)
 
-
+    ##  need function that gets query_inf based on pdb_id(pdb_query?)
+    def get_csv(self):
+        return self.query_inf
 
     def save_to_db(self):
         db.session.add(self)
@@ -202,35 +207,35 @@ class NN_Query(db.Model):
         app.logger.info('Successfully saved query: {0} from user: {1} to DB'.format(self.pdb_query, self.user_email))
 
 
-# PDB DB
-class NNForm(FlaskForm):
-    #Todo The validator for email must be pulled from a sql database/JWT from the user.
 
-    #ToDo need to figure out the validators to use for the protein submission.
-    pdb_struct = StringField('PDB Structure', validators=[
-                                        Optional("Please provide a PDB structure."),
-                                        ])
+# class NNForm(FlaskForm):
+#     #Todo The validator for email must be pulled from a sql database/JWT from the user.
 
-    cryst_struct_file = FileField("Crystal Structure File" )
+#     #ToDo need to figure out the validators to use for the protein submission.
+#     pdb_struct = StringField('PDB Structure', validators=[
+#                                         Optional("Please provide a PDB structure."),
+#                                         ])
 
-    submit = SubmitField('Submit')
+#     cryst_struct_file = FileField("Crystal Structure File" )
 
-    # This allows us to only accept PDB file codes.
-    def validate(self):
-        if self.pdb_struct.data and self.cryst_struct_file.data:
-            self.cryst_struct_file.errors ="Form only accepts a PDB structure or a " \
-                                          "crystal structure file but not both.",
-            return False
-        elif self.pdb_struct.data:
-                if len(self.pdb_struct.data) == 4:
-                    self.query = self.pdb_struct.data.upper()
-                    return True
-                else:
-                    self.pdb_struct.errors = 'Invalid PDB ID: longer or shorter than 4 characters.',
-                    return False
-        elif self.cryst_struct_file.data:
-            self.cryst_struct_file.errors = "This feature is still in development. Sorry for the " \
-                                            "inconvenience. Please provide a PDB 4 letter code.",
-            return False
-        else:
-            return False
+#     submit = SubmitField('Submit')
+
+#     # This allows us to only accept PDB file codes.
+#     def validate(self):
+#         if self.pdb_struct.data and self.cryst_struct_file.data:
+#             self.cryst_struct_file.errors ="Form only accepts a PDB structure or a " \
+#                                           "crystal structure file but not both.",
+#             return False
+#         elif self.pdb_struct.data:
+#                 if len(self.pdb_struct.data) == 4:
+#                     self.query = self.pdb_struct.data.upper()
+#                     return True
+#                 else:
+#                     self.pdb_struct.errors = 'Invalid PDB ID: longer or shorter than 4 characters.',
+#                     return False
+#         elif self.cryst_struct_file.data:
+#             self.cryst_struct_file.errors = "This feature is still in development. Sorry for the " \
+#                                             "inconvenience. Please provide a PDB 4 letter code.",
+#             return False
+#         else:
+#             return False
