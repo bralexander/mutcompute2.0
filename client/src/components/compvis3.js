@@ -173,7 +173,9 @@ const Compvis3 = (props) => {
           heatMap = NGL.ColormakerRegistry.addScheme(function (params) {
             this.parameters = Object.assign(this.parameters, {
               domain: [0, 0.30],
-              scale: 'rwb',
+              //scale: 'rwb',
+              // Hong custom color scale
+              scale: [0xFF0000,0xFFFFFF,0x4646FF],
               mode: 'rgb'
             })
             var scale = this.getScale()
