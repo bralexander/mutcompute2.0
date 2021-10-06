@@ -3,13 +3,13 @@ WORKDIR /app
 
 ENV PATH /app/node_modules/.bin:$PATH
 COPY . /app
-# COPY package.json /app/
-# COPY yarn.lock /app/
+COPY package.json /app/
+COPY yarn.lock /app/
 RUN apk add --no-cache git
 RUN yarn install 
 
 
-CMD ["yarn", "start"]
+# CMD ["yarn", "start"]
 
 # FROM nginx:stable-alpine
 
