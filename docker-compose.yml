@@ -12,7 +12,9 @@ services:
       environment: 
         - MAIL_SERVER=email
         - MAIL_PORT=8025
-      command: gunicorn -b 0.0.0.0:5000 api:app
+      # command: gunicorn -b 0.0.0.0:5000 api:app
+      entrypoint: python api.py
+
     client:
       container_name: client
       build:
