@@ -3,7 +3,6 @@ import flask
 import json
 import pandas as pd
 
-
 from app import app, db
 from app.email import send_password_reset_email, send_failure_email
 from app.models import Users, NN_Query
@@ -102,15 +101,17 @@ def register():
 def nn ():
     req = flask.request.get_data().decode('utf-8-sig')
     decoded = req[1:5]
-    print(req)
     if isinstance(req, str):
         pdb_query = NN_Query.query.filter_by(pdb_query=decoded).count()
         prot = NN_Query.query.filter_by(pdb_query=decoded).first()
         if pdb_query >= 1:
-            json_data = prot.query_inf
-            data = pd.read_json(json_data)
-            csv = data.to_csv()
-            message = {'Fetching csv from database': json_data}, 200
+            import json
+            import sys
+            json_data = json.loads(prot.query_inf)
+            data = pd.DataFrame.from_dict(json_data)
+            df = pd.DataFrame.transpose(data)
+            csv = df.to_csv()
+            message = {'Fetching csv from database': csv}, 200
         else:
             message = {'Running net on': decoded}, 200
     elif req.isfile():
@@ -173,4 +174,4 @@ def reset_password(token):
 
 # Run the example
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000)
+    app.run(host='0.0.0.0', port=5000, debug=True)
