@@ -1,5 +1,6 @@
 from os import environ
 from pathlib import Path
+from datetime import datetime
 
 import smtplib
 from email.mime.multipart import MIMEMultipart
@@ -7,7 +8,7 @@ from email.mime.text import MIMEText
 from email.mime.base import MIMEBase
 
 from celery import Celery
-
+import sqlalchemy as db
 
 
 from mutcompute.scripts.run import gen_ensemble_inference
@@ -18,6 +19,10 @@ CELERY_RESULT_BACKEND = environ.get("CELERY_RESULT_BACKEND", "redis://redis:6379
 
 
 celery = Celery('task', broker=CELERY_BROKER_URL, backend=CELERY_RESULT_BACKEND)
+
+db_engine = db.create_engine(f'sqlite:///{environ["DB_URI"]}')
+meta_data = db.MetaData()
+nn_table = db.Table(environ['DB_NN_TABLE'], meta_data, autoload=True, autoload_with=db_engine)
 
 
 # TODO I can turn this into a decorator so all you have to is pass in a net function and a few parameters 
@@ -32,9 +37,19 @@ def run_mutcompute(email, pdb_code, dir='/mutcompute_2020/mutcompute/data/pdb_fi
         return False
 
     else:
-        inference_email(email, pdb_code, df)
+        email_status = inference_email(email, pdb_code, df)
 
-        # TODO add to database
+        stmt = db.insert(nn_table).values(
+            user_email=email,
+            pdb_query=pdb_code,
+            query_time=datetime.now(),
+            query_inf=df.to_json(orient='index'),
+            query_email_sent=email_status
+        )
+
+        with db_engine.connect() as conn:
+            conn.execute(stmt)
+            print(f'Added query {email}, {pdb_code} to the NN_Query table.')
 
         return True
 

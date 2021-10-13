@@ -30,14 +30,17 @@ services:
   nn_api:
     container_name: nn_api
     build:
-      context: ./nets/mutcompute
-      dockerfile: docker/Dockerfile
+      context: ./nets
+      dockerfile: Dockerfile
     image: mutcompute:api
     volumes: 
       - ./nets:/mutcompute_2020
+      - ./data:/mutcompute_2020/data
     environment:
       PYTHONUNBUFFERED: 1
       PYTHONPATH: /mutcompute_2020:/mutcompute_2020/mutcompute
+      DB_URI: ${DB_URI}
+      DB_NN_TABLE: ${DB_NN_TABLE}
     depends_on:
       - redis 
       - celery
@@ -51,16 +54,23 @@ services:
   celery:
     container_name: celery
     build:
-      context: ./nets/mutcompute
-      dockerfile: docker/Dockerfile
+      context: ./nets
+      dockerfile: Dockerfile
     image: mutcompute:api
     volumes: 
       - ./nets:/mutcompute_2020
+      - ./data:/mutcompute_2020/data
     environment:
       PYTHONUNBUFFERED: 1
       PYTHONPATH: /mutcompute_2020:/mutcompute_2020/mutcompute
       CELERY_BROKER_URL: redis://redis:6379/0
       CELERY_RESULT_BACKEND: redis://redis:6379/0
+      SES_EMAIL_HOST: ${SES_EMAIL_HOST}
+      SES_EMAIL_PORT: ${SES_EMAIL_PORT}
+      SES_SMTP_USERNAME: ${SES_SMTP_USERNAME}
+      SES_SMTP_PASSWORD: ${SES_SMTP_PASSWORD}
+      DB_URI: ${DB_URI}
+      DB_NN_TABLE: ${DB_NN_TABLE}
     working_dir: /mutcompute_2020/api
     entrypoint: celery -A task.celery worker -l debug
     depends_on:
