@@ -25,9 +25,14 @@ const { loading, loadedFile, fetchFile }= useFile()
       const handleFile = (dataObj) => {
         //let loadedFileA = []
         console.log('do', dataObj[0])
-        const str = dataObj[0]
-        const csvData = str.replace(/^"(.*)"$/, '$1')
-        loadStructure(`rcsb://${pdbIdUrl}.pdb`, '/data/6ij6.csv')
+        const csvStr = dataObj[0]
+        // const csvData = str.replace(/^"(.*)"$/, '$1')
+        var csvBlob = new Blob( [ dataObj ], {type: 'text/plain'})
+        console.log(csvBlob)
+        //loadStructure('/data/6ij6.pdb', '/data/6ij6.csv')
+        loadStructure(`rcsb://${pdbIdUrl}.pdb`, csvBlob)
+
+
         // for (const key in dataObj) {
         //   loadedFile.push(dataObj[key])
         // }
@@ -157,10 +162,17 @@ const { loading, loadedFile, fetchFile }= useFile()
 
       var loadStrucFile, loadCsvFile
 
-      const csvResNumCol = 4
-      const csvWtProbCol = 7
-      const csvPrAaCol = 6
-      const csvPrProbCol = 8
+      // NEW FILES
+      // const csvResNumCol = 4
+      // const csvWtProbCol = 7
+      // const csvPrAaCol = 6
+      // const csvPrProbCol = 8
+
+      // OLD DB FILES
+      const csvResNumCol = 3
+      const csvWtProbCol = 6
+      const csvPrAaCol = 5
+      const csvPrProbCol = 7
 
       function loadStructure (proteinFile, csvFile) {
         struc = undefined
@@ -188,13 +200,15 @@ const { loading, loadedFile, fetchFile }= useFile()
           stage.loadFile(proteinFile /*, { defaultRepresentation: true }*/),
           NGL.autoLoad(csvFile, {
             ext: 'csv',
-            delimiter: ',',
-            comment: '#',
-            columnNames: true
+            // delimiter: ',',
+            // comment: '#',
+            // columnNames: true
           })
         ]).then(function (ol) {
           struc = ol[0]
+          console.log('s', struc)
           csv = ol[1].data
+          console.log('c', csv)
         
           setLigandOptions()
           setChainOptions()
