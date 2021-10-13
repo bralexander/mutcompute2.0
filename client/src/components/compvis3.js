@@ -1,8 +1,44 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState, useCallback} from 'react';
 import * as NGL from 'ngl';
+import { withRouter } from "react-router";
+import useFile from '../hooks/useFile';
+
 
 const Compvis3 = (props) => {
+  const [file, setFile] = useState(null)
+
+const pdbIdUrl = props.match.params.id.toLowerCase()
+
+const { loading, loadedFile, fetchFile }= useFile()
+
+  // console.log('P',props)
+  // let pdbIdDb = props.match.params.id.toLowerCase()
+  // console.log('id', pdbIdDb)
+  //const { file } = useFile(pdbIdDb)
+  // let csvDb = props.match.params.data
+  //let csvDb = file
+  // console.log('id', pdbIdDb)
+  // console.log('CSV', csvDb)
+
     useEffect (() => {
+
+      const handleFile = (dataObj) => {
+        //let loadedFileA = []
+        console.log('do', dataObj[0])
+        const str = dataObj[0]
+        const csvData = str.replace(/^"(.*)"$/, '$1')
+        loadStructure(`rcsb://${pdbIdUrl}.pdb`, '/data/6ij6.csv')
+        // for (const key in dataObj) {
+        //   loadedFile.push(dataObj[key])
+        // }
+        // console.log('lf',loadedFileA)
+        // setFile( loadedFile[0])
+        // loadedFile.pop()
+      }
+      
+
+      fetchFile(pdbIdUrl, handleFile)
+      
 
         const stage = new NGL.Stage( "viewport" );
 
@@ -762,17 +798,23 @@ const Compvis3 = (props) => {
         innerText: 'pi-stacking'
       }, { top: getTopPosition(), left: '32px', color: 'grey' }))   
 
-      loadStructure('/data/6ij6.pdb', '/data/6ij6.csv')
-  
-      }, []);
+      // loadStructure('/data/6ij6.pdb', '/data/6ij6.csv')
+      //loadStructure(`rcsb://${pdbIdDb}`, csvDb)
+      //loadStructure(`/data/${pdbIdUrl}.pdb`, str)
+
+      }, [fetchFile, pdbIdUrl, file]);
 
   return (
+  // <div>
+  //   {loading ? <h1>loading...</h1> :
       <div id="viewport" style={{height: '90vh', width: '100%'}} >
 
       </div>
+    // }
+    // </div>
   )
 }
 
-export default Compvis3
+export default withRouter(Compvis3)
   
   
