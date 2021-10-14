@@ -3,6 +3,7 @@ import flask
 # import flask_cors
 import json
 import sys
+import requests
 
 
 from app import app, db, guard
@@ -10,17 +11,17 @@ from app.email import send_password_reset_email, send_failure_email
 from app.models import Users
 from flask_praetorian import auth_required, current_user
 
-from time import time
-from datetime import datetime, timedelta
-from flask_mail import Mail
+
+
 
 
 
 # Set up some routes for the example
 @app.before_request
 def before_request():
-    current_user.last_seen = datetime.utcnow()
-    db.session.commit()
+    print(flask.request.headers, file=sys.stderr)
+    # current_user.last_seen = datetime.utcnow()
+    # db.session.commit()
 
 
 @app.route('/api/')
@@ -40,7 +41,6 @@ def login():
     req = flask.request.get_json(force=True)
     email = req.get('email', None)
     password = req.get('password', None)
-    # user = Users.query.filter_by(email=email).first()
     user = guard.authenticate(email, password)
     print(f"User praetorian: {user}", file=sys.stderr)
     if user is None or not user.check_pw(password):
@@ -98,36 +98,16 @@ def refresh():
 
 @app.route('/api/nn', methods=['POST'])
 @auth_required
-def nn ():
-    req = flask.request.get_data().decode('utf-8')
-    print("nn request input: ", req, current_user().user_email)
-    if isinstance(req, str):
-        message = {'Running net on': req, 'user': current_user().user_email}, 200
-    elif req.isfile():
-        message = {'Running net on': req}, 200
-    else: 
-        message= {'Request': 'failed'}, 200
-    #NEED TO IMPLEMENT DATABASE FOR PROTEINS
-    # prot = Prot.query.filter_by(id=id).count()
-    # if prot >= 1:
-    #     csv = prot.get_csv()
-    #     #prefer not to return object
-    # else:
-    #   run engine on protein (task)
-    return message
+def nn():
+    payload = {
+        "username": current_user().email,
+        "pdb_code": json.loads(flask.request.get_data())
+    }
 
+    response = requests.post('http://nn_api:8000/inference', json=payload)
 
-# @app.route('/api/protected')
-# @flask_praetorian.auth_required
-# def protected():
-#     """
-#     A protected endpoint. The auth_required decorator will require a header
-#     containing a valid JWT
-#     .. example::
-#        $ curl http://localhost:5000/api/protected -X GET \
-#          -H "Authorization: Bearer <your_token>"
-#     """
-#     return {'message': f'protected endpoint (allowed user {flask_praetorian.current_user().email})'}
+    return response.json(), response.status_code
+
 
 @app.route('/api/forgot', methods=['GET', 'POST'])
 def forgot():

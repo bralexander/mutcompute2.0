@@ -40,13 +40,13 @@ const NNPage = () => {
         .then(data => {
             console.log(data)
         })
-        .then(r => { 
-            if (r.status === 200) {
-                console.log(r)
-                alert('Fetching pdb from RCSB, and running the net on it. This could take up to 15 minutes. Please check your email, and spam folder for the results. ')
-            }
-            else {alert('error')}
-        })
+        // .then(r => { 
+        //     if (r.status === 200) {
+        //         console.log(r)
+        //         alert('Fetching pdb from RCSB, and running the net on it. This could take up to 15 minutes. Please check your email, and spam folder for the results. ')
+        //     }
+        //     else {alert('error')}
+        // })
     } else {
         alert('please fill form')
     }
