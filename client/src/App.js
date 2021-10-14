@@ -15,6 +15,11 @@ import FAQ from "./components/faq"
 import Forgot from "./components/forgotPass"
 import Reset from "./components/resetPass"
 
+import PetaseWt from "./components/petaseWt"
+import PetaseThermo from "./components/petaseThermo"
+import PetaseFast from "./components/petaseWt"
+
+
 
 const  PrivateRoute = ({component: Component, ...rest }) => {
   const [logged] = useAuth();
@@ -38,6 +43,9 @@ function App() {
             <Route path="/login" exact component={() => <Login />} />
             <Route path="/viewer/:id" exact component={() => <Compvis3 />} />
             <Route path="/register" exact component={() => <Register />} />
+            <Route path="/petase/5xjh" exact component={() => <PetaseWt />} />
+            <Route path="/petase/tk14" exact component={() => <PetaseThermo />} />
+            <Route path="/petase/tk14" exact component={() => <PetaseFast />} />
             <PrivateRoute path="/nn" component={NNPage} />
             <Route path="/faq" exact component={() => <FAQ />} />
             <Route path="/forgot" exact component={() => <Forgot />} />
