@@ -1,6 +1,7 @@
 import Compvis3 from "../components/compvis3";
 //import React, { useParams } from "react"
 import React, { useState, useCallback } from "react";
+import {authFetch} from '../auth'
 //import { withRouter } from "react-router";
 
 const useFile = (fileHandler) => {
@@ -12,9 +13,9 @@ const useFile = (fileHandler) => {
        const fetchFile = useCallback(async (fileName, fileHandler) => { 
         setLoading(true)
         const uFile = fileName.toUpperCase()
-        const response = await fetch('/api/nn', {
+        const response = await authFetch('/api/fetch_predictions', {
         method: 'post',
-        url:'/nn',
+        url:'/fetch_predictions',
         body: JSON.stringify(uFile),
         headers: {
             'content-type': 'application/json'
