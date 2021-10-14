@@ -38,7 +38,9 @@ const NNPage = () => {
         })
         .then(res => res.json())
         .then(data => {
-            console.log(data)
+            alert('CSV downloading to browser downloads folder')
+            document.write(Object.entries(data))
+            console.log(Object.entries(data))
         })
         // .then(r => { 
         //     if (r.status === 200) {
