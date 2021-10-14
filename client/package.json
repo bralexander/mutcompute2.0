@@ -19,9 +19,7 @@
     "web-vitals": "^1.0.1"
   },
   "scripts": {
-    "start": "BROWSER=none react-scripts start",
-    "start-api": "cd api && venv/bin/flask run --no-debugger",
-    "start-email": "cd api && ./email.sh",
+    "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "test-api": "cd api && flask test",

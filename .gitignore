@@ -13,6 +13,7 @@
 
 # misc
 .DS_Store
+.env
 .env.local
 .env.development.local
 .env.test.local
@@ -24,7 +25,7 @@ yarn-error.log*
 
 ./credentials-4.csv
 
-node_modules
+node_modules/
 
 *.py[cod]
 
@@ -66,3 +67,4 @@ nosetests.xml
 venv
 app.db
 api.log*
+Protein_NN.db

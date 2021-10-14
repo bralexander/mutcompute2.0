@@ -35,6 +35,10 @@ const NNPage = () => {
                 'content-type': 'application/json'
               }
         })
+        .then(res => res.json())
+        .then(data => {
+            console.log(data)
+        })
         .then(r => { 
             if (r.status === 200) {
                 console.log(r)

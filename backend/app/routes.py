@@ -1,12 +1,14 @@
 import os
 import flask
 import json
+import pandas as pd
 
 
 from app import app, db
 from app.email import send_password_reset_email, send_failure_email
-from app.models import User
+from app.models import Users, NN_Query
 from flask_login import current_user, login_user
+from typing import Optional
 
 from time import time
 from datetime import datetime, timedelta
@@ -36,14 +38,18 @@ def login():
          -d '{"username":"Yasoob","password":"strongpassword"}'
     """
     req = flask.request.get_json(force=True)
+    # print('REQ: ', req)
     email = req.get('email', None)
     password = req.get('password', None)
-    user = User.query.filter_by(email=email).first()
-    if user is None or not user.check_password(password):
-        ret = {'Invalid username or password for': user.email}, 418
+    user = Users.query.filter_by(email=email).first()
+    # if user is None or not user.check_password(password):
+    if user is None or not user.check_pw(password):
+        #logs in user... needs to be more secure
+        ret = {'access_token': user.email}, 418
     else:
         token = user.get_login_token()
         ret = {'access_token': token}, 200
+        
     return ret
 
 
@@ -62,14 +68,14 @@ def register():
     last_name = req.get('last', None)
     organization = req.get('org', None)
     password = req.get('password', None)
-    user = User.query.filter_by(email=email).count()
+    user = Users.query.filter_by(email=email).count()
 
     if user >= 1:
         message={'There is already an account associated with that email: ': email}, 418
         #prefer not to return object
     else:
         message = {'Welcome: ': first_name}, 200
-        user = User(email=email, first_name=first_name, last_name=last_name, organization=organization)
+        user = Users(email=email, first_name=first_name, last_name=last_name, organization=organization)
         user.set_password(password)
         db.session.add(user)
         db.session.commit()
@@ -94,21 +100,23 @@ def register():
 
 @app.route('/api/nn', methods=['POST'])
 def nn ():
-    req = flask.request.get_data().decode('utf-8')
+    req = flask.request.get_data().decode('utf-8-sig')
+    decoded = req[1:5]
     print(req)
     if isinstance(req, str):
-        message = {'Running net on': req}, 200
+        pdb_query = NN_Query.query.filter_by(pdb_query=decoded).count()
+        prot = NN_Query.query.filter_by(pdb_query=decoded).first()
+        if pdb_query >= 1:
+            json_data = prot.query_inf
+            data = pd.read_json(json_data)
+            csv = data.to_csv()
+            message = {'Fetching csv from database': json_data}, 200
+        else:
+            message = {'Running net on': decoded}, 200
     elif req.isfile():
-        message = {'Running net on': req}, 200
+        message = {'Running net on file': req}, 200
     else: 
         message=418
-    #NEED TO IMPLEMENT DATABASE FOR PROTEINS
-    # prot = Prot.query.filter_by(id=id).count()
-    # if prot >= 1:
-    #     csv = prot.get_csv()
-    #     #prefer not to return object
-    # else:
-    #   run engine on protein (task)
     return message
 
 
@@ -129,8 +137,8 @@ def forgot():
     req = flask.request.get_json(force=True)
     #print(req)
     email = req.get('email', None)
-    user = User.query.filter_by(email=email).first()
-    print('****User:', user)
+    user = Users.query.filter_by(email=email).first()
+    print('****Users:', user)
     if user is not None:
         print('user is not none')
         send_password_reset_email(user)
@@ -147,7 +155,7 @@ def forgot():
 @app.route('/api/reset/<token>', methods=['GET', 'POST'])
 def reset_password(token):
     
-    user = User.verify_reset_password_token(token)
+    user = Users.verify_reset_password_token(token)
     print(user, token)
     req = flask.request.get_json(force=True)
     new_password = req.get('password', None)

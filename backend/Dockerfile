@@ -2,6 +2,7 @@ FROM python:slim
 
 LABEL maintainer="Brad Alexander"
 
+<<<<<<< HEAD:backend/Dockerfile
 SHELL ["/bin/bash", "-c"]
 
 COPY . /app/
@@ -15,6 +16,16 @@ RUN pip install -r requirements.txt
 # RUN useradd mutcompute
 
 # USER mutcompute
+=======
+COPY . /app/
+
+WORKDIR /app
+
+ENV FLASK_APP api.py
+
+RUN pip install -r requirements.txt
+
+>>>>>>> upstream/dev-models:api/Dockerfile.api
 
 EXPOSE 5000
 
