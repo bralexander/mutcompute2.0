@@ -1,12 +1,14 @@
 import os
 import flask
+# import flask_cors
 import json
+import sys
 
 
-from app import app, db
+from app import app, db, guard
 from app.email import send_password_reset_email, send_failure_email
 from app.models import Users
-from flask_login import current_user, login_user
+from flask_praetorian import auth_required, current_user
 
 from time import time
 from datetime import datetime, timedelta
@@ -38,11 +40,13 @@ def login():
     req = flask.request.get_json(force=True)
     email = req.get('email', None)
     password = req.get('password', None)
-    user = Users.query.filter_by(email=email).first()
-    if user is None or not user.check_password(password):
+    # user = Users.query.filter_by(email=email).first()
+    user = guard.authenticate(email, password)
+    print(f"User praetorian: {user}", file=sys.stderr)
+    if user is None or not user.check_pw(password):
         ret = {'Invalid username or password for': user.email}, 418
     else:
-        token = user.get_login_token()
+        token = guard.encode_jwt_token(user)
         ret = {'access_token': token}, 200
     return ret
 
@@ -76,32 +80,33 @@ def register():
     #should we log user in automatically?
     return message
   
-# @app.route('/api/refresh', methods=['POST'])
-# def refresh():
-#     """
-#     Refreshes an existing JWT by creating a new one that is a copy of the old
-#     except that it has a refrehsed access expiration.
-#     .. example::
-#        $ curl http://localhost:5000/api/refresh -X GET \
-#          -H "Authorization: Bearer <your_token>"
-#     """
-#     print("refresh request")
-#     old_token = flask.request.get_data()
-#     new_token = guard.refresh_jwt_token(old_token)
-#     ret = {'access_token': new_token}, 200
-#     return ret
+@app.route('/api/refresh', methods=['POST'])
+def refresh():
+    """
+    Refreshes an existing JWT by creating a new one that is a copy of the old
+    except that it has a refrehsed access expiration.
+    .. example::
+       $ curl http://localhost:5000/api/refresh -X GET \
+         -H "Authorization: Bearer <your_token>"
+    """
+    print("refresh request")
+    old_token = flask.request.get_data()
+    new_token = guard.refresh_jwt_token(old_token)
+    ret = {'access_token': new_token}, 200
+    return ret
   
 
 @app.route('/api/nn', methods=['POST'])
+@auth_required
 def nn ():
     req = flask.request.get_data().decode('utf-8')
-    print(req)
+    print("nn request input: ", req, current_user().user_email)
     if isinstance(req, str):
-        message = {'Running net on': req}, 200
+        message = {'Running net on': req, 'user': current_user().user_email}, 200
     elif req.isfile():
         message = {'Running net on': req}, 200
     else: 
-        message=418
+        message= {'Request': 'failed'}, 200
     #NEED TO IMPLEMENT DATABASE FOR PROTEINS
     # prot = Prot.query.filter_by(id=id).count()
     # if prot >= 1:

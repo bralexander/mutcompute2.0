@@ -5,6 +5,7 @@ from config import Config
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from flask_login import LoginManager
+from flask_praetorian import Praetorian
 
 app = Flask(__name__)
 app.config.from_object(Config)
@@ -13,6 +14,7 @@ migrate = Migrate(app, db)
 login = LoginManager(app)
 login.login_view = 'login'
 mail = Mail(app)
+guard = Praetorian()
 
 #from app import routes, models
 
@@ -22,3 +24,6 @@ mail = Mail(app)
 # $ export MAIL_PORT=8025
 
 from app import routes, models
+
+with app.app_context():
+    guard.init_app(app, models.Users)

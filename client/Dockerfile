@@ -1,13 +1,14 @@
 FROM node:16-alpine
 
-COPY . /app
-
-WORKDIR /app
 
 ENV PATH /app/node_modules/.bin:$PATH
 
-RUN apk add --no-cache git
+WORKDIR /app
 
-RUN npm install -g --force yarn react-scripts && npm install
+COPY . /app
+
+RUN apk add --no-cache git && yarn install 
+
+# RUN npm install -g --force yarn react-scripts && npm install
 
 EXPOSE 3000 

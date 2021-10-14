@@ -1,4 +1,5 @@
 import React, { useState }  from 'react';
+import {authFetch} from '../auth'
 
 
 const NNPage = () => {
@@ -27,7 +28,7 @@ const NNPage = () => {
         }
         else if (!pdbFile && pdbId) {
         e.preventDefault()
-        fetch('/api/nn', {
+        authFetch('/api/nn', {
             method: 'post',
             url:'/nn', 
             body: JSON.stringify(pdbId),
