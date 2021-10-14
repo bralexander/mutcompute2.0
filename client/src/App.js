@@ -45,7 +45,7 @@ function App() {
             <Route path="/viewer/:id" exact component={() => <Compvis3 />} />
             <Route path="/register" exact component={() => <Register />} />
             <Route path="/petase/5xjh" exact component={() => <PetaseWt />} />
-            <Route path="/petase/tk14" exact component={() => <PetaseThermo />} />
+            <Route path="/petase/6ij6" exact component={() => <PetaseThermo />} />
             <Route path="/petase/tk14" exact component={() => <PetaseFast />} />
             <PrivateRoute path="/nn" component={NNPage} />
             <Route path="/faq" exact component={() => <FAQ />} />
