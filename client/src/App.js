@@ -36,7 +36,7 @@ function App() {
           <Switch>
             <Route path="/" exact component={() => <Cover />} />
             <Route path="/login" exact component={() => <Login />} />
-            <Route path="/viewer3" exact component={() => <Compvis3 />} />
+            <Route path="/viewer/:id" exact component={() => <Compvis3 />} />
             <Route path="/register" exact component={() => <Register />} />
             <PrivateRoute path="/nn" component={NNPage} />
             <Route path="/faq" exact component={() => <FAQ />} />

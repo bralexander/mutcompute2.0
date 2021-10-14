@@ -1,8 +1,49 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState, useCallback} from 'react';
 import * as NGL from 'ngl';
+import { withRouter } from "react-router";
+import useFile from '../hooks/useFile';
+
 
 const Compvis3 = (props) => {
+  const [file, setFile] = useState(null)
+
+const pdbIdUrl = props.match.params.id.toLowerCase()
+
+const { loading, loadedFile, fetchFile }= useFile()
+
+  // console.log('P',props)
+  // let pdbIdDb = props.match.params.id.toLowerCase()
+  // console.log('id', pdbIdDb)
+  //const { file } = useFile(pdbIdDb)
+  // let csvDb = props.match.params.data
+  //let csvDb = file
+  // console.log('id', pdbIdDb)
+  // console.log('CSV', csvDb)
+
     useEffect (() => {
+
+      const handleFile = (dataObj) => {
+        //let loadedFileA = []
+        console.log('do', dataObj[0])
+        const csvStr = dataObj[0]
+        // const csvData = str.replace(/^"(.*)"$/, '$1')
+        var csvBlob = new Blob( [ dataObj ], {type: 'text/plain'})
+        console.log(csvBlob)
+        //loadStructure('/data/6ij6.pdb', '/data/6ij6.csv')
+        loadStructure(`rcsb://${pdbIdUrl}.pdb`, csvBlob)
+
+
+        // for (const key in dataObj) {
+        //   loadedFile.push(dataObj[key])
+        // }
+        // console.log('lf',loadedFileA)
+        // setFile( loadedFile[0])
+        // loadedFile.pop()
+      }
+      
+
+      fetchFile(pdbIdUrl, handleFile)
+      
 
         const stage = new NGL.Stage( "viewport" );
 
@@ -10,6 +51,10 @@ const Compvis3 = (props) => {
             stage.handleResize();
         }, false );
 
+      // Change background color for Hong
+        stage.setParameters({
+          backgroundColor: 'white'
+        })
 
     function addElement (el) {
         Object.assign(el.style, {
@@ -117,10 +162,17 @@ const Compvis3 = (props) => {
 
       var loadStrucFile, loadCsvFile
 
-      const csvResNumCol = 4
-      const csvWtProbCol = 7
-      const csvPrAaCol = 6
-      const csvPrProbCol = 8
+      // NEW FILES
+      // const csvResNumCol = 4
+      // const csvWtProbCol = 7
+      // const csvPrAaCol = 6
+      // const csvPrProbCol = 8
+
+      // OLD DB FILES
+      const csvResNumCol = 3
+      const csvWtProbCol = 6
+      const csvPrAaCol = 5
+      const csvPrProbCol = 7
 
       function loadStructure (proteinFile, csvFile) {
         struc = undefined
@@ -148,13 +200,15 @@ const Compvis3 = (props) => {
           stage.loadFile(proteinFile /*, { defaultRepresentation: true }*/),
           NGL.autoLoad(csvFile, {
             ext: 'csv',
-            delimiter: ',',
-            comment: '#',
-            columnNames: true
+            // delimiter: ',',
+            // comment: '#',
+            // columnNames: true
           })
         ]).then(function (ol) {
           struc = ol[0]
+          console.log('s', struc)
           csv = ol[1].data
+          console.log('c', csv)
         
           setLigandOptions()
           setChainOptions()
@@ -168,8 +222,10 @@ const Compvis3 = (props) => {
       
           heatMap = NGL.ColormakerRegistry.addScheme(function (params) {
             this.parameters = Object.assign(this.parameters, {
-              domain: [0, 0.40],
-              scale: 'rwb',
+              domain: [0, 0.30],
+              //scale: 'rwb',
+              // Hong custom color scale
+              scale: [0xFF0000,0xFFFFFF,0x4646FF],
               mode: 'rgb'
             })
             var scale = this.getScale()
@@ -409,7 +465,7 @@ const Compvis3 = (props) => {
         var s = struc.structure 
 
         // Hong -- changes b+s radius , 9 => 30+
-        var withinSele = s.getAtomSetWithinSelection(new NGL.Selection(sele), 12)
+        var withinSele = s.getAtomSetWithinSelection(new NGL.Selection(sele), 17)
         var withinGroup = s.getAtomSetWithinGroup(withinSele)
         var expandedSele = withinGroup.toSeleString()
         neighborSele = '(' + expandedSele + ') and not (' + sele + ')'
@@ -417,7 +473,7 @@ const Compvis3 = (props) => {
 
         var sview = s.getView(new NGL.Selection(sele))
         // Hong -- changes surface repr 100 for full struc
-        pocketRadius = Math.max(sview.boundingBox.getSize(new NGL.Vector3()).length(), 2) + 10
+        pocketRadius = Math.max(sview.boundingBox.getSize(new NGL.Vector3()).length(), 2) + 15
         var withinSele2 = s.getAtomSetWithinSelection(new NGL.Selection(sele), pocketRadius + 2)
         var neighborSele2 = '(' + withinSele2.toSeleString() + ') and not (' + sele + ') and polymer'   
 
@@ -756,17 +812,23 @@ const Compvis3 = (props) => {
         innerText: 'pi-stacking'
       }, { top: getTopPosition(), left: '32px', color: 'grey' }))   
 
-      loadStructure('/data/6ij6.pdb', '/data/6ij6.csv')
-  
-      }, []);
+      // loadStructure('/data/6ij6.pdb', '/data/6ij6.csv')
+      //loadStructure(`rcsb://${pdbIdDb}`, csvDb)
+      //loadStructure(`/data/${pdbIdUrl}.pdb`, str)
+
+      }, [fetchFile, pdbIdUrl, file]);
 
   return (
+  // <div>
+  //   {loading ? <h1>loading...</h1> :
       <div id="viewport" style={{height: '90vh', width: '100%'}} >
 
       </div>
+    // }
+    // </div>
   )
 }
 
-export default Compvis3
+export default withRouter(Compvis3)
   
   

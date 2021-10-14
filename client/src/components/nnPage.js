@@ -1,4 +1,5 @@
 import React, { useState }  from 'react';
+import {authFetch} from '../auth'
 
 
 const NNPage = () => {
@@ -27,7 +28,7 @@ const NNPage = () => {
         }
         else if (!pdbFile && pdbId) {
         e.preventDefault()
-        fetch('/api/nn', {
+        authFetch('/api/nn', {
             method: 'post',
             url:'/nn', 
             body: JSON.stringify(pdbId),
@@ -35,13 +36,19 @@ const NNPage = () => {
                 'content-type': 'application/json'
               }
         })
-        .then(r => { 
-            if (r.status === 200) {
-                console.log(r)
-                alert('Fetching pdb from RCSB, and running the net on it. This could take up to 15 minutes. Please check your email, and spam folder for the results. ')
-            }
-            else {alert('error')}
+        .then(res => res.json())
+        .then(data => {
+            alert('CSV downloading to browser downloads folder')
+            document.write(Object.entries(data))
+            console.log(Object.entries(data))
         })
+        // .then(r => { 
+        //     if (r.status === 200) {
+        //         console.log(r)
+        //         alert('Fetching pdb from RCSB, and running the net on it. This could take up to 15 minutes. Please check your email, and spam folder for the results. ')
+        //     }
+        //     else {alert('error')}
+        // })
     } else {
         alert('please fill form')
     }
