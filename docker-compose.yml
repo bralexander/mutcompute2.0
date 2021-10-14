@@ -1,5 +1,4 @@
 services:
-<<<<<<< HEAD
   # Backend
   backend:
     container_name: backend
@@ -17,7 +16,7 @@ services:
     depends_on:
       - nn_api
     # command: gunicorn -b 0.0.0.0:5000 api:app
-    entrypoint: python /api/api.py
+    entrypoint: python /app/api.py
 
 
   # email:
@@ -133,41 +132,5 @@ services:
   #     - ./nginx/certbot/www:/var/www/certbot
   #   entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
   
-=======
-    api:
-      container_name: api
-      build:
-        context: ./api
-        dockerfile: Dockerfile.api
-      image: mutcompute-api
-      ports:
-        - "5000:5000"
-      volumes:
-        - ./api:/app/
-      environment: 
-        - MAIL_SERVER=email
-        - MAIL_PORT=8025
-      command: gunicorn -b 0.0.0.0:5000 api:app
-    client:
-      container_name: client
-      build:
-        context: ./client
-        dockerfile: Dockerfile.client
-      image: mutcompute-client
-      ports:
-        - "3000:3000"
-      # volumes:
-      #   - ./client:/app/
-      command: yarn start
-    # email:
-    #   container_name: email
-    #   build:
-    #     context: ./api
-    #     dockerfile: Dockerfile.api
-    #   image: mutcompute-api
-    #   ports:
-    #     - "8025:8025"
-    #   command: python -m smtpd -n -c DebuggingServer 0.0.0.0:8025 
->>>>>>> upstream/dev-models
 
       

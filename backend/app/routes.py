@@ -1,14 +1,12 @@
 import os
 import flask
 import json
-import pandas as pd
 
 
 from app import app, db
 from app.email import send_password_reset_email, send_failure_email
-from app.models import Users, NN_Query
+from app.models import Users
 from flask_login import current_user, login_user
-from typing import Optional
 
 from time import time
 from datetime import datetime, timedelta
@@ -38,18 +36,14 @@ def login():
          -d '{"username":"Yasoob","password":"strongpassword"}'
     """
     req = flask.request.get_json(force=True)
-    # print('REQ: ', req)
     email = req.get('email', None)
     password = req.get('password', None)
     user = Users.query.filter_by(email=email).first()
-    # if user is None or not user.check_password(password):
-    if user is None or not user.check_pw(password):
-        #logs in user... needs to be more secure
-        ret = {'access_token': user.email}, 418
+    if user is None or not user.check_password(password):
+        ret = {'Invalid username or password for': user.email}, 418
     else:
         token = user.get_login_token()
         ret = {'access_token': token}, 200
-        
     return ret
 
 
@@ -100,23 +94,21 @@ def register():
 
 @app.route('/api/nn', methods=['POST'])
 def nn ():
-    req = flask.request.get_data().decode('utf-8-sig')
-    decoded = req[1:5]
+    req = flask.request.get_data().decode('utf-8')
     print(req)
     if isinstance(req, str):
-        pdb_query = NN_Query.query.filter_by(pdb_query=decoded).count()
-        prot = NN_Query.query.filter_by(pdb_query=decoded).first()
-        if pdb_query >= 1:
-            json_data = prot.query_inf
-            data = pd.read_json(json_data)
-            csv = data.to_csv()
-            message = {'Fetching csv from database': json_data}, 200
-        else:
-            message = {'Running net on': decoded}, 200
+        message = {'Running net on': req}, 200
     elif req.isfile():
-        message = {'Running net on file': req}, 200
+        message = {'Running net on': req}, 200
     else: 
         message=418
+    #NEED TO IMPLEMENT DATABASE FOR PROTEINS
+    # prot = Prot.query.filter_by(id=id).count()
+    # if prot >= 1:
+    #     csv = prot.get_csv()
+    #     #prefer not to return object
+    # else:
+    #   run engine on protein (task)
     return message
 
 
@@ -138,7 +130,7 @@ def forgot():
     #print(req)
     email = req.get('email', None)
     user = Users.query.filter_by(email=email).first()
-    print('****Users:', user)
+    print('****User:', user)
     if user is not None:
         print('user is not none')
         send_password_reset_email(user)
@@ -170,7 +162,3 @@ def reset_password(token):
         message= {'invalid token': None }, 418
     return message
     
-
-# Run the example
-if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000)
