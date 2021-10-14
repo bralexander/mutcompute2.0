@@ -18,6 +18,8 @@ import Reset from "./components/resetPass"
 import PetaseWt from "./components/petaseWt"
 import PetaseThermo from "./components/petaseThermo"
 import PetaseFast from "./components/petaseWt"
+import BstPolymerase from "./components/polymerase"
+
 import EmailConf from './components/emailConf';
 
 
@@ -47,6 +49,7 @@ function App() {
             <Route path="/petase/5xjh" exact component={() => <PetaseWt />} />
             <Route path="/petase/6ij6" exact component={() => <PetaseThermo />} />
             <Route path="/petase/tk14" exact component={() => <PetaseFast />} />
+            <Route path="/polymerase/3tan" exact component={() => <BstPolymerase />} />
             <PrivateRoute path="/nn" component={NNPage} />
             <Route path="/faq" exact component={() => <FAQ />} />
             <Route path="/forgot" exact component={() => <Forgot />} />
