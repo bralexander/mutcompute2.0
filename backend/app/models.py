@@ -172,15 +172,10 @@ class Users(db.Model):
 
     def confirm_email(self):
         self.email_confirmed = True
+        self.email_confirmed_on = datetime.now()
         self.save_to_db()
-        app.logger.info('Email confirmed and updated DB: {}'.format(self.email_confirmed))
         return self.email_confirmed
 
-
-    def send_confirmation_email(self):
-        if SES_email_confirmation(user_email=self.email):
-            app.logger.info('successfully sent email confirmation link to : {}'.format(self.email))
-            return True
 
         
 

@@ -2,12 +2,14 @@ import json
 import sys
 import requests
 import pandas as pd
+from datetime import datetime
 
-from flask import request
+from flask import request, redirect, url_for
 from flask_praetorian import auth_required, current_user
+from itsdangerous import URLSafeTimedSerializer, SignatureExpired, BadTimeSignature
 
 from app import app, db, guard
-from app.email import send_password_reset_email, send_failure_email
+from app.email import send_email_confirmation, send_password_reset_email
 from app.models import Users, NN_Query
 
 
@@ -56,6 +58,9 @@ def register():
          -d '{"email":"Yasoob","password":"strongpassword"}'
     """
     req = request.get_json(force=True)
+
+    print(req, file=sys.stderr)
+
     email = req.get('email', None)
     first_name = req.get('first', None)
     last_name = req.get('last', None)
@@ -63,17 +68,18 @@ def register():
     password = req.get('password', None)
     user = Users.query.filter_by(email=email).count()
 
-    if user >= 1:
-        message={'There is already an account associated with that email: ': email}, 418
-        #prefer not to return object
-    else:
-        message = {'Welcome: ': first_name}, 200
-        user = Users(email=email, first_name=first_name, last_name=last_name, organization=organization)
-        user.set_password(password)
-        db.session.add(user)
-        db.session.commit()
-    #should we log user in automatically?
-    return message
+    if user > 0 and user.email_confirmed:
+            return {'Email Status': "email already confirmed"}, 418
+
+    # Add to database or overwrite if user is already present but not confirmed.
+    user = Users(email=email, password=password, first_name=first_name, last_name=last_name, organization=organization)
+    user.save_to_db()
+
+    if send_email_confirmation(user.email):
+        return {'Email Status': "Sent"}, 200
+    
+    return {'Email Status': "Failed to send"}, 500
+
   
 
 @app.route('/api/refresh', methods=['POST'])
@@ -162,4 +168,42 @@ def reset_password(token):
     else:
         message= {'invalid token': None }, 418
     return message
+
+
+
+@app.route('/email_confirmation/<token>')
+def confirm_email(token):
+    confirm_serializer = URLSafeTimedSerializer(app.config['MAIL_SECRET_KEY'])
+    email = None
+    try:
+        email = confirm_serializer.loads(token,
+                                         salt=app.config['MAIL_SALT'],
+                                         max_age=86400) #604800 is 7 days
+
+    except SignatureExpired:
+        #TODO work with brad to see what he wants to do here.
+        print('The confirmation link has an expired signature.')
+        return {'access_token': None}, 400
+        # redirect(url_for('login'))
+
+    except BadTimeSignature:
+        #TODO work with brad to see what he wants to do here.
+        print('The token has expired. The token is only valid for {}'.format(email.max_age))
+        return {'access_token': None}, 400
+        # redirect(url_for('login'))
+
+    else:
+        user = Users.query.filter_by(email=email).first()
+
+        print(f'Confirming email for {user.email}')
+
+        if user.email_confirmed:
+            print(f'User {user.email} has already confirmed his email')
+            
+        else:
+            user.confirm_email()
+            print(f'Email has been successfully confirmed for {user.email}')
+
+        token = guard.encode_jwt_token(user.email)
+        return {'access_token': token}, 200
     
