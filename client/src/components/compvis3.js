@@ -7,7 +7,7 @@ import useFile from '../hooks/useFile';
 const Compvis3 = (props) => {
   const [file, setFile] = useState(null)
 
-const pdbIdUrl = props.match.params.id.toLowerCase()
+const pdbId = props.match.params.id || props.id
 
 const { loading, loadedFile, fetchFile }= useFile()
 
@@ -30,7 +30,7 @@ const { loading, loadedFile, fetchFile }= useFile()
         var csvBlob = new Blob( [ dataObj ], {type: 'text/plain'})
         console.log(csvBlob)
         //loadStructure('/data/6ij6.pdb', '/data/6ij6.csv')
-        loadStructure(`rcsb://${pdbIdUrl}.pdb`, csvBlob)
+        loadStructure(`rcsb://${pdbId}.pdb`, csvBlob)
 
 
         // for (const key in dataObj) {
@@ -42,7 +42,7 @@ const { loading, loadedFile, fetchFile }= useFile()
       }
       
 
-      fetchFile(pdbIdUrl, handleFile)
+      fetchFile(pdbId, handleFile)
       
 
         const stage = new NGL.Stage( "viewport" );
@@ -814,9 +814,9 @@ const { loading, loadedFile, fetchFile }= useFile()
 
       // loadStructure('/data/6ij6.pdb', '/data/6ij6.csv')
       //loadStructure(`rcsb://${pdbIdDb}`, csvDb)
-      //loadStructure(`/data/${pdbIdUrl}.pdb`, str)
+      //loadStructure(`/data/${pdbId}.pdb`, str)
 
-      }, [fetchFile, pdbIdUrl, file]);
+      }, [fetchFile, pdbId, file]);
 
   return (
   // <div>
