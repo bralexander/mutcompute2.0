@@ -1,33 +1,14 @@
-from sqlalchemy.sql.schema import DefaultClause
 import jwt
-#import pandas as pd
-
-from app import db, login, app
 from time import time
-from werkzeug.security import generate_password_hash, check_password_hash
-from flask_login import UserMixin
-
-from sqlalchemy.schema import CheckConstraint
 from datetime import datetime, timedelta
-from flask_bcrypt import Bcrypt
 
-# pdb db
-from flask_wtf import FlaskForm
-from wtforms import StringField, SubmitField, PasswordField, FileField
-from wtforms.fields.html5 import EmailField
-from wtforms.validators import DataRequired, Email, EqualTo, length, Regexp, Optional
+from werkzeug.security import generate_password_hash, check_password_hash
+from sqlalchemy.schema import CheckConstraint, DefaultClause
+
+from app import app, db, bcrypt
 
 
-bcrypt = Bcrypt()
-
-# guard = flask_praetorian.Praetorian()
-
-# helps Flask-Login load a user
-@login.user_loader
-def load_user(id):
-    return Users.query.get(int(id))
-
-class Users(UserMixin, db.Model):
+class Users(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.Text, unique=True)
     first_name = db.Column(db.String(length=255))
@@ -40,7 +21,7 @@ class Users(UserMixin, db.Model):
     email_confirmed_on = db.Column(db.DateTime, nullable=True)
     queries = db.relationship("NN_Query",backref="user", lazy='dynamic')
 
-# init function not working/ not needed?
+
     def __init__(self, first_name, last_name,email,password,organization, confirmation_link_sent_on=None):
         self.first_name = first_name
         self.last_name = last_name
@@ -203,11 +184,6 @@ class Users(UserMixin, db.Model):
 
         
 
-@login.user_loader
-def load_user(id):
-    return Users.query.get(int(id))
-
-# PDB DB
 class NN_Query(db.Model):
 
     __tablename__ = "NN_Query"
@@ -252,37 +228,3 @@ class NN_Query(db.Model):
         db.session.add(self)
         db.session.commit()
         app.logger.info('Successfully saved query: {0} from user: {1} to DB'.format(self.pdb_query, self.user_email))
-
-
-
-# class NNForm(FlaskForm):
-#     #Todo The validator for email must be pulled from a sql database/JWT from the user.
-
-#     #ToDo need to figure out the validators to use for the protein submission.
-#     pdb_struct = StringField('PDB Structure', validators=[
-#                                         Optional("Please provide a PDB structure."),
-#                                         ])
-
-#     cryst_struct_file = FileField("Crystal Structure File" )
-
-#     submit = SubmitField('Submit')
-
-#     # This allows us to only accept PDB file codes.
-#     def validate(self):
-#         if self.pdb_struct.data and self.cryst_struct_file.data:
-#             self.cryst_struct_file.errors ="Form only accepts a PDB structure or a " \
-#                                           "crystal structure file but not both.",
-#             return False
-#         elif self.pdb_struct.data:
-#                 if len(self.pdb_struct.data) == 4:
-#                     self.query = self.pdb_struct.data.upper()
-#                     return True
-#                 else:
-#                     self.pdb_struct.errors = 'Invalid PDB ID: longer or shorter than 4 characters.',
-#                     return False
-#         elif self.cryst_struct_file.data:
-#             self.cryst_struct_file.errors = "This feature is still in development. Sorry for the " \
-#                                             "inconvenience. Please provide a PDB 4 letter code.",
-#             return False
-#         else:
-#             return False

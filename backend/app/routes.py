@@ -1,17 +1,14 @@
-import os
-import flask
-# import flask_cors
 import json
 import sys
 import requests
+import pandas as pd
 
+from flask import request
+from flask_praetorian import auth_required, current_user
 
 from app import app, db, guard
 from app.email import send_password_reset_email, send_failure_email
-from app.models import Users
-from flask_praetorian import auth_required, current_user
-
-
+from app.models import Users, NN_Query
 
 
 
@@ -19,9 +16,7 @@ from flask_praetorian import auth_required, current_user
 # Set up some routes for the example
 @app.before_request
 def before_request():
-    print(flask.request.headers, file=sys.stderr)
-    # current_user.last_seen = datetime.utcnow()
-    # db.session.commit()
+    print(request.headers, file=sys.stderr)
 
 
 @app.route('/api/')
@@ -38,7 +33,7 @@ def login():
        $ curl http://localhost:5000/api/login -X POST 
          -d '{"username":"Yasoob","password":"strongpassword"}'
     """
-    req = flask.request.get_json(force=True)
+    req = request.get_json(force=True)
     email = req.get('email', None)
     password = req.get('password', None)
     user = guard.authenticate(email, password)
@@ -60,7 +55,7 @@ def register():
        $ curl http://localhost:5000/api/login -X POST \
          -d '{"email":"Yasoob","password":"strongpassword"}'
     """
-    req = flask.request.get_json(force=True)
+    req = request.get_json(force=True)
     email = req.get('email', None)
     first_name = req.get('first', None)
     last_name = req.get('last', None)
@@ -80,6 +75,7 @@ def register():
     #should we log user in automatically?
     return message
   
+
 @app.route('/api/refresh', methods=['POST'])
 def refresh():
     """
@@ -90,7 +86,7 @@ def refresh():
          -H "Authorization: Bearer <your_token>"
     """
     print("refresh request")
-    old_token = flask.request.get_data()
+    old_token = request.get_data()
     new_token = guard.refresh_jwt_token(old_token)
     ret = {'access_token': new_token}, 200
     return ret
@@ -101,7 +97,7 @@ def refresh():
 def nn():
     payload = {
         "username": current_user().email,
-        "pdb_code": json.loads(flask.request.get_data())
+        "pdb_code": json.loads(request.get_data())
     }
 
     response = requests.post('http://nn_api:8000/inference', json=payload)
@@ -109,10 +105,30 @@ def nn():
     return response.json(), response.status_code
 
 
+@app.route('/api/fetch_predictions', methods=['POST'])
+@auth_required
+def fetch_pdb_predictions():
+
+    pdb_id = json.loads(request.get_data())
+    exist = NN_Query.query.filter_by(pdb_query=pdb_id).count()
+
+    if exist:
+        db_row = NN_Query.query.filter_by(pdb_query=pdb_id).first()
+
+        df = pd.DataFrame.from_dict(json.loads(db_row.query_inf)).T
+        csv = df.to_csv()
+
+        resp = {'pdb': pdb_id, 'predictions': csv}, 200
+
+    else:
+        resp = {'pdb': pdb_id, 'predictions': None}, 400
+
+    return resp
+
+
 @app.route('/api/forgot', methods=['GET', 'POST'])
 def forgot():
-    req = flask.request.get_json(force=True)
-    #print(req)
+    req = request.get_json(force=True)
     email = req.get('email', None)
     user = Users.query.filter_by(email=email).first()
     print('****User:', user)
@@ -134,7 +150,7 @@ def reset_password(token):
     
     user = Users.verify_reset_password_token(token)
     print(user, token)
-    req = flask.request.get_json(force=True)
+    req = request.get_json(force=True)
     new_password = req.get('password', None)
     print(new_password)
     if user:
