@@ -1,21 +1,23 @@
 services:
   # Backend
-  # backend:
-  #   container_name: backend
-  #   build:
-  #     context: ./backend
-  #     dockerfile: Dockerfile
-  #   image: mutcompute:backend
-  #   ports:
-  #     - "5000:5000"
-  #   volumes:
-  #     - ./backend/:/api/
-  #   environment: 
-  #     - MAIL_SERVER=email
-  #     - MAIL_PORT=8025
-  #   depends_on:
-  #     - nn_api
-  #   command: gunicorn -b 0.0.0.0:5000 api:app
+  backend:
+    container_name: backend
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    image: mutcompute:backend
+    ports:
+      - "5000:5000"
+    volumes:
+      - ./backend/:/app/
+    environment: 
+      - MAIL_SERVER=email
+      - MAIL_PORT=8025
+    depends_on:
+      - nn_api
+    # command: gunicorn -b 0.0.0.0:5000 api:app
+    entrypoint: python /api/api.py
+
 
   # email:
   #   container_name: email
@@ -94,17 +96,17 @@ services:
   #       - celery
 
   # # Frontend
-  # client:
-  #   container_name: client
-  #   build:
-  #     context: ./client
-  #     dockerfile: Dockerfile
-  #   image: mutcompute:client
-  #   ports:
-  #     - 3000:3000
-  #   # volumes:
-  #   #   - ./client:/app/
-  #   command: yarn start
+  client:
+    container_name: client
+    build:
+      context: ./client
+      dockerfile: Dockerfile
+    image: mutcompute:client
+    ports:
+      - 3000:3000
+    # volumes:
+    #   - ./client:/app/
+    command: yarn start
 
   # # Reverse Proxy
   # nginx:
