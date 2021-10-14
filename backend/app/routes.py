@@ -69,13 +69,13 @@ def register():
     user = Users.query.filter_by(email=email).count()
 
     if user > 0 and user.email_confirmed:
-            return {'Email Status': "email already confirmed"}, 418
+            return {'Email Status': "Email already confirmed"}, 418
 
     # Add to database or overwrite if user is already present but not confirmed.
     user = Users(email=email, password=password, first_name=first_name, last_name=last_name, organization=organization)
     user.save_to_db()
 
-    if send_email_confirmation(user.email):
+    if send_email_confirmation(email):
         return {'Email Status': "Sent"}, 200
     
     return {'Email Status': "Failed to send"}, 500
@@ -182,13 +182,13 @@ def confirm_email(token):
 
     except SignatureExpired:
         #TODO work with brad to see what he wants to do here.
-        print('The confirmation link has an expired signature.')
+        print('The confirmation link has an expired signature.', file=sys.stderr)
         return {'access_token': None}, 400
         # redirect(url_for('login'))
 
     except BadTimeSignature:
         #TODO work with brad to see what he wants to do here.
-        print('The token has expired. The token is only valid for {}'.format(email.max_age))
+        print('The token has expired.', file=sys.stderr)
         return {'access_token': None}, 400
         # redirect(url_for('login'))
 
@@ -198,12 +198,12 @@ def confirm_email(token):
         print(f'Confirming email for {user.email}')
 
         if user.email_confirmed:
-            print(f'User {user.email} has already confirmed his email')
+            print(f'User {user.email} has already confirmed his email', file=sys.stderr)
             
         else:
             user.confirm_email()
-            print(f'Email has been successfully confirmed for {user.email}')
+            print(f'Email has been successfully confirmed for {user.email}', file=sys.stderr)
 
-        token = guard.encode_jwt_token(user.email)
+        token = guard.encode_jwt_token(user)
         return {'access_token': token}, 200
     

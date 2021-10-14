@@ -17,4 +17,9 @@ class Config(object):
 
     MAIL_SECRET_KEY = mail_secret_key
     MAIL_SALT       = mail_salt
+
+    SES_EMAIL_HOST      = os.environ["SES_EMAIL_HOST"] 
+    SES_EMAIL_PORT      = os.environ["SES_EMAIL_PORT"] 
+    SES_SMTP_USERNAME   = os.environ["SES_SMTP_USERNAME"] 
+    SES_SMTP_PASSWORD   = os.environ["SES_SMTP_PASSWORD"] 
     

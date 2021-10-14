@@ -49,7 +49,7 @@ def send_email_confirmation(user_email='danny.jesus.diaz.94@gmail.com',
     return True
 
 
-def send_failure_email(email):
+def send_password_reset_email(user_email):
     pass
 #     send_email('[Mutcompute] Reset Your Password',
 #                sender=app.config['ADMINS'][0],

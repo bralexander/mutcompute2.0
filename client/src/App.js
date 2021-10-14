@@ -18,6 +18,7 @@ import Reset from "./components/resetPass"
 import PetaseWt from "./components/petaseWt"
 import PetaseThermo from "./components/petaseThermo"
 import PetaseFast from "./components/petaseWt"
+import EmailConf from './components/emailConf';
 
 
 
@@ -50,6 +51,7 @@ function App() {
             <Route path="/faq" exact component={() => <FAQ />} />
             <Route path="/forgot" exact component={() => <Forgot />} />
             <Route path="/reset/:hash" component={() => <Reset />} />
+            <Route path="/email_confirmation/:token" component={() => <EmailConf />} />
           </Switch>
         <Footer />
       </Router>
