@@ -42,8 +42,15 @@ const NNPage = () => {
         })
         .then(res => res.json())
         .then(data => {
-            alert('PDB running on Neural Net. You will recieve an email with the results within a few minutes or up to an hour. Larger proteins take longer')
             console.log(data)
+            if (data.status === 201) {
+            alert('Neural Net is running PDB file. You will recieve an email with the results within a few minutes or up to an hour. Larger proteins take longer')
+            } else if (data.status === 400) {
+                alert('Protein is not available from RCSB')
+            } else {
+                alert(data)
+            }
+
         })
         // .then(r => { 
         //     if (r.status === 200) {
