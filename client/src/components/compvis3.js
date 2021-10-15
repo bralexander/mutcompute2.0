@@ -67,19 +67,19 @@ const history = useHistory()
         })
         return select
       }
-
-      function createFileButton (label, properties, style) {
-        var input = createElement('input', Object.assign({
-          type: 'file'
-        }, properties), { display: 'none' })
-        addElement(input)
-        var button = createElement('input', {
-          value: label,
-          type: 'button',
-          onclick: function () { input.click() }
-        }, style)
-        return button
-      }
+      // FOR UPLOADING FILES FROM COMPUTER
+      // function createFileButton (label, properties, style) {
+      //   var input = createElement('input', Object.assign({
+      //     type: 'file'
+      //   }, properties), { display: 'none' })
+      //   addElement(input)
+      //   var button = createElement('input', {
+      //     value: label,
+      //     type: 'button',
+      //     onclick: function () { input.click() }
+      //   }, style)
+      //   return button
+      // }
 
       var topPosition = 75
 
@@ -147,7 +147,8 @@ const history = useHistory()
       var neighborSele
       var sidechainAttached = false
 
-      var loadStrucFile, loadCsvFile
+      // FOR PDB INPUT FORM
+      //var loadStrucFile, loadCsvFile
 
       // NEW FILES
       // const csvResNumCol = 4
@@ -387,6 +388,7 @@ const history = useHistory()
         })
       } 
 
+      //UPLOAD BUTTONS AND INPUT FORM
       // var loadStructureButton = createFileButton('Load Structure', {
       //   accept: '.pdb,.cif,.ent,.gz,.mol2',
       //   onchange: function (e) {
