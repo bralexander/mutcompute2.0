@@ -118,7 +118,7 @@ const history = useHistory()
             WT PROB: ${wtProb.toFixed(4)}<br/>
             PRED AA: ${csvRow[csvPrAaCol]}<br/>
             PRED PROB: ${prProb.toFixed(4)}<br/>
-            LOG2 P/W: ${Math.log2(prProb/wtProb).toFixed(4)}`
+            LOG2 PRED/WT: ${Math.log2(prProb/wtProb).toFixed(4)}`
               tooltip.style.bottom = stage.viewer.height - 150 + 'px'
               tooltip.style.left = stage.viewer.width - 170 + 'px'
               tooltip.style.display = 'block'
@@ -387,35 +387,35 @@ const history = useHistory()
         })
       } 
 
-      var loadStructureButton = createFileButton('Load Structure', {
-        accept: '.pdb,.cif,.ent,.gz,.mol2',
-        onchange: function (e) {
-          if (e.target.files[0]) {
-            loadStrucFile = e.target.files[0]
-          }
-          if (loadCsvFile) {
-            loadStructure(loadStrucFile, loadCsvFile)
-            loadCsvFile = ''
-            loadStrucFile = ''
-          }
-        }
-      }, { top: getTopPosition(), left: '12px' })
-      addElement(loadStructureButton)   
+      // var loadStructureButton = createFileButton('Load Structure', {
+      //   accept: '.pdb,.cif,.ent,.gz,.mol2',
+      //   onchange: function (e) {
+      //     if (e.target.files[0]) {
+      //       loadStrucFile = e.target.files[0]
+      //     }
+      //     if (loadCsvFile) {
+      //       loadStructure(loadStrucFile, loadCsvFile)
+      //       loadCsvFile = ''
+      //       loadStrucFile = ''
+      //     }
+      //   }
+      // }, { top: getTopPosition(), left: '12px' })
+      // addElement(loadStructureButton)   
 
-      var loadCsvButton = createFileButton('Load csv', {
-        accept: '.csv',
-        onchange: function (e) {
-          if (e.target.files[0]) {
-            loadCsvFile = e.target.files[0]
-          }
-          if (loadStrucFile) {
-            loadStructure(loadStrucFile, loadCsvFile)
-            loadCsvFile = ''
-            loadStrucFile = ''
-          }
-        }
-      }, { top: getTopPosition(30), left: '12px' })
-      addElement(loadCsvButton) 
+      // var loadCsvButton = createFileButton('Load csv', {
+      //   accept: '.csv',
+      //   onchange: function (e) {
+      //     if (e.target.files[0]) {
+      //       loadCsvFile = e.target.files[0]
+      //     }
+      //     if (loadStrucFile) {
+      //       loadStructure(loadStrucFile, loadCsvFile)
+      //       loadCsvFile = ''
+      //       loadStrucFile = ''
+      //     }
+      //   }
+      // }, { top: getTopPosition(30), left: '12px' })
+      // addElement(loadCsvButton) 
 
       // More useful for mutcompute
       // var loadPdbidInput = createElement('input', {
