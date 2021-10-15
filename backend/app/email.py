@@ -3,14 +3,15 @@ import smtplib
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from email.mime.base import MIMEBase
+from os import environ
 
 from flask import render_template, url_for
 from itsdangerous import URLSafeTimedSerializer
 
 from app import app
 
-HOSTNAME = 'localhost'
-PORT=3000
+HOSTNAME = environ.get('HOSTNAME', 'localhost')
+PORT= environ.get('PORT', 3000)
 
 def send_email_confirmation(user_email):
 
