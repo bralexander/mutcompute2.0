@@ -219,6 +219,16 @@ const registerSubmit = e => {
                                 {password2Error && <span style={{color:'red'}}>Passwords must match</span>}
                             </span>
                             </div>
+                            <div className="col-md-6 text-justify">
+                            <button 
+                            className="w-20 btn btn-lg btn-primary" 
+                            id='submitBtn' 
+                            type="submit" 
+                            disabled={!validForm}
+                            >
+                                Register
+                            </button>
+                            </div>
                         </div>
 
                         <hr/>
@@ -231,14 +241,9 @@ const registerSubmit = e => {
                                 For any questions or issues with MutCompute please contact<a href="mailto:danny.diaz@utexas.edu?subject=Protein_NN_accessibility"> danny.diaz@utexas.edu.</a>
                             </p>
                             <p>
-                                Please visit the <a href="{{ url_for('FAQ_page') }}">FAQ</a> for additional details.
+                                Please visit the <a href="/faq">FAQ</a> for additional details.
                             </p>
-                            <button 
-                            className="w-20 btn btn-lg btn-primary" 
-                            id='submitBtn' 
-                            type="submit" 
-                            disabled={!validForm}
-                            >Register</button>
+                            
                         </div>
                     </form>
                 </div>
