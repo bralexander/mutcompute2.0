@@ -103,7 +103,7 @@ return (
                     </div>
                     <div className="checkbox mb-3">
                     <label>
-                      <input type="checkbox" value="loadCache" onChange={rerunHandler} checked/> load cache
+                      <input type="checkbox" value="loadCache" onChange={rerunHandler} checked={pdb.loadCache}/> load cached predictions
                     </label>
                   </div>
                         {/* SAVED FOR FUTURE FEATURE
@@ -132,6 +132,7 @@ return (
                     <p>
                         This Protein Neural Net is still an on going research project in the Ellington Research Lab
                         and may be temporarily offline for updates and the addition of new features.
+                        If you encounter any problems please email <a href="mailto: danny.diaz@utexas.edu">danny.diaz@utexas.edu</a>
                     </p>
                     <p>
                         Please visit the <a href="/FAQ">FAQ page</a> for additional details.
