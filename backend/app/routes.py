@@ -2,7 +2,6 @@ import json
 import sys
 import requests
 import pandas as pd
-from datetime import datetime
 
 from flask import request, redirect, url_for
 from flask_praetorian import auth_required, current_user
@@ -15,7 +14,7 @@ from app.models import Users, NN_Query
 
 
 
-# Set up some routes for the example
+# Logs
 @app.before_request
 def before_request():
     print(request.headers, file=sys.stderr)
@@ -28,35 +27,20 @@ def home():
   
 @app.route('/api/login', methods=['POST'])
 def login():
-    """
-    Logs a user in by parsing a POST request containing user credentials and
-    issuing a JWT token.
-    .. example::
-       $ curl http://localhost:5000/api/login -X POST 
-         -d '{"username":"Yasoob","password":"strongpassword"}'
-    """
     req = request.get_json(force=True)
     email = req.get('email', None)
     password = req.get('password', None)
     user = guard.authenticate(email, password)
     print(f"User praetorian: {user}", file=sys.stderr)
-    if user is None or not user.check_pw(password):
-        ret = {'Invalid username or password for': user.email}, 418
-    else:
-        token = guard.encode_jwt_token(user)
-        ret = {'access_token': token}, 200
-    return ret
+    if user is None or not user.check_password(password):
+        return {'access_token': None}, 401
+
+    token = guard.encode_jwt_token(user)
+    return  {'access_token': token}, 200
 
 
 @app.route('/api/register', methods=['POST'])
 def register():
-    """
-    Logs a user in by parsing a POST request containing user credentials and
-    issuing a JWT token.
-    .. example::
-       $ curl http://localhost:5000/api/login -X POST \
-         -d '{"email":"Yasoob","password":"strongpassword"}'
-    """
     req = request.get_json(force=True)
 
     print(req, file=sys.stderr)
@@ -114,7 +98,6 @@ def nn():
 @app.route('/api/fetch_predictions', methods=['POST'])
 @auth_required
 def fetch_pdb_predictions():
-
     pdb_id = json.loads(request.get_data())
     exist = NN_Query.query.filter_by(pdb_query=pdb_id).count()
 
@@ -124,12 +107,10 @@ def fetch_pdb_predictions():
         df = pd.DataFrame.from_dict(json.loads(db_row.query_inf)).T
         csv = df.to_csv()
 
-        resp = {'pdb': pdb_id, 'predictions': csv}, 200
+        return {'pdb': pdb_id, 'predictions': csv}, 200
 
     else:
-        resp = {'pdb': pdb_id, 'predictions': None}, 400
-
-    return resp
+        return  {'pdb': pdb_id, 'predictions': None}, 400
 
 
 @app.route('/api/forgot', methods=['GET', 'POST'])
@@ -171,7 +152,7 @@ def reset_password(token):
 
 
 
-@app.route('/email_confirmation/<token>')
+@app.route('/api/email_confirmation/<token>')
 def confirm_email(token):
     confirm_serializer = URLSafeTimedSerializer(app.config['MAIL_SECRET_KEY'])
     email = None

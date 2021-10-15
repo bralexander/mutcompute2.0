@@ -1,8 +1,5 @@
-import jwt
-from time import time
-from datetime import datetime, timedelta
+from datetime import datetime
 
-from werkzeug.security import generate_password_hash, check_password_hash
 from sqlalchemy.schema import CheckConstraint, DefaultClause
 
 from app import app, db, bcrypt
@@ -26,15 +23,16 @@ class Users(db.Model):
         self.first_name = first_name
         self.last_name = last_name
         self.email = email
-        self.password = bcrypt.generate_password_hash(password).decode()
+        self.password = bcrypt.generate_password_hash(password).decode('utf-8')
         self.registered_on = datetime.now()
         self.organization = organization
         self.confirmation_link_sent_on = confirmation_link_sent_on
         self.email_confirmed = False
         self.email_confirmed_on = None
 
+
     def __repr__(self):
-        return '<User {}>'.format(self.email)
+        return f'User({self.email, self.organization})'
 
     @classmethod
     def lookup(cls, username):
@@ -83,76 +81,12 @@ class Users(db.Model):
         except Exception:
             return []
 
-    #hashed password
     def set_password(self, password):
-        self.password = generate_password_hash(password)
+        self.password = bcrypt.generate_password_hash(password).decode('utf-8')
         
 
-    # def check_password(self, password):
-    #     return check_password_hash(self.password, password)
-        
-
-
-    def get_login_token(self, expires_in=1800):
-        return jwt.encode({'access_token': self.id, 'exp': time() + expires_in},
-            app.config['SECRET_KEY'], algorithm='HS256')
-
-    def get_reset_password_token(self, expires_in=600):
-        return jwt.encode(
-            {'reset_password': self.id, 'exp': time() + expires_in},
-            app.config['SECRET_KEY'], algorithm='HS256')
-
-    @staticmethod
-    def verify_reset_password_token(token):
-        try:
-            id = jwt.decode(token, app.config['SECRET_KEY'],
-                            algorithms=['HS256'])['reset_password']
-        except:
-            return
-        return Users.query.get(id)
-
-    # Mutcompute model
-    # def __repr__(self):
-    #     return '<User %s %s <%s> from %s>' % \
-    #            (self.first_name, self.last_name, self.email, self.organization)
-
-
-    def encode_auth_token(self, user_id):
-        """
-        Generates the Auth Token
-        :return: string
-        """
-        try:
-            payload = {
-                'exp': datetime.utcnow() + timedelta(days=0,minutes=30,seconds=0),
-                'iat': datetime.utcnow(),
-                'sub': user_id
-            }
-
-            return jwt.encode(payload=payload,
-                              key=app.config.get('JWT_SECRET_KEY'),
-                              algorithm='HS256'
-                              )
-
-        except Exception as e:
-            return e
-
-    @staticmethod
-    def decode_auth_token(auth_token):
-        """
-        Validates the auth token
-        :param auth_token:
-        :return: integer|string
-        """
-        try:
-            payload = jwt.decode(auth_token,key=app.config.get('JWT_SECRET_KEY'))
-            return payload['sub']
-
-        except jwt.ExpiredSignatureError:
-            return "Signature Expired. Please login again."
-
-        except jwt.InvalidTokenError:
-            return "Invalid Token. Please login again."
+    def check_password(self, password):
+        return bcrypt.check_password_hash(self.password, password)
 
 
     def save_to_db(self):
@@ -161,23 +95,13 @@ class Users(db.Model):
         app.logger.info('Successfully saved to DB.')
 
 
-    def check_pw(self,form_pw):
-        return bcrypt.check_password_hash(self.password, form_pw)
-
-
-    def check_user_confirmed(self):
-        app.logger.info('check if user confirmed: {}'.format(self.email_confirmed))
-        return self.email_confirmed
-
-
     def confirm_email(self):
         self.email_confirmed = True
         self.email_confirmed_on = datetime.now()
         self.save_to_db()
         return self.email_confirmed
-
-
         
+
 
 class NN_Query(db.Model):
 
@@ -191,25 +115,14 @@ class NN_Query(db.Model):
     query_inf = db.Column(db.Text(4294000000), nullable=True)
     query_email_sent = db.Column(db.Boolean, default=False)
 
-
-
     __table_args__ = CheckConstraint('NOT(pdb_query IS NULL AND query_inf IS NULL)'),
 
 
-    def __init__(self,user_email,pdb_query,query_inf,query=None, inference=None):
+    def __init__(self,user_email,pdb_query,query_inf):
         self.user_email = user_email
-        #self.pdb_query = pdb_query
-        self.pdb_query = query
+        self.pdb_query = pdb_query
         self.query_time = datetime.now()
         self.query_inf = query_inf
-        # try:
-        #     self.query_inf = inference.to_json(orient='index')
-        # except Exception:
-        #     app.logger.warning('Unable to generate inference json for {}'.format(self.pdb_query))
-
-        # if isinstance(inference,pd.DataFrame):
-        #     app.logger.info('Inference Data frame was passed in as parameter for PDB {}'.format(self.pdb_query))
-        #     self.query_inf = inference.to_json(orient='index')
 
 
     def __repr__(self):
@@ -222,4 +135,3 @@ class NN_Query(db.Model):
     def save_to_db(self):
         db.session.add(self)
         db.session.commit()
-        app.logger.info('Successfully saved query: {0} from user: {1} to DB'.format(self.pdb_query, self.user_email))

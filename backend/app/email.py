@@ -1,3 +1,4 @@
+import sys
 import smtplib
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
@@ -12,12 +13,15 @@ from app import app
 def send_email_confirmation(user_email='danny.jesus.diaz.94@gmail.com',
                            html_template='email_confirmation.html'):
                            
-    subject = 'mutCompute_Email_Confirmation'
+    subject = 'MutCompute email confirmation'
     sender_email = "no-reply@mutcompute.com"
 
     confirm_serializer = URLSafeTimedSerializer(app.config['MAIL_SECRET_KEY'])
     token = confirm_serializer.dumps(user_email, salt=app.config['MAIL_SALT'])
-    confirm_url = url_for('confirm_email', token=token, _external=True)
+
+    # TODO rewrite this line so it does not default to backend:5000
+    confirm_url = f"http://localhost:3000{url_for('confirm_email', token=token)}" 
+
     html = render_template(html_template, confirm_url=confirm_url)
 
     msg = MIMEMultipart()
@@ -34,7 +38,7 @@ def send_email_confirmation(user_email='danny.jesus.diaz.94@gmail.com',
     server.starttls()
     server.login(app.config["SES_SMTP_USERNAME"], app.config["SES_SMTP_PASSWORD"])
 
-    print(confirm_url)
+    print("Confirmation url: ", confirm_url, file=sys.stderr)
 
     try:
         server.sendmail(sender_email, user_email, msg.as_string())

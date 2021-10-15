@@ -5,7 +5,7 @@ const EmailConf = (props) => {
     const token = props.match.params.token
 
     const confirmHandler = () => {
-        fetch(`/email_confirmation/${token}`)
+        fetch(`/api/email_confirmation/${token}`)
         .then(res => {console.log(res.json())})
     }
 
