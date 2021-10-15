@@ -53,7 +53,7 @@ function App() {
             <PrivateRoute path="/nn" component={NNPage} />
             <Route path="/faq" exact component={() => <FAQ />} />
             <Route path="/forgot" exact component={() => <Forgot />} />
-            <Route path="/reset/:hash" component={() => <Reset />} />
+            <Route path="/api/reset/:hash" component={() => <Reset />} />
             <Route path="/api/email_confirmation/:token" component={() => <EmailConf />} />
           </Switch>
         <Footer />

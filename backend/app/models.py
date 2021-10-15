@@ -83,6 +83,8 @@ class Users(db.Model):
 
     def set_password(self, password):
         self.password = bcrypt.generate_password_hash(password).decode('utf-8')
+        self.save_to_db()
+        return True
         
 
     def check_password(self, password):

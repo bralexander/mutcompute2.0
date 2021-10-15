@@ -9,6 +9,8 @@ from itsdangerous import URLSafeTimedSerializer
 
 from app import app
 
+HOSTNAME = 'localhost'
+PORT=3000
 
 def send_email_confirmation(user_email):
 
@@ -16,7 +18,7 @@ def send_email_confirmation(user_email):
     token = confirm_serializer.dumps(user_email, salt=app.config['MAIL_SALT'])
 
     #TODO refactor for deployment.
-    confirm_url = f"http://localhost:3000{url_for('confirm_email', token=token)}" 
+    confirm_url = f"http://{HOSTNAME}:{PORT}{url_for('confirm_email', token=token)}" 
 
     html = render_template('email_confirmation.html', confirm_url=confirm_url)
 
@@ -52,11 +54,43 @@ def send_email_confirmation(user_email):
     return True
 
 
-def send_password_reset_email(user_email):
-    pass
-#     send_email('[Mutcompute] Reset Your Password',
-#                sender=app.config['ADMINS'][0],
-#                recipients=[email],
-#                text_body=render_template('user_not_exist.txt'),
-#                html_body=render_template('user_not_exist.html')
-#     )
+def send_password_reset(user_email):
+
+    confirm_serializer = URLSafeTimedSerializer(app.config['MAIL_SECRET_KEY'])
+    token = confirm_serializer.dumps(user_email, salt=app.config['MAIL_SALT'])
+
+    reset_url = f"http://{HOSTNAME}:{PORT}{url_for('reset_password', token=token)}" 
+
+    html = render_template('reset_pass.html', reset_url=reset_url)
+
+    subject = 'MutCompute password reset'
+    sender_email = "no-reply@mutcompute.com"
+
+    msg = MIMEMultipart()
+    msg['Subject'] = subject
+    msg['FROM'] = sender_email
+    msg['To'] = str(user_email)
+
+    html_mime = MIMEText(html, 'html')
+
+    msg.attach(html_mime)
+
+    server = smtplib.SMTP(app.config['SES_EMAIL_HOST'])
+    server.connect(app.config['SES_EMAIL_HOST'], app.config['SES_EMAIL_PORT'])
+    server.starttls()
+    server.login(app.config["SES_SMTP_USERNAME"], app.config["SES_SMTP_PASSWORD"])
+
+    print("Reset url: ", reset_url, file=sys.stderr)
+
+    try:
+        server.sendmail(sender_email, user_email, msg.as_string())
+
+    except Exception as e:
+        print(f'Error in sending password reset email to user: {user_email}')
+        server.quit()
+        return False
+
+    server.quit()
+    print('Sent email')
+    return True
+

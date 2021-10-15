@@ -8,7 +8,7 @@ from flask_praetorian import auth_required, current_user
 from itsdangerous import URLSafeTimedSerializer, SignatureExpired, BadTimeSignature
 
 from app import app, db, guard
-from app.email import send_email_confirmation, send_password_reset_email
+from app.email import send_email_confirmation, send_password_reset
 from app.models import Users, NN_Query
 
 
@@ -22,7 +22,7 @@ def before_request():
 
 @app.route('/api/')
 def home():
-    return {"Hello": "World"}, 200
+    return {"Hello": "Protein Engineer"}, 200
 
   
 @app.route('/api/login', methods=['POST'])
@@ -65,7 +65,6 @@ def register():
     return {'Email Status': "Failed to send"}, 500
 
   
-
 @app.route('/api/refresh', methods=['POST'])
 def refresh():
     """
@@ -85,12 +84,9 @@ def refresh():
 @app.route('/api/nn', methods=['POST'])
 @auth_required
 def nn():
-
     data = request.get_json()
-
     load_cache = data.get('loadCache', True)
-
-    pdb_id = data['id']
+    pdb_id     = data['id']
 
     payload = {
         "username": current_user().email,
@@ -128,40 +124,17 @@ def fetch_pdb_predictions():
 def forgot():
     req = request.get_json(force=True)
     email = req.get('email', None)
+
     user = Users.query.filter_by(email=email).first()
-    print('****User:', user)
-    if user is not None:
-        print('user is not none')
-        send_password_reset_email(user)
-        message={'email sent to': email}, 200
-    else:
-        #should send an error email saying that the email does not exist in db
-        send_failure_email(email)
-        message={'email sent to': email}, 418
-        
-        
-    return message
-
-
-@app.route('/api/reset/<token>', methods=['GET', 'POST'])
-def reset_password(token):
-    
-    user = Users.verify_reset_password_token(token)
-    print(user, token)
-    req = request.get_json(force=True)
-    new_password = req.get('password', None)
-    print(new_password)
     if user:
-        #should also make sure password is not the same
-        user.set_password(new_password)
-        db.session.add(user)
-        db.session.commit()
-        message={'password reset for': user.email}, 200
+        print('user is not none')
+        send_password_reset(user.email)
+        return {'Status': f'Sent email to {email}'}, 200
     else:
-        message= {'invalid token': None }, 418
-    return message
-
-
+        #TODO react should say email is invalid
+        #should send an error email saying that the email does not exist in db
+        return {'Status': 'invalid email'}, 400
+        
 
 @app.route('/api/email_confirmation/<token>')
 def confirm_email(token):
@@ -198,4 +171,33 @@ def confirm_email(token):
 
         token = guard.encode_jwt_token(user)
         return {'access_token': token}, 200
+
+
+@app.route('/api/reset/<token>', methods=['POST'])
+def reset_password(token):
+
+    confirm_serializer = URLSafeTimedSerializer(app.config['MAIL_SECRET_KEY'])
+
+    try:
+        email = confirm_serializer.loads(token,
+                                         salt=app.config['MAIL_SALT'],
+                                         max_age=86400) #604800 is 7 days
+
+    except SignatureExpired:
+        #TODO work with brad to see what he wants to do here.
+        print('The confirmation link has an expired signature.', file=sys.stderr)
+        return {'access_token': None}, 400
+        # redirect(url_for('login'))
+
+    except BadTimeSignature:
+        #TODO work with brad to see what he wants to do here.
+        print('The token has expired.', file=sys.stderr)
+        return {'access_token': None}, 400
+        # redirect(url_for('login'))
+    else:
+        new_password = request.get_json(force=True)
+        user = Users.query.filter_by(email=email).first()
+        user.set_password(new_password)
+
+        return {'Status': 'Success'}, 200
     

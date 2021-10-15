@@ -55,7 +55,7 @@ class InferenceAPI(Resource):
                 return make_response(
                     jsonify(Result=f"""
                         Neural Net is running PDB file: {pdb_code.upper()}. 
-                        You will recieve an email with the results within a few minutes or up to an hour. 
+                        Expect an email with predictions within a few minutes or up to an hour. 
                         Larger proteins tend to take longer.
                     """), 
                     201
