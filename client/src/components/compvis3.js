@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback} from 'react';
+import React, { useEffect } from 'react';
 import * as NGL from 'ngl';
 import { withRouter } from "react-router";
 import useFile from '../hooks/useFile';
@@ -6,57 +6,37 @@ import { useHistory } from 'react-router-dom'
 
 
 const Compvis3 = (props) => {
-  //const [file, setFile] = useState(null)
 
-const pdbId = props.match.params.id || props.id
+const pdbIdUrl = props.match.params.id || props.id
 
-//const { loading, loadedFile, fetchFile }= useFile()
 const { fetchFile }= useFile()
 
 const history = useHistory()
 
-  // console.log('P',props)
-  // let pdbIdDb = props.match.params.id.toLowerCase()
-  // console.log('id', pdbIdDb)
-  //const { file } = useFile(pdbIdDb)
-  // let csvDb = props.match.params.data
-  //let csvDb = file
-  // console.log('id', pdbIdDb)
-  // console.log('CSV', csvDb)
-
     useEffect (() => {
 
       const handleFile = (dataObj) => {
-
-        console.log('do', dataObj)
-        // const noValue = Object.values(dataObj)
-        // console.log('no', noValue)
-        // const emptyBlob = new Blob([noValue], {type: 'text/plain'})
         if (dataObj.error) {
           const noValue = Object.values(dataObj)
           const emptyBlob = new Blob([noValue], {type: 'text/plain'})
           alert('Please log in to view predictions')
-          //history.push('/login')
-          loadStructure(`rcsb://${pdbId}.pdb`, emptyBlob)
+          loadStructure(`rcsb://${pdbIdUrl}.pdb`, emptyBlob)
         } else if (!dataObj.predictions){
           alert('Predictions unavailable. Please run protein through neural net before visualizing')
           history.push('/nn')
         } else {
         var csvBlob = new Blob( [ dataObj.predictions ], {type: 'text/plain'})
         console.log(csvBlob)
-        loadStructure(`rcsb://${pdbId}.pdb`, csvBlob)
+        loadStructure(`rcsb://${pdbIdUrl}.pdb`, csvBlob)
         }
       }
-      
 
-      fetchFile(pdbId, handleFile)
-      
+      fetchFile(pdbIdUrl, handleFile)
 
-        const stage = new NGL.Stage( "viewport" );
-
-        window.addEventListener( "resize", function( event ){
-            stage.handleResize();
-        }, false );
+      const stage = new NGL.Stage( "viewport" );
+      window.addEventListener( "resize", function( event ){
+          stage.handleResize();
+      }, false );
 
       // Change background color for Hong
         stage.setParameters({
@@ -101,7 +81,7 @@ const history = useHistory()
         return button
       }
 
-      var topPosition = 60
+      var topPosition = 75
 
       function getTopPosition (increment) {
         if (increment) topPosition += increment
@@ -139,7 +119,7 @@ const history = useHistory()
             PRED AA: ${csvRow[csvPrAaCol]}<br/>
             PRED PROB: ${prProb.toFixed(4)}<br/>
             LOG2 P/W: ${Math.log2(prProb/wtProb).toFixed(4)}`
-              tooltip.style.bottom = stage.viewer.height - 80 + 'px'
+              tooltip.style.bottom = stage.viewer.height - 150 + 'px'
               tooltip.style.left = stage.viewer.width - 170 + 'px'
               tooltip.style.display = 'block'
             } else {
@@ -204,19 +184,16 @@ const history = useHistory()
         cationPiCheckbox.checked = true
         piStackingCheckbox.checked = true
         return Promise.all([
-          stage.loadFile(proteinFile /*, { defaultRepresentation: true }*/),
+          stage.loadFile(proteinFile /*, { defaultRepresentation: true } <this renders 1 biological unit>*/),
           NGL.autoLoad(csvFile, {
             ext: 'csv',
-            // delimiter: ',',
-            // comment: '#',
-            // columnNames: true
+            delimiter: ',',
+            comment: '#',
+            columnNames: true
           })
         ]).then(function (ol) {
           struc = ol[0]
-          console.log('s', struc)
           csv = ol[1].data
-          console.log('c', csv)
-          // if (csv.length === 0) alert('Predictions unavailable. Please run protein through neural net before visualizing')
         
           setLigandOptions()
           setChainOptions()
@@ -231,9 +208,9 @@ const history = useHistory()
           heatMap = NGL.ColormakerRegistry.addScheme(function (params) {
             this.parameters = Object.assign(this.parameters, {
               domain: [0, 0.30],
-              //scale: 'rwb',
+              scale: 'rwb',
               // Hong custom color scale
-              scale: [0xFF0000,0xFFFFFF,0x4646FF],
+              //scale: [0xFF0000,0xFFFFFF,0x4646FF],
               mode: 'rgb'
             })
             var scale = this.getScale()
@@ -323,7 +300,7 @@ const history = useHistory()
             clipNear: 0,
             opaqueBack: false,
             opacity: 0.3,
-            // clipRadius: 0.1,
+            //clipRadius: 0.1,
             color: heatMap,
             roughness: 1.0,
             surfaceType: 'av'
@@ -441,21 +418,25 @@ const history = useHistory()
       addElement(loadCsvButton) 
 
       // More useful for mutcompute
-      var loadPdbidInput = createElement('input', {
-        type: 'text',
-        placeholder: 'Enter pdbID',
-        onkeypress: function (e) {
-          if (e.keyCode === 13) {
-            var inputValue = e.target.value.toLowerCase()
-            // str.slice(0, 4)
-            var proteinInput = '/data/' + inputValue + '.pdb'
-            var csvInput = '/data/' + inputValue + '.csv'
-            e.preventDefault()
-            loadStructure(proteinInput, csvInput)
-          }
-        }
-      }, { top: getTopPosition(30), left: '12px', width: '120px' })
-      addElement(loadPdbidInput)    
+      // var loadPdbidInput = createElement('input', {
+      //   type: 'text',
+      //   placeholder: 'Enter pdbID',
+      //   onkeypress: function (e) {
+      //     if (e.keyCode === 13) {
+      //       var inputValue = e.target.value.toLowerCase()
+      //       // str.slice(0, 4)
+      //       // var proteinInput = '/data/' + inputValue + '.pdb'
+      //       // var csvInput = '/data/' + inputValue + '.csv'
+      //       e.preventDefault(() => {
+      //         history.push(`/viewer/${inputValue}`)
+      //       })
+      //       // loadStructure(proteinInput, csvInput)
+      //       //fetchFile(inputValue, handleFile)
+            
+      //     }
+      //   }
+      // }, { top: getTopPosition(30), left: '12px', width: '120px' })
+      // addElement(loadPdbidInput)    
 
       function showFull () {
         ligandSelect.value = '' 
@@ -492,7 +473,7 @@ const history = useHistory()
         labelRepr.setVisibility(false)  
 
         ligandRepr.setSelection(sele)
-        //and not (water or ion) removes water/ions 
+        //and not (water or ion) <removes water/ions> 
         neighborRepr.setSelection(
           !sidechainAttached ? '(' + neighborSele + ') and (sidechainAttached or not polymer) and not (water or ion)' : neighborSele
         )
@@ -821,19 +802,13 @@ const history = useHistory()
       }, { top: getTopPosition(), left: '32px', color: 'grey' }))   
 
       // loadStructure('/data/6ij6.pdb', '/data/6ij6.csv')
-      //loadStructure(`rcsb://${pdbIdDb}`, csvDb)
-      //loadStructure(`/data/${pdbId}.pdb`, str)
+      
 
-      }, [fetchFile, history, pdbId]);
+      }, [fetchFile, history, pdbIdUrl]);
 
   return (
-  // <div>
-  //   {loading ? <h1>loading...</h1> :
-      <div id="viewport" style={{height: '90vh', width: '100%'}} >
-
+    <div calssName="yes-scroll" id="viewport" style={{height: '90vh', width: '100%'}} >
       </div>
-    // }
-    // </div>
   )
 }
 

@@ -10,8 +10,13 @@
   background-color: #f5f5f5;
 }
 .register {
-  height: 100vh;
+  height: 90vh;
   background-color: #f5f5f5;
+  margin-bottom: 60px;
+  /* display: flex;
+  min-height: 100vh;
+  flex-direction: column; */
+  
 }
 
 .nnContainer {

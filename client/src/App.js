@@ -1,5 +1,5 @@
 import './App.css';
-import React from "react"
+import React, { useEffect } from "react"
 import { BrowserRouter as Router} from "react-router-dom"
 import { Route, Switch, Redirect } from "react-router-dom"
 import {useAuth} from "./auth"
@@ -14,6 +14,7 @@ import NNPage from "./components/nnPage"
 import FAQ from "./components/faq"
 import Forgot from "./components/forgotPass"
 import Reset from "./components/resetPass"
+import Literature from './components/literature'
 
 import PetaseWt from "./components/petaseWt"
 import PetaseThermo from "./components/petaseThermo"
@@ -26,6 +27,10 @@ import EmailConf from './components/emailConf';
 
 const  PrivateRoute = ({component: Component, ...rest }) => {
   const [logged] = useAuth();
+
+  useEffect(() => {
+    document.title = "MutCompute"
+  }, [])
 
   return <Route {...rest} render={(props) => (
       logged
@@ -55,6 +60,7 @@ function App() {
             <Route path="/forgot" exact component={() => <Forgot />} />
             <Route path="/api/reset/:hash" component={() => <Reset />} />
             <Route path="/api/email_confirmation/:token" component={() => <EmailConf />} />
+            <Route path="/literature" exact component={() => <Literature />} />
           </Switch>
         <Footer />
       </Router>

@@ -105,7 +105,7 @@ const registerSubmit = e => {
 //   }
 
   return (
-    <div className=" register container-fluid">
+    <div className="yes-scroll register container-fluid">
         <div className="container page-header move-right">
             <h1 className="dark-grey">Registration<small></small></h1>
         </div>
