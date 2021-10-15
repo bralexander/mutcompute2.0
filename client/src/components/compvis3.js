@@ -829,8 +829,9 @@ const history = useHistory()
   return (
   // <div>
   //   {loading ? <h1>loading...</h1> :
-      <div id="viewport" style={{height: '90vh', width: '100%'}} >
-
+      // <div id="viewport" style={{height: '90vh', width: '100%'}} >
+        // <div id="viewport" style={{height: window.innerHeight, width: window.innerwidth}} >
+        <div calssName="yes-scroll" id="viewport" style={{height: '90vh', width: '100%'}} >
       </div>
     // }
     // </div>

@@ -92,8 +92,8 @@ const rerunHandler = e => {
 console.log('rr', pdb.rerun)
 
 return (
-    <div className="container-fluid avoid-navbar">
-                <div className="col-sm-12 page-header">
+    <div className="yes-scroll container-fluid avoid-navbar overflow-auto">
+                <div className="col-sm-12 page-header overflow-auto">
                     <h1 className="dark-grey">Protein Crystal Structure Submission<small></small></h1>
                 </div>
             <form onSubmit={submitProtein}>
