@@ -2,6 +2,7 @@ from os import environ
 from pathlib import Path
 from datetime import datetime
 
+import json
 import smtplib
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
@@ -10,6 +11,7 @@ from email.mime.base import MIMEBase
 from flask import render_template
 from celery import Celery
 import sqlalchemy as db
+import pandas as pd
 
 
 from mutcompute.scripts.run import gen_ensemble_inference
@@ -28,14 +30,20 @@ nn_table = db.Table(environ['DB_NN_TABLE'], meta_data, autoload=True, autoload_w
 
 # TODO I can turn this into a decorator so all you have to is pass in a net function and a few parameters 
 @celery.task(name='task.run_mutcompute')
-def run_mutcompute(email, pdb_code, dir='/mutcompute_2020/mutcompute/data/pdb_files', out_dir='/mutcompute_2020/mutcompute/data/inference_CSVs', fs_pdb=False):
+def run_mutcompute(email, pdb_code, 
+                   dir='/mutcompute_2020/mutcompute/data/pdb_files', out_dir='/mutcompute_2020/mutcompute/data/inference_CSVs', 
+                   fs_pdb=False, load_cache=False):
 
     pdb_id = pdb_code[:4]
 
-    try: 
-        df = gen_ensemble_inference(pdb_code, dir=dir, out_dir=out_dir, fs_pdb=fs_pdb)
+    try:
+        if load_cache:
+            df = retrieve_cache_predictions(pdb_id)
+        else:
+            df = gen_ensemble_inference(pdb_code, dir=dir, out_dir=out_dir, fs_pdb=fs_pdb)
 
-    except Exception: 
+    except Exception as e:
+        print("FAIL: ", e) 
         inference_fail_email(email, pdb_id, problem='nn')
         return False
 
@@ -56,6 +64,18 @@ def run_mutcompute(email, pdb_code, dir='/mutcompute_2020/mutcompute/data/pdb_fi
 
         return True
 
+
+def retrieve_cache_predictions(pdb_id):
+
+    stmt = db.select(nn_table.c.query_inf).where(nn_table.c.pdb_query==pdb_id)
+
+    with db_engine.connect() as conn:
+        # This returns a LegacyRow object from sqlalchemy
+        predictions = conn.execute(stmt).first()
+
+    df = pd.DataFrame.from_dict(json.loads(predictions[0])).T
+
+    return df
 
 
 @celery.task(name='task.inference_email')

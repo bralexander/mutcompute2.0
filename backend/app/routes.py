@@ -85,10 +85,21 @@ def refresh():
 @app.route('/api/nn', methods=['POST'])
 @auth_required
 def nn():
+
+    data = request.get_json()
+
+    rerun = data.get('rerun', False)
+
+    pdb_id = data['id']
+
     payload = {
         "username": current_user().email,
-        "pdb_code": json.loads(request.get_data())
+        "pdb_code": pdb_id,
+        "load_cache": False
     }
+
+    if not rerun and NN_Query.query.filter_by(pdb_query=pdb_id).count():
+        payload['load_cache'] = True
 
     response = requests.post('http://nn_api:8000/inference', json=payload)
 

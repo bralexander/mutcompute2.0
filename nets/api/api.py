@@ -14,8 +14,10 @@ class InferenceAPI(Resource):
         self.reqparse = reqparse.RequestParser()
         # Makes sure pdb_code is passed in when calling this api endpoint. it can come either through form or json. 
         # This requirement is only enforced when a POST request is sent. 
-        self.reqparse.add_argument('pdb_code', type=str, required=True, help='No pdb_code provided.', location=['json'])
-        self.reqparse.add_argument('username', type=str, required=True, help='No username/email address provided.', location=['json'])
+        self.reqparse.add_argument('pdb_code', type=str, required=True, location=['json'], help='No pdb_code provided.', )
+        self.reqparse.add_argument('username', type=str, required=True, location=['json'], help='No username/email address provided.', )
+        self.reqparse.add_argument('load_cache', type=bool, required=False, location=['json'], help='Whether to load predictions of an already ran protein.', )
+        
         super().__init__()
 
     def get(self):
@@ -23,10 +25,15 @@ class InferenceAPI(Resource):
 
     def post(self):
         args = self.reqparse.parse_args()   # This will parse arguments passed in through a form or json.
-        pdb_code = args.get('pdb_code').upper().strip()
-        email = args.get('username').strip()
+
+        pdb_code    = args.get('pdb_code').upper().strip()
+        email       = args.get('username').strip()
+        load_cache  = args.get('load_cache', False)
+
         print("Email:", email)
-        print("PDB Code:", pdb_code)
+        print("PDB code:", pdb_code)
+        print("Load cached protein: ", False)
+
         if "@" in email and len(pdb_code) == 4:
             try:
                 pdb_file = fetch_pdb_file(pdb_code, dir='/mutcompute_2020/mutcompute/data/pdb_files')
@@ -42,7 +49,8 @@ class InferenceAPI(Resource):
                 )
 
             else:
-                run_mutcompute.delay(email, pdb_file.name, dir='/mutcompute_2020/mutcompute/data/pdb_files', out_dir='/mutcompute_2020/mutcompute/data/inference_CSVs', fs_pdb=True)
+                run_mutcompute.delay(email, pdb_file.name, fs_pdb=True, load_cache=load_cache,
+                    dir='/mutcompute_2020/mutcompute/data/pdb_files', out_dir='/mutcompute_2020/mutcompute/data/inference_CSVs', )
                 
                 return make_response(
                     jsonify(Result=f'Successfully started inference on PDB: {pdb_code}'), 
@@ -51,7 +59,7 @@ class InferenceAPI(Resource):
         else:
             return make_response(
                     jsonify(Result=f'Error in parsing arguments: {pdb_code} {email}'), 
-                    201
+                    422
                 ) 
 
 
