@@ -88,7 +88,7 @@ def nn():
 
     data = request.get_json()
 
-    rerun = data.get('rerun', False)
+    load_cache = data.get('loadCache', True)
 
     pdb_id = data['id']
 
@@ -98,7 +98,7 @@ def nn():
         "load_cache": False
     }
 
-    if not rerun and NN_Query.query.filter_by(pdb_query=pdb_id).count():
+    if load_cache and NN_Query.query.filter_by(pdb_query=pdb_id).count():
         payload['load_cache'] = True
 
     response = requests.post('http://nn_api:8000/inference', json=payload)

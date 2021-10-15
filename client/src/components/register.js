@@ -16,6 +16,7 @@ const passwordValidator = (value) => {
         return false
     }
 }
+
 const matchValidator = (value1, value2) => {
     if (value1 === value2) {
     return true
@@ -23,9 +24,6 @@ const matchValidator = (value1, value2) => {
     return false
     }
 }
-// const eduValidator = (value) => {
-
-// }
 
 const Register = (props) => {
     const history = useHistory();

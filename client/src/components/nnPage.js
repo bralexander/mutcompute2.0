@@ -3,7 +3,7 @@ import {authFetch} from '../auth'
 
 
 const NNPage = () => {
-    const [pdb, setPdb] = useState({id: '', rerun: false});
+    const [pdb, setPdb] = useState({id: '', loadCache: true});
  
     
 
@@ -30,6 +30,7 @@ const NNPage = () => {
         // }
         // else if (!pdbFile && pdbId) {
         // **
+
         if (pdb) {
         e.preventDefault()
         authFetch('/api/nn', {
@@ -42,15 +43,8 @@ const NNPage = () => {
         })
         .then(res => res.json())
         .then(data => {
-            console.log(data)
-            if (data.status === 201) {
-            alert('Neural Net is running PDB file. You will recieve an email with the results within a few minutes or up to an hour. Larger proteins take longer')
-            } else if (data.status === 400) {
-                alert('Protein is not available from RCSB')
-            } else {
-                alert(data)
-            }
-
+            alert(data.Result)
+            console.log("Data: ", data)
         })
         // .then(r => { 
         //     if (r.status === 200) {
@@ -84,12 +78,12 @@ const handleId = e => {
 
 const rerunHandler = e => {
     if (e.target.checked) {
-    setPdb({...pdb, rerun: true})
+    setPdb({...pdb, loadCache: true})
     } else {
-        setPdb({...pdb, rerun: false})
+        setPdb({...pdb, loadCache: false})
     }
 }
-console.log('rr', pdb.rerun)
+console.log('loadCache:', pdb.loadCache)
 
 return (
     <div className="container-fluid avoid-navbar">
@@ -109,7 +103,7 @@ return (
                     </div>
                     <div className="checkbox mb-3">
                     <label>
-                      <input type="checkbox" value="rerun" onChange={rerunHandler}/> rerun
+                      <input type="checkbox" value="loadCache" onChange={rerunHandler} checked/> load cache
                     </label>
                   </div>
                         {/* SAVED FOR FUTURE FEATURE

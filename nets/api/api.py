@@ -43,7 +43,7 @@ class InferenceAPI(Resource):
             except FileNotFoundError:
                 return make_response(
                     jsonify(
-                        Result=f'Unabled to retrieve PDB file from the PDB-REDO or the RCSB servers: {pdb_code.upper()}'
+                        Result=f'Unabled to retrieve PDB file for {pdb_code.upper()} from the PDB-REDO or the RCSB servers'
                     ), 
                     400
                 )
@@ -53,12 +53,16 @@ class InferenceAPI(Resource):
                     dir='/mutcompute_2020/mutcompute/data/pdb_files', out_dir='/mutcompute_2020/mutcompute/data/inference_CSVs', )
                 
                 return make_response(
-                    jsonify(Result=f'Successfully started inference on PDB: {pdb_code}'), 
+                    jsonify(Result=f"""
+                        Neural Net is running PDB file: {pdb_code.upper()}. 
+                        You will recieve an email with the results within a few minutes or up to an hour. 
+                        Larger proteins tend to take longer.
+                    """), 
                     201
                 ) 
         else:
             return make_response(
-                    jsonify(Result=f'Error in parsing arguments: {pdb_code} {email}'), 
+                    jsonify(Result=f'Error in parsing arguments: {pdb_code.upper()} {email}'), 
                     422
                 ) 
 
