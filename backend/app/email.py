@@ -10,19 +10,18 @@ from itsdangerous import URLSafeTimedSerializer
 from app import app
 
 
-def send_email_confirmation(user_email='danny.jesus.diaz.94@gmail.com',
-                           html_template='email_confirmation.html'):
-                           
-    subject = 'MutCompute email confirmation'
-    sender_email = "no-reply@mutcompute.com"
+def send_email_confirmation(user_email):
 
     confirm_serializer = URLSafeTimedSerializer(app.config['MAIL_SECRET_KEY'])
     token = confirm_serializer.dumps(user_email, salt=app.config['MAIL_SALT'])
 
-    # TODO rewrite this line so it does not default to backend:5000
+    #TODO refactor for deployment.
     confirm_url = f"http://localhost:3000{url_for('confirm_email', token=token)}" 
 
-    html = render_template(html_template, confirm_url=confirm_url)
+    html = render_template('email_confirmation.html', confirm_url=confirm_url)
+
+    subject = 'MutCompute email confirmation'
+    sender_email = "no-reply@mutcompute.com"
 
     msg = MIMEMultipart()
     msg['Subject'] = subject

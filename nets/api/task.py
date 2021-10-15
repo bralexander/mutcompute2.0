@@ -7,6 +7,7 @@ from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from email.mime.base import MIMEBase
 
+from flask import render_template
 from celery import Celery
 import sqlalchemy as db
 
@@ -29,19 +30,21 @@ nn_table = db.Table(environ['DB_NN_TABLE'], meta_data, autoload=True, autoload_w
 @celery.task(name='task.run_mutcompute')
 def run_mutcompute(email, pdb_code, dir='/mutcompute_2020/mutcompute/data/pdb_files', out_dir='/mutcompute_2020/mutcompute/data/inference_CSVs', fs_pdb=False):
 
+    pdb_id = pdb_code[:4]
+
     try: 
         df = gen_ensemble_inference(pdb_code, dir=dir, out_dir=out_dir, fs_pdb=fs_pdb)
 
     except Exception: 
-        inference_fail_email(email, pdb_code, problem='nn')
+        inference_fail_email(email, pdb_id, problem='nn')
         return False
 
     else:
-        email_status = inference_email(email, pdb_code, df)
+        email_status = inference_email(email, pdb_id, df)
 
         stmt = db.insert(nn_table).values(
             user_email=email,
-            pdb_query=pdb_code,
+            pdb_query=pdb_id,
             query_time=datetime.now(),
             query_inf=df.to_json(orient='index'),
             query_email_sent=email_status
@@ -49,17 +52,32 @@ def run_mutcompute(email, pdb_code, dir='/mutcompute_2020/mutcompute/data/pdb_fi
 
         with db_engine.connect() as conn:
             conn.execute(stmt)
-            print(f'Added query {email}, {pdb_code} to the NN_Query table.')
+            print(f'Added query {email}, {pdb_id} to the NN_Query table.')
 
         return True
 
 
 
 @celery.task(name='task.inference_email')
-def inference_email(user_email, pdb_code, df=None):
+def inference_email(user_email, pdb_id, df=None):
     '''This is an aws ses function.'''
 
-    subject = f'mutCompute inference for {pdb_code}'
+    #TODO refactor for deployment.
+    view_url = f"http://localhost:3000/viewer/{pdb_id}" 
+
+    html = f"""
+        <div>
+            <p>
+                Thank you for using MutCompute!
+            </p>
+            <p>
+                Predictions for all residues are attached as a CSV. 
+                To visualize the predictions with MutCompute-View visit <a href="{view_url}">{view_url}</a>.
+            </p>
+        </div>
+    """
+
+    subject = f'MutCompute predictions: {pdb_id}'
     from_name = 'no-reply@mutcompute.com'
 
     msg = MIMEMultipart()
@@ -67,25 +85,24 @@ def inference_email(user_email, pdb_code, df=None):
     msg['FROM'] = from_name
     msg['To'] = user_email
 
-    mime_text = MIMEText("Thank you for using mutCompute!")
-    msg.attach(mime_text)
-
-    tmp_dir = Path('./tmp')
-    tmp_dir. mkdir(0o777, exist_ok=True, parents=True)
-
-    csv_file = tmp_dir / f'{pdb_code}.csv'
-
-    print("Saving DF as CSV, pwd: ", csv_file)
+    html_mime = MIMEText(html, 'html')
+    msg.attach(html_mime)
 
     if not df is None:
+        tmp_dir = Path('./tmp')
+        tmp_dir. mkdir(0o777, exist_ok=True, parents=True)
+
+        csv_file = tmp_dir / f'{pdb_id}.csv'
         df.to_csv(csv_file)
 
-    with csv_file.open('rb') as fp:
-        attachment =  MIMEBase('text', 'csv')
-        attachment.set_payload(fp.read())
+        with csv_file.open('rb') as f:
+            attachment =  MIMEBase('text', 'csv')
+            attachment.set_payload(f.read())
 
-    attachment.add_header('Content-Disposition', "attachment", filename=f'{pdb_code}.csv')
-    msg.attach(attachment)
+        attachment.add_header('Content-Disposition', "attachment", filename=f'{pdb_id}.csv')
+        msg.attach(attachment)
+
+        csv_file.unlink()
 
     server = smtplib.SMTP(environ['SES_EMAIL_HOST'])
     server.connect(environ['SES_EMAIL_HOST'], environ['SES_EMAIL_PORT'])
@@ -94,15 +111,12 @@ def inference_email(user_email, pdb_code, df=None):
 
     try:
         server.sendmail(from_name, user_email, msg.as_string())
-        print(f'Sent email for {pdb_code}')
+        print(f'Sent email for {pdb_id}')
 
     except Exception as e:
         print('Failed to send NN email.')
         server.quit()
-        return False
-
-    if csv_file.exists():
-        csv_file.unlink()
+        return False        
 
     server.quit()
     print('Sent NN email')
@@ -111,9 +125,9 @@ def inference_email(user_email, pdb_code, df=None):
 
 
 @celery.task(name='task.inference_fail_email')
-def inference_fail_email(user_email, pdb_code, problem='nn'):
+def inference_fail_email(user_email, pdb_id, problem='nn'):
 
-    subject = f'mutCompute inference for {pdb_code} failure'
+    subject = f'MutCompute prediction failure: {pdb_id}'
     from_name = 'no-reply@mutcompute.com'
     recipients = [user_email, 'danny.diaz@utexas.edu']
 
@@ -121,29 +135,43 @@ def inference_fail_email(user_email, pdb_code, problem='nn'):
     msg['Subject'] = subject
     msg['FROM'] = from_name
 
-
     message = ''
-    if problem =='nn':
-        message = """<br>
-        <p>
-            Unfortunately, we ran into a problem while computing the predictions on PDB: {0}.<br>
-            We have been notified of the issue and expect an email from us over the next 48 hours 
-            with more details.
-            <br>
-            Sorry for the inconvenience.
-        </p>
-        """.format(pdb_code)
-    elif problem =='email':
-        message = """<br>
+    if problem == 'nn':
+        message = f"""
+            <div>
                 <p>
-                    There was a problem sending email to user: {} for pdb: {}. 
-                    However, the NN ran successfully.
+                    Thank you for using MutCompute!
+                </p>
+                <p>
+                    Unfortunately, we ran into a problem while computing the predictions on PDB: {pdb_id}.
+                </p>
+                <p>
+                    We have been notified of the issue and expect an email from us over the next 48 hours 
+                    with more details.
+                    <br>
+                    Sorry for the inconvenience.
+                </p>
+            </div>
+        """
+
+    elif problem == 'email':
+        message = f"""
+            <div>
+                <p>
+                    There was a problem sending email to user: {user_email} for pdb: {pdb_id}. 
+                    However, the MutCompute ran successfully.
                     <br>
                 </p>
-                """.format(user_email, pdb_code)
+            </div>
+        """
     else:
-        print('unknown problem exiting... Not sending email.')
-        return False
+        message = f"""
+            <div>
+                <p>
+                    There was an unknown problem with pdb: {pdb_id} for user: {user_email}. 
+                </p>
+            </div>
+        """
 
     mime_html = MIMEText(message, 'html')
     msg.attach(mime_html)
