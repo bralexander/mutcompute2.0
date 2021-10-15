@@ -5,7 +5,7 @@ import {authFetch} from '../auth'
 //import { withRouter } from "react-router";
 
 const useFile = (fileHandler) => {
-    const [loadedFile, setFile] = useState(null)
+    //const [loadedFile, setFile] = useState(null)
     const [loading, setLoading] = useState(true)
     
     //console.log('File', uFile)
@@ -22,16 +22,16 @@ const useFile = (fileHandler) => {
         }
         })
         const data = await response.json()
-        const csvData = Object.values(data)
-        fileHandler(csvData)
-        //console.log('D', csvData)
-        setFile(csvData)
+        //const csvData = Object.values(data)
+        fileHandler(data)
+        //console.log('Data', data)
+        //setFile(data)
         setLoading(false)
     },[]);    
 
     return {
         loading,
-        loadedFile,
+        //loadedFile,
         fetchFile
     }
 }
