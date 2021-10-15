@@ -63,7 +63,7 @@ const Reset = (props) => {
     .then(r => r.json())
     .then(data => {
       console.log(data)
-      alert(`Password reset for: ${Object.values(data)}`)
+      alert(data.Status)
       history.push('/login')
     })
     }

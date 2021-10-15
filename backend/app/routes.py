@@ -186,13 +186,13 @@ def reset_password(token):
     except SignatureExpired:
         #TODO work with brad to see what he wants to do here.
         print('The confirmation link has an expired signature.', file=sys.stderr)
-        return {'access_token': None}, 400
+        return {'Status': "Token Expired"}, 400
         # redirect(url_for('login'))
 
     except BadTimeSignature:
         #TODO work with brad to see what he wants to do here.
         print('The token has expired.', file=sys.stderr)
-        return {'access_token': None}, 400
+        return {'Status': "Token Expired"}, 400
         # redirect(url_for('login'))
     else:
         new_password = request.get_json(force=True)
