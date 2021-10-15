@@ -23,6 +23,9 @@ const matchValidator = (value1, value2) => {
     return false
     }
 }
+// const eduValidator = (value) => {
+
+// }
 
 const Register = (props) => {
     const history = useHistory();
@@ -30,6 +33,8 @@ const Register = (props) => {
     const [first, setFirst] = useState('')
     const [last, setLast] = useState('')
     const [org, setOrg] = useState('')
+
+    const regex ='^.+@.*(edu|espci.fr|psl.eu|espci.psl.eu|epfl.ch|ca|uk|au)$'
 
     const {
         value: password1,
@@ -127,10 +132,11 @@ const registerSubmit = e => {
                                 type="email" 
                                 id="inputEmail" 
                                 className="form-control" 
-                                placeholder="Email address" 
+                                placeholder="Email (Academic only)" 
                                 onChange={email1Change}
                                 onBlur={email1Blur}
                                 value={email1}
+                                pattern={regex}
                                 required 
                                 />
                                 {email1Error && <span>Please enter an email</span>}
@@ -174,7 +180,7 @@ const registerSubmit = e => {
                                 type="text" 
                                 id="org" 
                                 className="form-control" 
-                                placeholder="Company/Institution" 
+                                placeholder="Institution" 
                                 //onChange={e => setNewUser({ ...newUser, org: e.target.value })}
                                 onChange={e => setOrg( e.target.value )}
                                 required  minLength='3' 
