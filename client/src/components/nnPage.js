@@ -3,44 +3,48 @@ import {authFetch} from '../auth'
 
 
 const NNPage = () => {
-    const [pdbId, setPdbId] = useState(null);
-    const [pdbFile, setPdbFile] = useState(null);
+    const [pdb, setPdb] = useState({id: '', loadCache: true});
+ 
     
 
     const submitProtein = e => {
-        if (pdbFile) { 
-            e.preventDefault()
-            fetch('/api/nn', {
-                method: 'post',
-                url:'/nn', 
-                body: pdbFile,
-                headers: {
-                    'content-type': 'text/csv'
-                  }
-            })
-            .then(r => { 
-                if (r.status === 200) {
-                    console.log(r)
-                    alert('Running the net on your pdb file. This could take up to 15 minutes. Please check your email, and spam folder for the results. ')
-                }
-                else {alert('error')}
-            })
-        }
-        else if (!pdbFile && pdbId) {
+
+        // ** Future feature**
+        // if (pdbFile) { 
+        //     e.preventDefault()
+        //     fetch('/api/nn', {
+        //         method: 'post',
+        //         url:'/nn', 
+        //         body: pdbFile,
+        //         headers: {
+        //             'content-type': 'text/csv'
+        //           }
+        //     })
+        //     .then(r => { 
+        //         if (r.status === 200) {
+        //             console.log(r)
+        //             alert('Running the net on your pdb file. This could take up to 15 minutes. Please check your email, and spam folder for the results. ')
+        //         }
+        //         else {alert('error')}
+        //     })
+        // }
+        // else if (!pdbFile && pdbId) {
+        // **
+
+        if (pdb) {
         e.preventDefault()
         authFetch('/api/nn', {
             method: 'post',
             url:'/nn', 
-            body: JSON.stringify(pdbId),
+            body: JSON.stringify(pdb),
             headers: {
                 'content-type': 'application/json'
               }
         })
         .then(res => res.json())
         .then(data => {
-            alert('CSV downloading to browser downloads folder')
-            document.write(Object.entries(data))
-            console.log(Object.entries(data))
+            alert(data.Result)
+            console.log("Data: ", data)
         })
         // .then(r => { 
         //     if (r.status === 200) {
@@ -55,22 +59,31 @@ const NNPage = () => {
     }
 
 
-const handleFile = e => {
-    const file = e.target.value
-    const formData = new FormData()
-    formData.append('file', file)
-    setPdbFile(formData)
-}
+// const handleFile = e => {
+//     const file = e.target.value
+//     const formData = new FormData()
+//     formData.append('file', file)
+//     setPdbFile(formData)
+// }
 
 const handleId = e => {
     console.log(e)
     if (e.length === 4){
-        setPdbId(e.toUpperCase())
+        setPdb({...pdb, id: e.toUpperCase()})
         console.log('4')
     } else {
         return
     }
 } 
+
+const rerunHandler = e => {
+    if (e.target.checked) {
+    setPdb({...pdb, loadCache: true})
+    } else {
+        setPdb({...pdb, loadCache: false})
+    }
+}
+console.log('loadCache:', pdb.loadCache)
 
 return (
     <div className="container-fluid avoid-navbar">
@@ -88,7 +101,13 @@ return (
                         maxLength='4'
                         ></input>
                     </div>
-                        <label className="form-label">Upload Custom/In-house PDB:</label>
+                    <div className="checkbox mb-3">
+                    <label>
+                      <input type="checkbox" value="loadCache" onChange={rerunHandler} checked/> load cache
+                    </label>
+                  </div>
+                        {/* SAVED FOR FUTURE FEATURE
+                         <label className="form-label">Upload Custom/In-house PDB:</label>
                     <div className="form-group col-sm-3">
                         <input 
                         className="form-control form-control-sm" 
@@ -96,7 +115,7 @@ return (
                         id="formFile"
                         onChange={handleFile}>    
                         </input>
-                    </div>
+                    </div> */}
                 </div>
         <section className="container">
             <hr />

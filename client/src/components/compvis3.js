@@ -2,14 +2,18 @@ import React, { useEffect, useState, useCallback} from 'react';
 import * as NGL from 'ngl';
 import { withRouter } from "react-router";
 import useFile from '../hooks/useFile';
+import { useHistory } from 'react-router-dom'
 
 
 const Compvis3 = (props) => {
-  const [file, setFile] = useState(null)
+  //const [file, setFile] = useState(null)
 
-const pdbIdUrl = props.match.params.id.toLowerCase()
+const pdbId = props.match.params.id || props.id
 
-const { loading, loadedFile, fetchFile }= useFile()
+//const { loading, loadedFile, fetchFile }= useFile()
+const { fetchFile }= useFile()
+
+const history = useHistory()
 
   // console.log('P',props)
   // let pdbIdDb = props.match.params.id.toLowerCase()
@@ -23,26 +27,29 @@ const { loading, loadedFile, fetchFile }= useFile()
     useEffect (() => {
 
       const handleFile = (dataObj) => {
-        //let loadedFileA = []
-        console.log('do', dataObj[0])
-        const csvStr = dataObj[0]
-        // const csvData = str.replace(/^"(.*)"$/, '$1')
-        var csvBlob = new Blob( [ dataObj ], {type: 'text/plain'})
+
+        console.log('do', dataObj)
+        // const noValue = Object.values(dataObj)
+        // console.log('no', noValue)
+        // const emptyBlob = new Blob([noValue], {type: 'text/plain'})
+        if (dataObj.error) {
+          const noValue = Object.values(dataObj)
+          const emptyBlob = new Blob([noValue], {type: 'text/plain'})
+          alert('Please log in to view predictions')
+          //history.push('/login')
+          loadStructure(`rcsb://${pdbId}.pdb`, emptyBlob)
+        } else if (!dataObj.predictions){
+          alert('Predictions unavailable. Please run protein through neural net before visualizing')
+          history.push('/nn')
+        } else {
+        var csvBlob = new Blob( [ dataObj.predictions ], {type: 'text/plain'})
         console.log(csvBlob)
-        //loadStructure('/data/6ij6.pdb', '/data/6ij6.csv')
-        loadStructure(`rcsb://${pdbIdUrl}.pdb`, csvBlob)
-
-
-        // for (const key in dataObj) {
-        //   loadedFile.push(dataObj[key])
-        // }
-        // console.log('lf',loadedFileA)
-        // setFile( loadedFile[0])
-        // loadedFile.pop()
+        loadStructure(`rcsb://${pdbId}.pdb`, csvBlob)
+        }
       }
       
 
-      fetchFile(pdbIdUrl, handleFile)
+      fetchFile(pdbId, handleFile)
       
 
         const stage = new NGL.Stage( "viewport" );
@@ -209,6 +216,7 @@ const { loading, loadedFile, fetchFile }= useFile()
           console.log('s', struc)
           csv = ol[1].data
           console.log('c', csv)
+          // if (csv.length === 0) alert('Predictions unavailable. Please run protein through neural net before visualizing')
         
           setLigandOptions()
           setChainOptions()
@@ -814,9 +822,9 @@ const { loading, loadedFile, fetchFile }= useFile()
 
       // loadStructure('/data/6ij6.pdb', '/data/6ij6.csv')
       //loadStructure(`rcsb://${pdbIdDb}`, csvDb)
-      //loadStructure(`/data/${pdbIdUrl}.pdb`, str)
+      //loadStructure(`/data/${pdbId}.pdb`, str)
 
-      }, [fetchFile, pdbIdUrl, file]);
+      }, [fetchFile, history, pdbId]);
 
   return (
   // <div>

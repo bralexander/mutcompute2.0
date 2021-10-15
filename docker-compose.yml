@@ -13,23 +13,15 @@ services:
       - ./data:/app/data
     environment:
       DB_URI: ${DB_URI_BACKEND}
-      MAIL_SERVER: email
-      MAIL_PORT: 8025
-    # depends_on:
-    #   - nn_api
+      SES_EMAIL_HOST: ${SES_EMAIL_HOST}
+      SES_EMAIL_PORT: ${SES_EMAIL_PORT}
+      SES_SMTP_USERNAME: ${SES_SMTP_USERNAME}
+      SES_SMTP_PASSWORD: ${SES_SMTP_PASSWORD}
+    depends_on:
+      - nn_api
     # command: gunicorn -b 0.0.0.0:5000 api:app
     entrypoint: python /app/api.py
 
-
-  # email:
-  #   container_name: email
-  #   build:
-  #     context: ./backend
-  #     dockerfile: Dockerfile
-  #   image: mutcompute:backend
-  #   ports:
-  #     - "8025:8025"
-  #   command: python -m smtpd -n -c DebuggingServer 0.0.0.0:8025 
 
   nn_api:
     container_name: nn_api
@@ -54,7 +46,7 @@ services:
     entrypoint: python api.py
 
 
-  #Queue/Worker Processes
+  # #Queue/Worker Processes
   celery:
     container_name: celery
     build:
@@ -88,14 +80,14 @@ services:
     ports:
       - 6379:6379  
 
-  # flower:
-  #     container_name: FLOWER
-  #     image: mher/flower
-  #     command: flower --broker=redis://redis:6379/0 --port=8888
-  #     ports:
-  #       - 9181:8888
-  #     depends_on: 
-  #       - celery
+  # # flower:
+  # #     container_name: FLOWER
+  # #     image: mher/flower
+  # #     command: flower --broker=redis://redis:6379/0 --port=8888
+  # #     ports:
+  # #       - 9181:8888
+  # #     depends_on: 
+  # #       - celery
 
   # # Frontend
   client:

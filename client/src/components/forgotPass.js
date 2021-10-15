@@ -22,7 +22,7 @@ const Forgot = (props) => {
     )
   .then(data => { 
      console.log(data)
-     alert(`Email sent to: ${Object.values(data)}`)
+     alert(`${Object.values(data)}`)
 
   })
     

@@ -1,15 +1,10 @@
-<p>Dear {{ user.first_name }},</p>
-<p>
-    To reset your password
-    
-        click here: 
-        <!-- this will be replaced with an actual web address at somepoint -->
-        <a href="localhost:3000/reset/{{ token }}"></a>
-
-    </a>
-</p>
-<p>Alternatively, you can paste the following link in your browser's address bar:</p>
-<p>localhost:3000/reset/{{ token|safe }}</p>
-<p>If you have not requested a password reset simply ignore this message.</p>
-<p>Sincerely,</p>
-<p>The Mutcompute Team</p>
+<div>
+    <p>
+        You are attempting to reset your MutCompute password. 
+    </p>
+    <p>
+        To reset your password <a href="{{ reset_url }}">{{ reset_url }}</a>
+    </p>
+    <p>Sincerely,</p>
+    <p>The Mutcompute Team</p>>
+</div>

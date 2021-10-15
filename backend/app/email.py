@@ -1,42 +1,96 @@
-from flask_mail import Message
-from flask import render_template
+import sys
+import smtplib
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
+from email.mime.base import MIMEBase
+
+from flask import render_template, url_for
+from itsdangerous import URLSafeTimedSerializer
+
 from app import app
-from app.models import Users
 
-## Working with python emulated mail server
-    # (venv) $ python -m smtpd -n -c DebuggingServer localhost:8025
+HOSTNAME = 'localhost'
+PORT=3000
 
-# def send_async_email(app, msg):
-#     with app.app_context():
-#         mail.send(msg)
+def send_email_confirmation(user_email):
+
+    confirm_serializer = URLSafeTimedSerializer(app.config['MAIL_SECRET_KEY'])
+    token = confirm_serializer.dumps(user_email, salt=app.config['MAIL_SALT'])
+
+    #TODO refactor for deployment.
+    confirm_url = f"http://{HOSTNAME}:{PORT}{url_for('confirm_email', token=token)}" 
+
+    html = render_template('email_confirmation.html', confirm_url=confirm_url)
+
+    subject = 'MutCompute email confirmation'
+    sender_email = "no-reply@mutcompute.com"
+
+    msg = MIMEMultipart()
+    msg['Subject'] = subject
+    msg['FROM'] = sender_email
+    msg['To'] = str(user_email)
+
+    html_mime = MIMEText(html, 'html')
+
+    msg.attach(html_mime)
+
+    server = smtplib.SMTP(app.config['SES_EMAIL_HOST'])
+    server.connect(app.config['SES_EMAIL_HOST'], app.config['SES_EMAIL_PORT'])
+    server.starttls()
+    server.login(app.config["SES_SMTP_USERNAME"], app.config["SES_SMTP_PASSWORD"])
+
+    print("Confirmation url: ", confirm_url, file=sys.stderr)
+
+    try:
+        server.sendmail(sender_email, user_email, msg.as_string())
+
+    except Exception as e:
+        print(f'Error in sending confirmation email to user: {user_email}')
+        server.quit()
+        return False
+
+    server.quit()
+    print('Sent email')
+    return True
 
 
-# TODO rewrite with AWS SES
-# def send_email(subject, sender, recipients, text_body, html_body):
-#     msg = Message(subject, sender=sender, recipients=recipients)
-#     msg.body = text_body
-#     msg.html = html_body
-#     mail.send(msg)
-#     #Thread(target=send_async_email, args=(app, msg)).start()
+def send_password_reset(user_email):
 
-def send_password_reset_email(user):
-    pass
-#     token = user.get_reset_password_token()
-#     #.decode('utf-8')
-#     send_email('[Mutcompute] Reset Your Password',
-#                sender=app.config['ADMINS'][0],
-#                recipients=[user.email],
-#                text_body=render_template('reset_pass.txt',
-#                                          user=user, token=token),
-#                html_body=render_template('reset_pass.html',
-#                                          user=user, token=token)
-#             )
+    confirm_serializer = URLSafeTimedSerializer(app.config['MAIL_SECRET_KEY'])
+    token = confirm_serializer.dumps(user_email, salt=app.config['MAIL_SALT'])
 
-def send_failure_email(email):
-    pass
-#     send_email('[Mutcompute] Reset Your Password',
-#                sender=app.config['ADMINS'][0],
-#                recipients=[email],
-#                text_body=render_template('user_not_exist.txt'),
-#                html_body=render_template('user_not_exist.html')
-#     )
+    reset_url = f"http://{HOSTNAME}:{PORT}{url_for('reset_password', token=token)}" 
+
+    html = render_template('reset_pass.html', reset_url=reset_url)
+
+    subject = 'MutCompute password reset'
+    sender_email = "no-reply@mutcompute.com"
+
+    msg = MIMEMultipart()
+    msg['Subject'] = subject
+    msg['FROM'] = sender_email
+    msg['To'] = str(user_email)
+
+    html_mime = MIMEText(html, 'html')
+
+    msg.attach(html_mime)
+
+    server = smtplib.SMTP(app.config['SES_EMAIL_HOST'])
+    server.connect(app.config['SES_EMAIL_HOST'], app.config['SES_EMAIL_PORT'])
+    server.starttls()
+    server.login(app.config["SES_SMTP_USERNAME"], app.config["SES_SMTP_PASSWORD"])
+
+    print("Reset url: ", reset_url, file=sys.stderr)
+
+    try:
+        server.sendmail(sender_email, user_email, msg.as_string())
+
+    except Exception as e:
+        print(f'Error in sending password reset email to user: {user_email}')
+        server.quit()
+        return False
+
+    server.quit()
+    print('Sent email')
+    return True
+
