@@ -1,3 +1,5 @@
+from pathlib import Path
+
 from flask import Flask, jsonify, make_response
 from flask_restful import Api, Resource, reqparse
 
@@ -36,11 +38,15 @@ class InferenceAPI(Resource):
 
         if "@" in email and len(pdb_code) == 4:
             try:
-                pdb_file = fetch_pdb_file(pdb_code, dir='/mutcompute_2020/mutcompute/data/pdb_files')
+                if load_cache:
+                    pdb_file = Path('/mutcompute_2020/mutcompute/data/pdb_files') / f'{pdb_code}.pdb'
 
-                print(f'Created PDB file: ', pdb_file)
+                else:
+                    pdb_file = fetch_pdb_file(pdb_code, dir='/mutcompute_2020/mutcompute/data/pdb_files')
 
-            except FileNotFoundError:
+                    print(f'Created PDB file: ', pdb_file)
+                    
+            except Exception:
                 return make_response(
                     jsonify(
                         Result=f'Unabled to retrieve PDB file for {pdb_code.upper()} from the PDB-REDO or the RCSB servers'
