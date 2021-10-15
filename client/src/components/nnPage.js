@@ -134,12 +134,12 @@ return (
                         The data will be emailed to you upon completion.
                     </p>
                     <p>
-                        This Protein Neural Net is still an on going research project in the Ellington Research Lab
-                        and may be temporarily offline for updates and the addition of new features.
-                        If you encounter any problems please email <a href="mailto: danny.diaz@utexas.edu">danny.diaz@utexas.edu</a>
+                        Convolutional neural networks are on going research projects in the Ellington Lab, therefore,
+                        MutCompute may be temporarily offline for updates and the addition of new features and models.
+                        If you encounter any problems please email <a href="mailto: danny.diaz@utexas.edu">danny.diaz@utexas.edu</a>.
                     </p>
                     <p>
-                        Please visit the <a href="/FAQ">FAQ page</a> for additional details.
+                        Please visit the <a href="/FAQ">FAQ</a> page for additional details.
                     </p>
                 </div>
             </div>
