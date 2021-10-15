@@ -103,7 +103,7 @@ return (
                     </div>
                     <div className="checkbox mb-3">
                     <label>
-                      <input type="checkbox" value="loadCache" onChange={rerunHandler} checked/> load cache
+                      <input type="checkbox" value="loadCache" onChange={rerunHandler} checked={pdb.loadCache}/> load cache
                     </label>
                   </div>
                         {/* SAVED FOR FUTURE FEATURE
