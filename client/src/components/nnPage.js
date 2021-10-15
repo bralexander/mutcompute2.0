@@ -116,6 +116,10 @@ return (
                         onChange={handleFile}>    
                         </input>
                     </div> */}
+                    <div className="col-sm-6">
+                     <br />
+                     <button type="submit" className="w-20 btn btn-lg btn-primary">Submit</button>
+                 </div> 
                 </div>
         <section className="container">
             <hr />
@@ -139,10 +143,6 @@ return (
                     </p>
                 </div>
             </div>
-            <div className="col-sm-6">
-                <br />
-                <button type="submit" className="w-20 btn btn-lg btn-primary">Submit</button>
-            </div> 
         </section>
         </form>
     </div>

@@ -219,6 +219,15 @@ const registerSubmit = e => {
                                 {password2Error && <span style={{color:'red'}}>Passwords must match</span>}
                             </span>
                             </div>
+                            <div className="col-md-6 text-justify">
+                                <button 
+                                    className="w-20 btn btn-lg btn-primary" 
+                                    id='submitBtn' 
+                                    type="submit" 
+                                    disabled={!validForm}>
+                                    Register
+                                </button>
+                             </div>
                         </div>
 
                         <hr/>
@@ -233,12 +242,6 @@ const registerSubmit = e => {
                             <p>
                                 Please visit the <a href="/FAQ">FAQ page</a> for additional details.
                             </p>
-                            <button 
-                            className="w-20 btn btn-lg btn-primary" 
-                            id='submitBtn' 
-                            type="submit" 
-                            disabled={!validForm}
-                            >Register</button>
                         </div>
                     </form>
                 </div>
