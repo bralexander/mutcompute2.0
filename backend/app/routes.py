@@ -103,7 +103,7 @@ def nn():
 
 
 @app.route('/api/fetch_predictions', methods=['POST'])
-@auth_required
+# @auth_required
 def fetch_pdb_predictions():
     pdb_id = json.loads(request.get_data())
     exist = NN_Query.query.filter_by(pdb_query=pdb_id).count()
