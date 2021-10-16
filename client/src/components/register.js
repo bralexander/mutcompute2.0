@@ -32,7 +32,7 @@ const Register = (props) => {
     const [last, setLast] = useState('')
     const [org, setOrg] = useState('')
 
-    const regex ='^.+@.*(edu|espci.fr|psl.eu|espci.psl.eu|epfl.ch|ca|uk|au)$'
+    const regex = '^.+@.*(edu|espci.fr|psl.eu|espci.psl.eu|epfl.ch|ac.uk|gmail.com)$'
 
     const {
         value: password1,
@@ -130,7 +130,7 @@ const registerSubmit = e => {
                                 type="email" 
                                 id="inputEmail" 
                                 className="form-control" 
-                                placeholder="Email (Academic only)" 
+                                placeholder="Email Address" 
                                 onChange={email1Change}
                                 onBlur={email1Blur}
                                 value={email1}
@@ -160,7 +160,7 @@ const registerSubmit = e => {
                                 type="email" 
                                 id="emailConfirm" 
                                 className="form-control" 
-                                placeholder="Confirm email" 
+                                placeholder="Confirm Email Address" 
                                 onChange={email2Change}
                                 onBlur={email2Blur}
                                 value={email2}
@@ -178,7 +178,7 @@ const registerSubmit = e => {
                                 type="text" 
                                 id="org" 
                                 className="form-control" 
-                                placeholder="Institution" 
+                                placeholder="Organization" 
                                 //onChange={e => setNewUser({ ...newUser, org: e.target.value })}
                                 onChange={e => setOrg( e.target.value )}
                                 required  minLength='3' 
@@ -209,7 +209,7 @@ const registerSubmit = e => {
                                 type="password" 
                                 id="confirmPassword" 
                                 className="form-control" 
-                                placeholder="Confirm password" 
+                                placeholder="Confirm Password" 
                                 onChange={password2Change}
                                 onBlur={password2Blur}
                                 value={password2}
