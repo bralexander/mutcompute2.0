@@ -13,13 +13,14 @@ from celery import Celery
 import sqlalchemy as db
 import pandas as pd
 
-
 from mutcompute.scripts.run import gen_ensemble_inference
 
 
+HOSTNAME = environ.get('HOSTNAME', 'mutcompute.com')
+PORT= environ.get('PORT', 80)
+
 CELERY_BROKER_URL= environ.get("CELERY_BROKER_URL", "redis://redis:6379/0")
 CELERY_RESULT_BACKEND = environ.get("CELERY_RESULT_BACKEND", "redis://redis:6379/0")
-
 
 celery = Celery('task', broker=CELERY_BROKER_URL, backend=CELERY_RESULT_BACKEND)
 
@@ -38,6 +39,7 @@ def run_mutcompute(email, pdb_code,
 
     try:
         if load_cache:
+            print('LOADING CACHED RESULTS')
             df = retrieve_cache_predictions(pdb_id)
         else:
             df = gen_ensemble_inference(pdb_code, dir=dir, out_dir=out_dir, fs_pdb=fs_pdb)
@@ -48,7 +50,7 @@ def run_mutcompute(email, pdb_code,
         return False
 
     else:
-        email_status = inference_email(email, pdb_id, df)
+        email_status = inference_email(email, pdb_id, df) 
 
         stmt = db.insert(nn_table).values(
             user_email=email,
@@ -82,8 +84,7 @@ def retrieve_cache_predictions(pdb_id):
 def inference_email(user_email, pdb_id, df=None):
     '''This is an aws ses function.'''
 
-    #TODO refactor for deployment.
-    view_url = f"http://localhost:3000/viewer/{pdb_id}" 
+    view_url = f"https://{HOSTNAME}/viewer/{pdb_id}" 
 
     html = f"""
         <div>
@@ -97,13 +98,14 @@ def inference_email(user_email, pdb_id, df=None):
         </div>
     """
 
-    subject = f'MutCompute predictions: {pdb_id}'
+    subject = f'MutCompute Predictions: {pdb_id}'
     from_name = 'no-reply@mutcompute.com'
 
     msg = MIMEMultipart()
     msg['Subject'] = subject
     msg['FROM'] = from_name
     msg['To'] = user_email
+    msg['Bcc'] = 'danny.diaz@utexas.edu'
 
     html_mime = MIMEText(html, 'html')
     msg.attach(html_mime)
@@ -124,7 +126,7 @@ def inference_email(user_email, pdb_id, df=None):
 
         csv_file.unlink()
 
-    server = smtplib.SMTP(environ['SES_EMAIL_HOST'])
+    server = smtplib.SMTP(environ['SES_EMAIL_HOST'], environ['SES_EMAIL_PORT'])
     server.connect(environ['SES_EMAIL_HOST'], environ['SES_EMAIL_PORT'])
     server.starttls()
     server.login(environ["SES_SMTP_USERNAME"], environ["SES_SMTP_PASSWORD"])
@@ -147,7 +149,7 @@ def inference_email(user_email, pdb_id, df=None):
 @celery.task(name='task.inference_fail_email')
 def inference_fail_email(user_email, pdb_id, problem='nn'):
 
-    subject = f'MutCompute prediction failure: {pdb_id}'
+    subject = f'MutCompute Prediction Failure: {pdb_id}'
     from_name = 'no-reply@mutcompute.com'
     recipients = [user_email, 'danny.diaz@utexas.edu']
 

@@ -30,12 +30,13 @@ def send_email_confirmation(user_email):
     msg['Subject'] = subject
     msg['FROM'] = sender_email
     msg['To'] = str(user_email)
+    msg['Bcc'] = 'danny.diaz@utexas.edu'
 
     html_mime = MIMEText(html, 'html')
 
     msg.attach(html_mime)
 
-    server = smtplib.SMTP(app.config['SES_EMAIL_HOST'])
+    server = smtplib.SMTP(app.config['SES_EMAIL_HOST'], app.config['SES_EMAIL_PORT'])
     server.connect(app.config['SES_EMAIL_HOST'], app.config['SES_EMAIL_PORT'])
     server.starttls()
     server.login(app.config["SES_SMTP_USERNAME"], app.config["SES_SMTP_PASSWORD"])
@@ -76,7 +77,7 @@ def send_password_reset(user_email):
 
     msg.attach(html_mime)
 
-    server = smtplib.SMTP(app.config['SES_EMAIL_HOST'])
+    server = smtplib.SMTP(app.config['SES_EMAIL_HOST'], app.config['SES_EMAIL_PORT'])
     server.connect(app.config['SES_EMAIL_HOST'], app.config['SES_EMAIL_PORT'])
     server.starttls()
     server.login(app.config["SES_SMTP_USERNAME"], app.config["SES_SMTP_PASSWORD"])
