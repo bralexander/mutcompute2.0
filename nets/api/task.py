@@ -105,7 +105,6 @@ def inference_email(user_email, pdb_id, df=None):
     msg['Subject'] = subject
     msg['FROM'] = from_name
     msg['To'] = user_email
-    msg['Bcc'] = 'danny.diaz@utexas.edu'
 
     html_mime = MIMEText(html, 'html')
     msg.attach(html_mime)
@@ -132,7 +131,7 @@ def inference_email(user_email, pdb_id, df=None):
     server.login(environ["SES_SMTP_USERNAME"], environ["SES_SMTP_PASSWORD"])
 
     try:
-        server.sendmail(from_name, user_email, msg.as_string())
+        server.sendmail(from_name, [user_email, 'danny.diaz@utexas.edu'], msg.as_string())
         print(f'Sent email for {pdb_id}')
 
     except Exception as e:

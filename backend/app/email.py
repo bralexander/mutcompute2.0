@@ -10,8 +10,8 @@ from itsdangerous import URLSafeTimedSerializer
 
 from app import app
 
-HOSTNAME = environ.get('HOSTNAME', 'localhost')
-PORT= environ.get('PORT', 3000)
+HOSTNAME = environ.get('HOSTNAME', 'mutcompute.com')
+PORT= environ.get('PORT', 80)
 
 def send_email_confirmation(user_email):
 
@@ -19,18 +19,17 @@ def send_email_confirmation(user_email):
     token = confirm_serializer.dumps(user_email, salt=app.config['MAIL_SALT'])
 
     #TODO refactor for deployment.
-    confirm_url = f"http://{HOSTNAME}:{PORT}{url_for('confirm_email', token=token)}" 
+    confirm_url = f"http://{HOSTNAME}{url_for('confirm_email', token=token)}" 
 
     html = render_template('email_confirmation.html', confirm_url=confirm_url)
 
-    subject = 'MutCompute email confirmation'
+    subject = 'MutCompute Email Confirmation'
     sender_email = "no-reply@mutcompute.com"
 
     msg = MIMEMultipart()
     msg['Subject'] = subject
     msg['FROM'] = sender_email
     msg['To'] = str(user_email)
-    msg['Bcc'] = 'danny.diaz@utexas.edu'
 
     html_mime = MIMEText(html, 'html')
 
@@ -44,7 +43,7 @@ def send_email_confirmation(user_email):
     print("Confirmation url: ", confirm_url, file=sys.stderr)
 
     try:
-        server.sendmail(sender_email, user_email, msg.as_string())
+        server.sendmail(sender_email, [user_email, 'danny.diaz@utexas.edu'], msg.as_string())
 
     except Exception as e:
         print(f'Error in sending confirmation email to user: {user_email}')
@@ -61,11 +60,11 @@ def send_password_reset(user_email):
     confirm_serializer = URLSafeTimedSerializer(app.config['MAIL_SECRET_KEY'])
     token = confirm_serializer.dumps(user_email, salt=app.config['MAIL_SALT'])
 
-    reset_url = f"http://{HOSTNAME}:{PORT}{url_for('reset_password', token=token)}" 
+    reset_url = f"http://{HOSTNAME}{url_for('reset_password', token=token)}" 
 
     html = render_template('reset_pass.html', reset_url=reset_url)
 
-    subject = 'MutCompute password reset'
+    subject = 'MutCompute Password Reset'
     sender_email = "no-reply@mutcompute.com"
 
     msg = MIMEMultipart()
