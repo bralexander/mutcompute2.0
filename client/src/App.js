@@ -27,6 +27,9 @@ import PetaseThermo from "./components/petaseThermo"
 import PetaseFast from "./components/petaseWt"
 import BstPolymerase from "./components/polymerase"
 
+import EmailConf from './components/emailConf';
+import Terms from './components/terms';
+
 
 
 
@@ -67,6 +70,7 @@ function App() {
             <Route path="/api/reset/:hash" component={() => <Reset />} />
             <Route path="/api/email_confirmation/:token" component={() => <EmailConf />} />
             <Route path="/literature" exact component={() => <Literature />} />
+            <Route path="/terms" exact component={() => <Terms />} />
           </Switch>
         <Footer />
       </Router>

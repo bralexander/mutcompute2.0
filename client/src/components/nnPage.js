@@ -104,6 +104,7 @@ return (
                     <div className="checkbox mb-3">
                     <label>
                       <input type="checkbox" value="loadCache" onChange={rerunHandler} checked={pdb.loadCache}/> load cached predictions
+
                     </label>
                   </div>
                         {/* SAVED FOR FUTURE FEATURE
@@ -120,6 +121,10 @@ return (
                      <br />
                      <button type="submit" className="w-20 btn btn-lg btn-primary">Submit</button>
                  </div> 
+                <div className="col-sm-6">
+                    <br />
+                    <button type="submit" className="w-20 btn btn-lg btn-primary">Submit</button>
+                </div> 
                 </div>
         <section className="container">
             <hr />
