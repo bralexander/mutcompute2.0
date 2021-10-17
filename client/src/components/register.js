@@ -32,7 +32,7 @@ const Register = (props) => {
     const [last, setLast] = useState('')
     const [org, setOrg] = useState('')
 
-    const regex ='^.+@.*(edu|espci.fr|psl.eu|espci.psl.eu|epfl.ch|ca|uk|au)$'
+    const regex = '^.+@.*(edu|espci.fr|psl.eu|espci.psl.eu|epfl.ch|ac.uk|gmail.com)$'
 
     const {
         value: password1,
@@ -105,7 +105,7 @@ const registerSubmit = e => {
 //   }
 
   return (
-    <div className=" register container-fluid">
+    <div className="yes-scroll register container-fluid">
         <div className="container page-header move-right">
             <h1 className="dark-grey">Registration<small></small></h1>
         </div>
@@ -130,7 +130,7 @@ const registerSubmit = e => {
                                 type="email" 
                                 id="inputEmail" 
                                 className="form-control" 
-                                placeholder="Email (Academic only)" 
+                                placeholder="Email Address" 
                                 onChange={email1Change}
                                 onBlur={email1Blur}
                                 value={email1}
@@ -160,7 +160,7 @@ const registerSubmit = e => {
                                 type="email" 
                                 id="emailConfirm" 
                                 className="form-control" 
-                                placeholder="Confirm email" 
+                                placeholder="Confirm Email Address" 
                                 onChange={email2Change}
                                 onBlur={email2Blur}
                                 value={email2}
@@ -178,7 +178,7 @@ const registerSubmit = e => {
                                 type="text" 
                                 id="org" 
                                 className="form-control" 
-                                placeholder="Institution" 
+                                placeholder="Organization" 
                                 //onChange={e => setNewUser({ ...newUser, org: e.target.value })}
                                 onChange={e => setOrg( e.target.value )}
                                 required  minLength='3' 
@@ -209,7 +209,7 @@ const registerSubmit = e => {
                                 type="password" 
                                 id="confirmPassword" 
                                 className="form-control" 
-                                placeholder="Confirm password" 
+                                placeholder="Confirm Password" 
                                 onChange={password2Change}
                                 onBlur={password2Blur}
                                 value={password2}
@@ -220,17 +220,15 @@ const registerSubmit = e => {
                             </span>
                             </div>
                             <div className="col-md-6 text-justify">
-                            <button 
-                            className="w-20 btn btn-lg btn-primary" 
-                            id='submitBtn' 
-                            type="submit" 
-                            disabled={!validForm}
-                            >
-                                Register
-                            </button>
-                            </div>
+                                <button 
+                                    className="w-20 btn btn-lg btn-primary" 
+                                    id='submitBtn' 
+                                    type="submit" 
+                                    disabled={!validForm}>
+                                    Register
+                                </button>
+                             </div>
                         </div>
-
                         <hr/>
                         <div className="col-md-6 text-justify">
                             <h3 className="dark-grey"><strong>Terms and Conditions</strong></h3>
@@ -243,7 +241,6 @@ const registerSubmit = e => {
                             <p>
                                 Please visit the <a href="/faq">FAQ</a> for additional details.
                             </p>
-                            
                         </div>
                     </form>
                 </div>

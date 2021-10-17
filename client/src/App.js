@@ -1,5 +1,5 @@
 import './App.css';
-import React from "react"
+import React, { useEffect } from "react"
 import { BrowserRouter as Router} from "react-router-dom"
 import { Route, Switch, Redirect } from "react-router-dom"
 import {useAuth} from "./auth"
@@ -7,13 +7,20 @@ import {useAuth} from "./auth"
 import Cover from "./components/cover"
 import Nav from "./components/nav"
 import Footer from "./components/footer"
+
 import Login from "./components/login"
-import Compvis3 from "./components/compvis3"
 import Register from "./components/register"
+
+import Compvis3 from "./components/compvis3"
 import NNPage from "./components/nnPage"
+import Literature from './components/literature'
+
 import FAQ from "./components/faq"
+import Terms from './components/terms';
+
 import Forgot from "./components/forgotPass"
 import Reset from "./components/resetPass"
+import EmailConf from './components/emailConf';
 
 import PetaseWt from "./components/petaseWt"
 import PetaseThermo from "./components/petaseThermo"
@@ -25,8 +32,13 @@ import Terms from './components/terms';
 
 
 
+
 const  PrivateRoute = ({component: Component, ...rest }) => {
   const [logged] = useAuth();
+
+  useEffect(() => {
+    document.title = "MutCompute"
+  }, [])
 
   return <Route {...rest} render={(props) => (
       logged
@@ -53,9 +65,11 @@ function App() {
             <Route path="/polymerase/3tan" exact component={() => <BstPolymerase />} />
             <PrivateRoute path="/nn" component={NNPage} />
             <Route path="/faq" exact component={() => <FAQ />} />
+            <Route path="/terms" exact component={() => <Terms />} />
             <Route path="/forgot" exact component={() => <Forgot />} />
             <Route path="/api/reset/:hash" component={() => <Reset />} />
             <Route path="/api/email_confirmation/:token" component={() => <EmailConf />} />
+            <Route path="/literature" exact component={() => <Literature />} />
             <Route path="/terms" exact component={() => <Terms />} />
           </Switch>
         <Footer />

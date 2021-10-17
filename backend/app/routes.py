@@ -15,9 +15,9 @@ from app.models import Users, NN_Query
 
 
 # Logs
-@app.before_request
-def before_request():
-    print(request.headers, file=sys.stderr)
+# @app.before_request
+# def before_request():
+#     print(request.headers, file=sys.stderr)
 
 
 @app.route('/api/')
@@ -52,17 +52,17 @@ def register():
     password = req.get('password', None)
     user = Users.query.filter_by(email=email).count()
 
-    if user > 0 and user.email_confirmed:
-            return {'Email Status': "Email already confirmed"}, 418
+    if user > 0 and Users.query.filter_by(email=email).one().email_confirmed:
+            return {'Status': "Account already exist for this email."}, 418
 
     # Add to database or overwrite if user is already present but not confirmed.
     user = Users(email=email, password=password, first_name=first_name, last_name=last_name, organization=organization)
     user.save_to_db()
 
     if send_email_confirmation(email):
-        return {'Email Status': "Sent"}, 200
+        return {'Status': "Sent email confirmation link"}, 200
     
-    return {'Email Status': "Failed to send"}, 500
+    return {'Status': "Failed to send confirmation link. Please email us."}, 500
 
   
 @app.route('/api/refresh', methods=['POST'])
@@ -103,7 +103,7 @@ def nn():
 
 
 @app.route('/api/fetch_predictions', methods=['POST'])
-@auth_required
+# @auth_required
 def fetch_pdb_predictions():
     pdb_id = json.loads(request.get_data())
     exist = NN_Query.query.filter_by(pdb_query=pdb_id).count()

@@ -86,8 +86,8 @@ const rerunHandler = e => {
 console.log('loadCache:', pdb.loadCache)
 
 return (
-    <div className="container-fluid avoid-navbar">
-                <div className="col-sm-12 page-header">
+    <div className="yes-scroll container-fluid avoid-navbar overflow-auto">
+                <div className="col-sm-12 page-header overflow-auto">
                     <h1 className="dark-grey">Protein Crystal Structure Submission<small></small></h1>
                 </div>
             <form onSubmit={submitProtein}>
@@ -103,7 +103,8 @@ return (
                     </div>
                     <div className="checkbox mb-3">
                     <label>
-                      <input type="checkbox" value="loadCache" onChange={rerunHandler} checked={pdb.loadCache}/> load cache
+                      <input type="checkbox" value="loadCache" onChange={rerunHandler} checked={pdb.loadCache}/> load cached predictions
+
                     </label>
                   </div>
                         {/* SAVED FOR FUTURE FEATURE
@@ -116,6 +117,10 @@ return (
                         onChange={handleFile}>    
                         </input>
                     </div> */}
+                    <div className="col-sm-6">
+                     <br />
+                     <button type="submit" className="w-20 btn btn-lg btn-primary">Submit</button>
+                 </div> 
                 <div className="col-sm-6">
                     <br />
                     <button type="submit" className="w-20 btn btn-lg btn-primary">Submit</button>
@@ -134,15 +139,15 @@ return (
                         The data will be emailed to you upon completion.
                     </p>
                     <p>
-                        This Protein Neural Net is still an on going research project in the Ellington Research Lab
-                        and may be temporarily offline for updates and the addition of new features.
+                        Protein Structure convolutional neural networks are on going research projects in the Ellington Lab, therefore,
+                        MutCompute may be temporarily offline for updates and the addition of new features and models.
+                        If you encounter any problems please email <a href="mailto: danny.diaz@utexas.edu">danny.diaz@utexas.edu</a>.
                     </p>
                     <p>
-                        Please visit the <a href="/FAQ">FAQ page</a> for additional details.
+                        Please visit the <a href="/FAQ">FAQ</a> page for additional details.
                     </p>
                 </div>
             </div>
-            
         </section>
         </form>
     </div>

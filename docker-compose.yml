@@ -1,4 +1,20 @@
+version: "3"
+
 services:
+  # Frontend
+  client:
+    container_name: client
+    build:
+      context: ./client
+      dockerfile: Dockerfile
+    image: mutcompute:client
+    ports:
+      - 3000:3000
+    volumes:
+      - ./client/src:/app/src
+    command: yarn start
+
+
   # Backend
   backend:
     container_name: backend
@@ -12,11 +28,13 @@ services:
       - ./backend/:/app/
       - ./data:/app/data
     environment:
-      DB_URI: ${DB_URI_BACKEND}
       SES_EMAIL_HOST: ${SES_EMAIL_HOST}
       SES_EMAIL_PORT: ${SES_EMAIL_PORT}
       SES_SMTP_USERNAME: ${SES_SMTP_USERNAME}
       SES_SMTP_PASSWORD: ${SES_SMTP_PASSWORD}
+      DB_URI: ${DB_URI_BACKEND}
+      HOSTNAME: ${HOSTNAME}
+      PORT: ${PORT}
     depends_on:
       - nn_api
     # command: gunicorn -b 0.0.0.0:5000 api:app
@@ -41,7 +59,7 @@ services:
       - redis 
       - celery
     ports:
-      - 8000:8000
+      - 8000
     working_dir: /mutcompute_2020/api
     entrypoint: python api.py
 
@@ -67,8 +85,11 @@ services:
       SES_SMTP_PASSWORD: ${SES_SMTP_PASSWORD}
       DB_URI: ${DB_URI_NN_API}
       DB_NN_TABLE: ${DB_NN_TABLE}
+      HOSTNAME: ${HOSTNAME}
+      PORT: ${PORT}
     working_dir: /mutcompute_2020/api
-    entrypoint: celery -A task.celery worker -l debug
+    entrypoint: celery -A task.celery worker -l debug --concurrency 2 
+    # entrypoint: celery -A task.celery worker --loglevel=DEBUG --concurrency 2 -P solo
     depends_on:
       - redis 
 
@@ -78,53 +99,41 @@ services:
     image: redis:latest
     hostname: redis
     ports:
-      - 6379:6379  
+      - 6379 
 
-  # # flower:
-  # #     container_name: FLOWER
-  # #     image: mher/flower
-  # #     command: flower --broker=redis://redis:6379/0 --port=8888
-  # #     ports:
-  # #       - 9181:8888
-  # #     depends_on: 
-  # #       - celery
-
-  # # Frontend
-  client:
-    container_name: client
-    build:
-      context: ./client
-      dockerfile: Dockerfile
-    image: mutcompute:client
-    ports:
-      - 3000:3000
-    volumes:
-      - ./client/src:/app/src
-    command: yarn start
 
   # # Reverse Proxy
-  # nginx:
-  #   container_name: nginx
-  #   image: nginx:latest
-  #   restart: unless-stopped
-  #   ports:
-  #     - 80:80
-  #     - 443:443
-  #   volumes:
-  #     - ./nginx/nginx_local.conf:/etc/nginx/conf.d/default.conf 
-
-    #   - ./nginx/certbot/conf:/etc/letsencrypt
-    #   - ./nginx/certbot/www:/var/www/certbot
-    # command: "/bin/sh -c 'while :; do sleep 6h & wait $${!}; nginx -s reload; done & nginx -g \"daemon off;\"'"
+  nginx:
+    container_name: nginx
+    image: nginx:latest
+    restart: unless-stopped
+    ports:
+      - 80:80
+      - 443:443
+    volumes:
+      - ./nginx/nginx_ssl.conf:/etc/nginx/conf.d/default.conf 
+      - ./nginx/certbot/conf:/etc/letsencrypt
+      - ./nginx/certbot/www:/var/www/certbot
+    command: "/bin/sh -c 'while :; do sleep 6h & wait $${!}; nginx -s reload; done & nginx -g \"daemon off;\"'"
 
   # SSL certificates
-  # certbot:
-  #   image: certbot/certbot
-  #   restart: unless-stopped
-  #   volumes:
-  #     - ./nginx/certbot/conf:/etc/letsencrypt
-  #     - ./nginx/certbot/www:/var/www/certbot
-  #   entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
+  certbot:
+    image: certbot/certbot
+    restart: unless-stopped
+    volumes:
+      - ./nginx/certbot/conf:/etc/letsencrypt
+      - ./nginx/certbot/www:/var/www/certbot
+    entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
+
+
+  # flower:
+  #     container_name: FLOWER
+  #     image: mher/flower
+  #     command: flower --broker=redis://redis:6379/0 --port=8888
+  #     ports:
+  #       - 9181:8888
+  #     depends_on: 
+  #       - celery
   
 
       
