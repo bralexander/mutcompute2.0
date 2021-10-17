@@ -39,9 +39,9 @@ const history = useHistory()
       }, false );
 
       // Change background color for Hong
-        stage.setParameters({
-          backgroundColor: 'white'
-        })
+        // stage.setParameters({
+        //   backgroundColor: 'white'
+        // })
 
     function addElement (el) {
         Object.assign(el.style, {

@@ -49,7 +49,7 @@ const FAQ = () => {
                 <Accordian 
                 question="Is account registration required? "
                 answer="Yes. "
-                detail="In order to utilize MutCompute you must register and create and account."
+                detail="In order to utilize the convolutional neural net (CNN) you must register and create and account."
                 />
                 <Accordian 
                 question="Can I submit a protein we crystallized in house?"
