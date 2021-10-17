@@ -13,7 +13,7 @@ const [logged] = useAuth()
         <div className="nav-cont d-flex h-100 text-center text-white">
         <div className="cover-container d-flex w-100 h-100 p-3 mx-auto flex-column">
           <header>
-            <a href="/"><h3 className="float-md-start mb-0">MutCompute</h3></a>
+            <a href="/"><h3 className="float-md-start mb-0">MūtCompute</h3></a>
             {!logged?
             <nav className="nav nav-masthead justify-content-center float-md-end">
               <a className="nav-link text-muted" href="/register">Register</a>
