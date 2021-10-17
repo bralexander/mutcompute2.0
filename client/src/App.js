@@ -27,10 +27,6 @@ import PetaseThermo from "./components/petaseThermo"
 import PetaseFast from "./components/petaseWt"
 import BstPolymerase from "./components/polymerase"
 
-import EmailConf from './components/emailConf';
-import Terms from './components/terms';
-
-
 
 
 const  PrivateRoute = ({component: Component, ...rest }) => {
