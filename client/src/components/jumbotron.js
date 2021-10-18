@@ -8,7 +8,10 @@ const Jumbotron = (props) => {
             <div className="cover-container d-flex w-100 h-100 p-3 mx-auto flex-column">
                 <main className="jumbotron px-3 mb-0 ">
                     <h1 className="middle-title">Welcome to MūtCompute</h1>
-                    <p className="lead">Modern solutions for protein engineering. <br /> Deep Learning guided predictions for protein mutagenesis,<br /> visualized in 3D. </p>
+                    <p className="lead">
+                        Modern solutions for protein engineering. <br /> 
+                        Deep Learning guided predictions for protein mutagenesis,<br /> 
+                        visualized in 3D. </p>
                     <p className="lead">
                       <a href="/NN/" className="j-btn btn btn-lg btn-secondary fw-bold border-dark rounded">Predict</a>
                       <a href="/viewer/3nir" className="j-btn btn btn-lg btn-secondary fw-bold border-dark rounded">Visualize</a>

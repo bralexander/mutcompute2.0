@@ -32,7 +32,7 @@ const Register = (props) => {
     const [last, setLast] = useState('')
     const [org, setOrg] = useState('')
 
-    const regex = '^.+@.*(edu|espci.fr|psl.eu|espci.psl.eu|epfl.ch|ac.uk|gmail.com)$'
+    const regex = '^.+@.*(edu|espci.fr|psl.eu|espci.psl.eu|epfl.ch|ac.uk|gmail.com|edu.au|ugent.be)$'
 
     const {
         value: password1,
