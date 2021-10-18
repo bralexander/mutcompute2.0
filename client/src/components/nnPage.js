@@ -1,11 +1,12 @@
 import React, { useState }  from 'react';
 import {authFetch} from '../auth'
-
+import {useHistory} from 'react-router-dom'
 
 const NNPage = () => {
     const [pdb, setPdb] = useState({id: '', loadCache: true});
- 
+    const [loading, setLoading] = useState(false)
     
+    const history = useHistory()
 
     const submitProtein = e => {
 
@@ -30,7 +31,7 @@ const NNPage = () => {
         // }
         // else if (!pdbFile && pdbId) {
         // **
-
+        setLoading(true)
         if (pdb) {
         e.preventDefault()
         authFetch('/api/nn', {
@@ -43,7 +44,10 @@ const NNPage = () => {
         })
         .then(res => res.json())
         .then(data => {
+            setLoading(false)
             alert(data.Result)
+            history.push('/')
+
             console.log("Data: ", data)
         })
         // .then(r => { 
@@ -54,7 +58,8 @@ const NNPage = () => {
         //     else {alert('error')}
         // })
     } else {
-        alert('please fill form')
+        setLoading(false)
+        alert('Please enter a valid PDB ID')
     }
     }
 
@@ -99,6 +104,7 @@ return (
                         onChange={e => handleId(e.target.value)}
                         minLength='4'
                         maxLength='4'
+                        required
                         ></input>
                     </div>
                     <div className="checkbox mb-3">
@@ -119,7 +125,7 @@ return (
                     </div> */}
                 <div className="col-sm-6">
                     <br />
-                    <button type="submit" className="w-20 btn btn-lg btn-primary">Submit</button>
+                    <button type="submit" className="w-20 btn btn-lg btn-primary" disabled={loading} >Submit</button>
                 </div> 
                 </div>
         <section className="container">
