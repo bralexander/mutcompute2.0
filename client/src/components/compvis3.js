@@ -809,7 +809,7 @@ const history = useHistory()
       }, [fetchFile, history, pdbIdUrl]);
 
   return (
-    <div calssName="yes-scroll" id="viewport" style={{height: '90vh', width: '100%'}} >
+    <div className="yes-scroll" id="viewport" style={{height: '90vh', width: '100%'}} >
       </div>
   )
 }
