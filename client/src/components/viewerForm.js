@@ -44,6 +44,7 @@ return (
                         onChange={e => handleId(e.target.value)}
                         minLength='4'
                         maxLength='4'
+                        autoFocus
                         ></input>
                 <div className="col-sm-6">
                     <br />

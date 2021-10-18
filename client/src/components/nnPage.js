@@ -105,6 +105,7 @@ return (
                         minLength='4'
                         maxLength='4'
                         required
+                        autoFocus
                         ></input>
                     </div>
                     <div className="checkbox mb-3">
