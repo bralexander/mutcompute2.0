@@ -13,6 +13,7 @@ import Register from "./components/register"
 
 import Compvis3 from "./components/compvis3"
 import NNPage from "./components/nnPage"
+import ViewerForm from "./components/viewerForm"
 import Literature from './components/literature'
 
 import FAQ from "./components/faq"
@@ -26,7 +27,6 @@ import PetaseWt from "./components/petaseWt"
 import PetaseThermo from "./components/petaseThermo"
 import PetaseFast from "./components/petaseWt"
 import BstPolymerase from "./components/polymerase"
-
 
 
 
@@ -54,6 +54,7 @@ function App() {
           <Switch>
             <Route path="/" exact component={() => <Cover />} />
             <Route path="/login" exact component={() => <Login />} />
+            <Route path="/viewerForm" exact component={() => <ViewerForm />} />
             <Route path="/viewer/:id" exact component={() => <Compvis3 />} />
             <Route path="/register" exact component={() => <Register />} />
             <Route path="/petase/5xjh" exact component={() => <PetaseWt />} />

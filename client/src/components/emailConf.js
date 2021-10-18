@@ -9,7 +9,7 @@ const EmailConf = (props) => {
     const token = props.match.params.token
     useEffect(() => {
         confirmHandler()
-    }, [])
+    })
 
     
     const confirmHandler = () => {
