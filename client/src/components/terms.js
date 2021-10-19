@@ -4,6 +4,7 @@ import React from 'react'
      return(
          <div className="container" >
              <h1>Terms and Conditions</h1>
+             <hr />
              <br />
              <p>
                   By clicking on "Register" you agree to not misuse the Convolutional Neural Network.
