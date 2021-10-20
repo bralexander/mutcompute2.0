@@ -14,7 +14,7 @@ const Jumbotron = (props) => {
                         visualized in 3D. </p>
                     <p className="lead">
                       <a href="/nn/" className="j-btn btn btn-lg btn-secondary fw-bold border-dark rounded">Predict</a>
-                      <a href="/viewerForm" className="j-btn btn btn-lg btn-secondary fw-bold border-dark rounded">Visualize</a>
+                      <a href="/view" className="j-btn btn btn-lg btn-secondary fw-bold border-dark rounded">Visualize</a>
                     </p>
                 </main>
             </div>

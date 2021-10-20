@@ -54,8 +54,9 @@ function App() {
           <Switch>
             <Route path="/" exact component={() => <Cover />} />
             <Route path="/login" exact component={() => <Login />} />
-            <Route path="/viewerForm" exact component={() => <ViewerForm />} />
+            <Route path="/view" exact component={() => <ViewerForm />} />
             <Route path="/viewer/:id" exact component={() => <Compvis3 />} />
+            <Route path="/view/:id" exact component={() => <Compvis3 />} />
             <Route path="/register" exact component={() => <Register />} />
             <Route path="/petase/5xjh" exact component={() => <PetaseWt />} />
             <Route path="/petase/6ij6" exact component={() => <PetaseThermo />} />

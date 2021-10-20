@@ -14,7 +14,7 @@ const ViewerForm = () => {
         if (pdb) {
             console.log('pdb',pdb)
             const pdbLow = pdb.toLowerCase()
-            history.push(`/viewer/${pdbLow}`)
+            history.push(`/view/${pdbLow}`)
         } else {
             alert('please enter a 4 character PDB code')
         }
