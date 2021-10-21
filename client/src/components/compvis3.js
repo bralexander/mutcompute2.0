@@ -112,6 +112,7 @@ const history = useHistory()
             if (csvRow !== undefined) {
               const wtProb = parseFloat(csvRow[csvWtProbCol])
               const prProb = parseFloat(csvRow[csvPrProbCol])
+              const foldChange = parseFloat(csvRow[csvFoldChange])
               tooltip.innerHTML = `
             CHAIN: ${atom.chainname}<br/>
             RES NUM: ${atom.resno}<br/>
@@ -119,7 +120,8 @@ const history = useHistory()
             WT PROB: ${wtProb.toFixed(4)}<br/>
             PRED AA: ${csvRow[csvPrAaCol]}<br/>
             PRED PROB: ${prProb.toFixed(4)}<br/>
-            LOG2 PRED/WT: ${Math.log2(prProb/wtProb).toFixed(3)}`
+            LOG2 PRED/WT: ${foldChange.toFixed(4)}`
+            // LOG2 PRED/WT: ${Math.log2(prProb/wtProb).toFixed(3)}`
               tooltip.style.bottom = stage.viewer.height - 170 + 'px'
               tooltip.style.left = stage.viewer.width - 190 + 'px'
               tooltip.style.display = 'block'
@@ -161,6 +163,7 @@ const history = useHistory()
       const csvWtProbCol = 6
       const csvPrAaCol = 5
       const csvPrProbCol = 7
+      const csvFoldChange = 8
 
       function loadStructure (proteinFile, csvFile) {
         struc = undefined
