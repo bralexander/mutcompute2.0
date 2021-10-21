@@ -31,7 +31,7 @@ const [logged] = useAuth()
             :
             <nav className="nav nav-masthead justify-content-center float-md-end">
             <a className="nav-link text-muted"  href="/nn/">Predict</a>
-            <a className="nav-link text-muted" href="/viewerForm">View</a>
+            <a className="nav-link text-muted" href="/view">View</a>
             <button className="nav-link dropdown-toggle text-muted" id="navbarDarkDropdownMenuLink"
              data-bs-toggle="dropdown" aria-expanded="false">
               Menu

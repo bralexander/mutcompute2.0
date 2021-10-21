@@ -84,7 +84,7 @@ def retrieve_cache_predictions(pdb_id):
 def inference_email(user_email, pdb_id, df=None):
     '''This is an aws ses function.'''
 
-    view_url = f"https://{HOSTNAME}/viewer/{pdb_id}" 
+    view_url = f"https://{HOSTNAME}/view/{pdb_id}" 
 
     html = f"""
         <div>
