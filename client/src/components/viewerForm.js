@@ -31,8 +31,8 @@ const handleId = e => {
 
 
 return (
-    <div className="yes-scroll container-fluid avoid-navbar overflow-auto">
-                <div className="col-sm-12 page-header overflow-auto">
+    <div className="yes-scroll register container-fluid avoid-navbar overflow-auto">
+                <div className="container col-sm-12 page-header overflow-auto">
                     <h1 className="dark-grey">Enter a PDB ID<small></small></h1>
                 </div>
             <form onSubmit={submitProtein}>
@@ -54,7 +54,7 @@ return (
                 </div>
         <section className="container">
             <hr />
-            {/* <div className="container">
+            <div className="container">
                 <br />
                 <div className="col-md-6 text-justify">
                     <h3 className="dark-grey"><strong>Upon Submission</strong></h3>
@@ -62,18 +62,17 @@ return (
                         By clicking on "Submit" you agree to the <a href="/terms">Terms and Conditions</a>.
                     </p>
                     <p>
-                        The data will be emailed to you upon completion.
-                    </p>
-                    <p>
-                        Protein Structure convolutional neural networks are on going research projects in the Ellington Lab, therefore,
-                        MutCompute may be temporarily offline for updates and the addition of new features and models.
-                        If you encounter any problems please email <a href="mailto: danny.diaz@utexas.edu">danny.diaz@utexas.edu</a>.
+                        A PDB ID is a 4 character code consisting of numbers and letters that represents a PDB File.
+                        Protein Data Bank (PDB) files contain the 3D shapes of proteins, nucleic acids, and complex assemblies.
+                        You can search for proteins, PDB ID's, and protein descriptions on <a href="https://www.rcsb.org">RCSB</a>.
+                        Once you identify a protein of interest, simply type it's PDB ID into the box and submit to view it in 3D,
+                        and colored by Machine Learning predictions. Alternatevly, you can just enter "3NIR" to see a simple example.
                     </p>
                     <p>
                         Please visit the <a href="/FAQ">FAQ</a> page for additional details.
                     </p>
                 </div>
-            </div> */}
+            </div>
         </section>
         </form>
     </div>
