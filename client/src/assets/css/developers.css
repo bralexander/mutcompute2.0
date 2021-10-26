@@ -13,9 +13,9 @@
 }
 
 .img{
-    max-width: 300px;
-    max-height: 400px;
-    padding: 30px
+    max-width: 100px;
+    max-height: 200px;
+    padding: 10px 0px 10px 10px;
 }
 
 .text-cont{
@@ -23,6 +23,6 @@
     max-width: 52em;
 }
 
-#wrapper{
+/* #wrapper{
  text-align:center;
-}
+} */

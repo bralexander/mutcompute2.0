@@ -26,7 +26,7 @@ const [logged] = useAuth()
               <li><a className="dropdown-item" href="/">Home</a></li>
               <li><a className="dropdown-item" href="/FAQ">FAQ</a></li>
               <li><a className="dropdown-item" href="/literature/">Literature</a></li>
-              <li><a className="dropdown-item" href="/developers/">Developers</a></li>
+              <li><a className="dropdown-item" href="/about/">About</a></li>
             </ul>
             </nav>
             :
@@ -42,7 +42,7 @@ const [logged] = useAuth()
               <li><a className="dropdown-item" href="/login">logout</a></li>
               <li><a className="dropdown-item" href="/FAQ">FAQ</a></li>
               <li><a className="dropdown-item" href="/literature/">Literature</a></li>
-              <li><a className="dropdown-item" href="/developers/">Developers</a></li>
+              <li><a className="dropdown-item" href="/about/">About</a></li>
             </ul>
           </nav>
           }

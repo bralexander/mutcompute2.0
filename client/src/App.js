@@ -71,7 +71,7 @@ function App() {
             <Route path="/api/reset/:hash" component={() => <Reset />} />
             <Route path="/api/email_confirmation/:token" component={() => <EmailConf />} />
             <Route path="/literature" exact component={() => <Literature />} />
-            <Route path="/developers" exact component={() => <Developers />} />
+            <Route path="/about" exact component={() => <Developers />} />
           </Switch>
         <Footer />
       </Router>
