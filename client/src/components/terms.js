@@ -2,6 +2,7 @@ import React from 'react'
 
  const Terms = () => {
      return(
+        <div className="register">
          <div className="container" >
              <h1>Terms and Conditions</h1>
              <hr />
@@ -20,6 +21,7 @@ import React from 'react'
              <p>
                  Please visit the <a href="/faq">FAQ</a> for additional details.
              </p>
+         </div>
          </div>
      )
  }

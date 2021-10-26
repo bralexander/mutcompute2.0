@@ -29,7 +29,7 @@ const SectionHeader = (props) => {
     return(
     <div>
         <div className="panel-group" id="accordion"></div>
-        <div className="faqHeader">{props.title}</div>
+        <strong className="faqHeader">{props.title}</strong>
         <br/>
     </div>
     )
@@ -39,11 +39,11 @@ const SectionHeader = (props) => {
 const FAQ = () => {
     return(
 
-    <div className="yes-scroll container-fluid overflow-auto">
-        <div className="page-header">
+    <div className="yes-scroll register container-fluid overflow-auto">
+        <div className="container page-header">
             <h1>Frequently Asked Questions</h1>
         </div>
-        <div className="container-fluid avoid-footer overflow-auto">
+        <div className="container avoid-footer overflow-auto">
             <br />
             <SectionHeader title="General Questions" />
                 <Accordian 
