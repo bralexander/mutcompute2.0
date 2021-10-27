@@ -91,8 +91,8 @@ const rerunHandler = e => {
 console.log('loadCache:', pdb.loadCache)
 
 return (
-    <div className="yes-scroll container-fluid avoid-navbar overflow-auto">
-                <div className="col-sm-12 page-header overflow-auto">
+    <div className="register container-fluid avoid-navbar overflow-auto">
+                <div className="container col-sm-12 page-header ">
                     <h1 className="dark-grey">Protein Crystal Structure Submission<small></small></h1>
                 </div>
             <form onSubmit={submitProtein}>
