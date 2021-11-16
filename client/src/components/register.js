@@ -9,8 +9,8 @@ const passwordValidator = (value) => {
     let hasNumber =  /\d/.test(value)
     let upperCase =  value.toLowerCase() !== value
     let lowerCase =  value.toUpperCase() !== value
-    let specialChar =  /[ `!@#$%^&*()_+\-=\]{};':"\\|,.<>?~]/.test(value)
-    if (validLength && hasNumber && upperCase && lowerCase && specialChar) {
+    //let specialChar =  /[ `!@#$%^&*()_+\-=\]{};':"\\|,.<>?~]/.test(value)
+    if (validLength && hasNumber && upperCase && lowerCase ) {
         return true
     } else { 
         return false
@@ -105,7 +105,7 @@ const registerSubmit = e => {
 //   }
 
   return (
-    <div className="yes-scroll register container-fluid">
+    <div className=" register container-fluid">
         <div className="container page-header move-right">
             <h1 className="dark-grey">Registration<small></small></h1>
         </div>
@@ -126,6 +126,22 @@ const registerSubmit = e => {
                                 />
                             </div>
                             <div className="form-group col-md-6">
+                                
+                                <input 
+                                type="text" 
+                                id="lastName" 
+                                className="form-control" 
+                                placeholder="Last Name" 
+                                // onChange={e => setNewUser({ ...newUser, last: e.target.value })}
+                                onChange={e => setLast( e.target.value )}
+                                required  minLength='2' 
+                                />
+                            </div>
+                        </div>
+                        <br />
+                        <div className="row container">
+                            
+                            <div className="form-group col-md-6">
                                 <input 
                                 type="email" 
                                 id="inputEmail" 
@@ -138,21 +154,6 @@ const registerSubmit = e => {
                                 required 
                                 />
                                 {email1Error && <span>Please enter an email</span>}
-                            </div>
-                        </div>
-                        <br />
-                        <div className="row container">
-                            <div className="form-group col-md-6">
-                                
-                                <input 
-                                type="text" 
-                                id="lastName" 
-                                className="form-control" 
-                                placeholder="Last Name" 
-                                // onChange={e => setNewUser({ ...newUser, last: e.target.value })}
-                                onChange={e => setLast( e.target.value )}
-                                required  minLength='2' 
-                                />
                             </div>
                             <div className="form-group col-md-6">
                                 
@@ -167,7 +168,7 @@ const registerSubmit = e => {
                                 required 
                                 />
                                 <span>
-                                {email2Error && <span style={{color:'red'}}>Emails must match</span>}
+                                {email2Error && <span style={{color:'red'}}>Emails do not match</span>}
                                 </span>
                             </div>
                         </div>
@@ -196,7 +197,7 @@ const registerSubmit = e => {
                                 required  
                                 />
                                 <span>
-                                {password1Error && <span style={{color:'red'}}>Please Enter a Strong Password</span>}
+                                {password1Error && <span style={{color:'red'}}>A strong password is &gt;8 and contains Upper, lower, and number characters.</span>}
                                 </span>
                             </div>
                         </div>
@@ -216,7 +217,7 @@ const registerSubmit = e => {
                                 required  
                                 />
                                 <span>
-                                {password2Error && <span style={{color:'red'}}>Passwords must match</span>}
+                                {password2Error && <span style={{color:'red'}}>Passwords do not match</span>}
                             </span>
                             </div>
                             <div className="col-md-6 text-justify">

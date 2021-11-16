@@ -18,6 +18,7 @@ import Literature from './components/literature'
 
 import FAQ from "./components/faq"
 import Terms from './components/terms';
+import Developers from './components/developers';
 
 import Forgot from "./components/forgotPass"
 import Reset from "./components/resetPass"
@@ -27,6 +28,7 @@ import PetaseWt from "./components/petaseWt"
 import PetaseThermo from "./components/petaseThermo"
 import PetaseFast from "./components/petaseWt"
 import BstPolymerase from "./components/polymerase"
+
 
 
 
@@ -69,6 +71,7 @@ function App() {
             <Route path="/api/reset/:hash" component={() => <Reset />} />
             <Route path="/api/email_confirmation/:token" component={() => <EmailConf />} />
             <Route path="/literature" exact component={() => <Literature />} />
+            <Route path="/about" exact component={() => <Developers />} />
           </Switch>
         <Footer />
       </Router>
