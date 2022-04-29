@@ -37,8 +37,8 @@ services:
       PORT: ${PORT}
     depends_on:
       - nn_api
-    # command: gunicorn -b 0.0.0.0:5000 api:app
-    entrypoint: python /app/api.py
+    command: gunicorn -b 0.0.0.0:5000 api:app
+    # entrypoint: python /app/api.py
 
 
   nn_api:
