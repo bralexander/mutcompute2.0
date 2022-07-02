@@ -32,6 +32,7 @@ const NNPage = () => {
         // else if (!pdbFile && pdbId) {
         // **
         setLoading(true)
+        console.log("loading true")
         if (pdb) {
         e.preventDefault()
         authFetch('/api/nn', {
@@ -44,8 +45,9 @@ const NNPage = () => {
         })
         .then(res => res.json())
         .then(data => {
-            setLoading(false)
+            
             alert(data.Result)
+            setLoading(false)
             history.push('/')
 
             console.log("Data: ", data)
