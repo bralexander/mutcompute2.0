@@ -141,10 +141,12 @@ return (
                         By clicking on "Submit" you agree to the <a href="/terms">Terms and Conditions</a>.
                     </p>
                     <p>
-                        The data will be emailed to you upon completion.
+                        The predictions will be emailed to you upon completion. 
+                        Predictions may vary depending on whether the pdb file was fetched from PDB-REDO or RCSB.
+                        MutCompute prioritizes pdb files from the PDB-REDO server before attempting to fetch from RCSB.  
                     </p>
                     <p>
-                        Protein Structure convolutional neural networks are on going research projects in the Ellington Lab, therefore,
+                        Protein structure convolutional neural networks are on going research projects in the Ellington Lab. Therefore,
                         MutCompute may be temporarily offline for updates and the addition of new features and models.
                         If you encounter any problems please email <a href="mailto: danny.diaz@utexas.edu">danny.diaz@utexas.edu</a>.
                     </p>
